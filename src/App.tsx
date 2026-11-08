@@ -1,33 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Hero from './components/Hero'
+import Location from './components/Location'
+import Header from './components/Header'
+import About from './components/About'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+      <Header />
+      <Hero />
+      <About />
+      <Location />
+      <main>
+        <h2>Welcome to Northern Oasis Camping</h2>
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          Northern Oasis Camping is a place where you can relax and enjoy the nature.
         </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      </main>
+      <footer>
+        <p>Copyright 2025 Northern Oasis Camping</p>
+      </footer>
     </>
   )
 }
