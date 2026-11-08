@@ -99,9 +99,12 @@ const Location = () => {
     }
 
     // Try to load Google Maps, fallback to static display if API key is missing
-    if (!(window as any).google) {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+    if (!apiKey) {
+      createFallbackMap()
+    } else if (!(window as any).google) {
       const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=REMOVED_KEY&libraries=places`
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}`
       script.async = true
       script.defer = true
       script.onload = initMap
