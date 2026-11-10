@@ -497,157 +497,181 @@ header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* About Component Styles - Fresh Start */
+/* About: story beside a layered photo, highlight cards below a divider */
 .about {
-  padding: 2rem 0 4rem;
+  padding: 5rem 0;
   background: #fdf8f3;
-  position: relative;
-  overflow: hidden;
+  color: #2a2a2a;
 }
 
-.about-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  position: relative;
-}
-
-/* Title */
-.about-title {
-  text-align: left;
-  margin-bottom: 2rem;
-  position: relative;
-  z-index: 2;
-  scroll-margin-top: 150px;
-  padding-top: 2rem;
-}
-
-.about-title h2 {
-  font-size: 2.2rem;
-  color: var(--primary-color);
-  font-weight: 700;
-  margin: 0;
-  padding: 0 0 0 0;
-}
-
-/* Main Content */
-.about-main {
+.about-grid {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 0;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
   align-items: center;
-  position: relative;
-  min-height: 500px;
 }
 
-.about-image {
+/* The photo sits on an offset green block, with a peach outline offset the other way. */
+.about-photo {
   position: relative;
-  z-index: 1;
+  margin: 0 1.5rem 1.5rem 0;
 }
 
-.about-image img {
-  width: 100%;
-  max-width: 700px;
-  height: auto;
-  display: block;
+.about-photo::before {
+  content: '';
+  position: absolute;
+  inset: 1.5rem -1.5rem -1.5rem 1.5rem;
+  background: var(--accent-color);
   border-radius: 16px;
 }
 
-.about-content {
-  background: #ffffff;
-  padding: 2.5rem 1.5rem 2.5rem 3rem;
-  border-radius: 0 16px 16px 0;
-  box-shadow: 0 12px 32px rgba(2, 13, 34, 0.1);
-  position: relative;
-  z-index: 2;
-  margin-left: -4rem;
-  border-left: 4px solid var(--secondary-color);
-}
-
-.about-text h3 {
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  position: relative;
-}
-
-.about-text h3::after {
+.about-photo::after {
   content: '';
   position: absolute;
-  bottom: -0.5rem;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: var(--secondary-color);
-  border-radius: 2px;
+  inset: -1rem 1rem 1rem -1rem;
+  border: 2px solid #eabaac;
+  border-radius: 20px;
+  pointer-events: none;
 }
 
-.about-text p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #444;
-  margin: 0;
+.about-photo img {
   position: relative;
-  z-index: 1;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(2, 13, 34, 0.25);
 }
 
-/* Mobile Responsive */
+.about-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin: 0 0 0.75rem;
+}
+
+.about h2 {
+  font-size: 2.4rem;
+  color: var(--primary-color);
+  margin: 0 0 1.25rem;
+}
+
+.about-copy {
+  font-size: 1.1rem;
+  line-height: 1.75;
+  margin: 0 0 1rem;
+  max-width: 560px;
+}
+
+.about-signoff {
+  display: flex;
+  flex-direction: column;
+  margin: 1.75rem 0 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--secondary-color);
+}
+
+.about-signoff-name {
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.about-signoff-role {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.about-highlights {
+  list-style: none;
+  margin: 3.5rem 0 0;
+  padding: 2.5rem 0 0;
+  border-top: 1px solid rgba(2, 13, 34, 0.12);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.about-highlights li {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.1rem;
+  box-shadow: 0 8px 24px rgba(2, 13, 34, 0.08);
+}
+
+.about-highlight-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(1, 80, 69, 0.1);
+  color: var(--accent-color);
+}
+
+.about-highlight-title {
+  display: block;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.about-highlight-detail {
+  display: block;
+  font-size: 0.92rem;
+  opacity: 0.85;
+}
+
 @media (max-width: 900px) {
-  .about-main {
+  .about {
+    padding: 3.5rem 0;
+  }
+
+  .about-grid {
     grid-template-columns: 1fr;
-    gap: 0;
-    min-height: auto;
+    gap: 2.5rem;
   }
 
-  .about-image {
-    margin-bottom: 0;
+  .about-photo img {
+    aspect-ratio: 4 / 3;
   }
 
-  .about-image img {
-    border-radius: 16px 16px 0 0;
-    max-width: 100%;
-  }
-
-  .about-content {
-    margin-left: 0;
-    padding: 2rem;
-    border-radius: 0 0 16px 16px;
-    border-left: none;
-    border-top: 4px solid var(--secondary-color);
-  }
-
-    .about-title h2 {
-    font-size: 1.8rem;
-  }
-
-  .about-text h3 {
-    font-size: 1.4rem;
+  .about-highlights {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
   }
 }
 
-@media (max-width: 480px) {
-  .about {
-    padding: 3rem 0;
+@media (max-width: 560px) {
+  .about h2 {
+    font-size: 1.9rem;
   }
 
-  .about-container {
-    padding: 0 1rem;
+  .about-copy {
+    font-size: 1.02rem;
   }
 
-  .about-title h2 {
-    font-size: 1.6rem;
+  .about-photo {
+    margin: 0.75rem 1rem 1rem 0.75rem;
   }
 
-  .about-text h3 {
-    font-size: 1.3rem;
+  .about-photo::before {
+    inset: 1rem -1rem -1rem 1rem;
   }
 
-  .about-text p {
-    font-size: 1rem;
+  .about-photo::after {
+    inset: -0.75rem 0.75rem 0.75rem -0.75rem;
   }
 
-  .about-content {
-    padding: 1.5rem;
+  .about-highlights {
+    grid-template-columns: 1fr;
   }
 }
