@@ -1,51 +1,63 @@
-import { amenities, planFor, siteDetails, site } from '../content/site'
-import Icon from './Icon'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { siteDetails, site } from '../content/site'
+import { area } from '../content/sites'
+import Amenities from './sites/Amenities'
+import SitePhoto from './sites/SitePhoto'
 
+// "Where you'll camp": one wide photo of the camping area with a card over
+// its corner, and a strip of smaller photos overlapping its bottom edge.
+// Tapping a small photo shows it in the big frame.
 const Sites = () => {
+  const [cur, setCur] = useState(0)
   return (
-    <section id="sites" className="section light">
+    <section id="sites" className="section light sites-a3">
       <div className="container">
-        <h2>The sites</h2>
-        <p className="lead">
-          {site.siteCount} dispersed RV and tent sites, ${site.pricePerSiteNight} per site per night.
-        </p>
-        <ul className="check-list">
-          {siteDetails.map((d) => (
-            <li key={d}>{d}</li>
+        <p className="about-eyebrow">The sites</p>
+        <h2>Where you'll camp</h2>
+        <p className="lead">One open, wooded camping area with room for {site.siteCount} sites.</p>
+
+        <div className="a3-stage">
+          <div className="a3-hero">
+            <SitePhoto key={cur} src={area.srcs[cur]} alt={`The camping area, photo ${cur + 1}`} temporary={area.temporaryPhotos} />
+          </div>
+          <div className="a3-card">
+            <h3>{area.name}</h3>
+            <ul className="site-tags">
+              {area.tags.map((t) => <li key={t}>{t}</li>)}
+            </ul>
+            <p className="site-details">{area.summary}</p>
+            <Link to="/book" className="hero-btn primary">Book a spot</Link>
+          </div>
+        </div>
+        <div className="a3-strip">
+          {area.srcs.map((src, i) => (
+            <button
+              key={src}
+              className={i === cur ? 'active' : ''}
+              onClick={() => setCur(i)}
+              aria-label={`Show photo ${i + 1}`}
+              aria-pressed={i === cur}
+            >
+              <SitePhoto src={src} alt="" temporary={area.temporaryPhotos} />
+            </button>
           ))}
+        </div>
+
+        <ul className="sites-facts">
+          <li><strong>${site.pricePerSiteNight}</strong><span>per site, per night</span></li>
+          <li><strong>20 ft</strong><span>max rig length</span></li>
+          <li><strong>10 acres</strong><span>of maple forest</span></li>
         </ul>
 
-        <div className="amenities" id="amenities">
-          <div>
-            <h3>On site</h3>
-            <ul className="amenity-list">
-              {amenities.map((a) => (
-                <li key={a.name}>
-                  <span className="amenity-icon"><Icon name={a.icon} /></span>
-                  <span>
-                    <span className="amenity-name">{a.name}</span>
-                    <span className="amenity-detail">{a.detail}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <aside className="plan-for" aria-labelledby="plan-for-title">
-            <h3 id="plan-for-title">Plan ahead</h3>
-            <p className="plan-for-intro">This is rustic camping. Here's what to know before you pack.</p>
-            <ul className="amenity-list">
-              {planFor.map((a) => (
-                <li key={a.name}>
-                  <span className="amenity-icon"><Icon name={a.icon} /></span>
-                  <span>
-                    <span className="amenity-name">{a.name}</span>
-                    <span className="amenity-detail">{a.detail}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </aside>
+        <div className="sites-good-to-know">
+          <h3>Good to know</h3>
+          <ul className="check-list two-col">
+            {siteDetails.map((d) => <li key={d}>{d}</li>)}
+          </ul>
         </div>
+
+        <Amenities />
       </div>
     </section>
   )
