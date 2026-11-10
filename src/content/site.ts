@@ -151,17 +151,66 @@ export const reviews = [
   { quote: 'Amazing forest setting.', name: 'Kyle H.' },
 ]
 
-export const faq = [
-  { q: 'What time is check-in and check-out?', a: `Check in ${site.checkIn}; we meet you on arrival. Check out ${site.checkOut}. Early or late check-in may be possible, just ask.` },
-  { q: 'Is there drinking water?', a: 'No potable water, so bring your own. Well water is available by hose near the chicken coop for pets, washing and bikes; purify it before drinking.' },
-  { q: 'Are there showers?', a: 'No. There is a pit toilet by the sites and a composting toilet a short walk away near the house.' },
-  { q: 'Can I bring my dog?', a: 'Yes, dogs are welcome off leash. Please pick up after them so everyone can enjoy the land.' },
-  { q: 'Can I have a campfire?', a: 'Yes. There are two communal fire pits and two sites with private pits. Firewood bundles are $8 and can be waiting at your site.' },
-  { q: 'What about trash?', a: 'Please pack it out, or hand us a tied bag when you leave.' },
-  { q: 'How big a rig fits?', a: 'Vehicles under 20 ft. Sites are pull-in, flat and gravel, and slideouts fit. One vehicle per site unless arranged ahead.' },
-  { q: 'Will I hear anything?', a: 'It is a quiet forest, but there is a shooting range nearby and you may hear gunfire during the day.' },
-  { q: 'Where exactly are you?', a: 'Between Marquette and Negaunee, about 4 miles off US 41. We send exact directions once your booking is confirmed.' },
-  { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full terms are shown before you pay.` },
+// The Guest info & FAQ page (/info).
+// Questions are grouped by topic. An answer set to `pending: true` is still to
+// be decided by the hosts: the page shows a dashed "to come" placeholder
+// instead of the answer until the real text is filled in.
+export type FaqItem = { q: string; a: string; pending?: boolean }
+export type FaqGroup = { id: string; title: string; icon: IconName; items: FaqItem[] }
+
+export const infoPage = {
+  eyebrow: 'Plan your stay',
+  title: 'Guest info & FAQ',
+  intro: 'Everything to know before you arrive.',
+  glanceTitle: 'At a glance',
+  askTitle: 'Still have a question?',
+  askText: 'Joy and Brian live right here on the land and usually reply within a day.',
+}
+
+// The quick facts across the top of the page. `pending` facts show a placeholder.
+export const infoGlance: { icon: IconName; label: string; value: string; pending?: boolean }[] = [
+  { icon: 'clock', label: 'Check-in', value: site.checkIn },
+  { icon: 'clock', label: 'Check-out', value: site.checkOut },
+  { icon: 'moon', label: 'Quiet hours', value: 'Quiet hours to come', pending: true },
+  { icon: 'users', label: 'Guests per site', value: 'Max guests to come', pending: true },
+  { icon: 'paw', label: 'Pets', value: 'Welcome, off leash' },
+  { icon: 'shield', label: 'Cancellation', value: site.cancellation },
+]
+
+export const faqGroups: FaqGroup[] = [
+  {
+    id: 'arrival',
+    title: 'Booking & arrival',
+    icon: 'calendar',
+    items: [
+      { q: 'What time is check-in and check-out?', a: `Check in ${site.checkIn}; we meet you on arrival. Check out ${site.checkOut.replace("Before", "before")}. Early or late check-in may be possible, just ask.` },
+      { q: 'Where exactly are you?', a: 'Between Marquette and Negaunee, about 4 miles off US 41. We send exact directions once your booking is confirmed.' },
+      { q: 'How big a rig fits?', a: 'Vehicles under 20 ft. Sites are pull-in, flat and gravel, and slideouts fit. One vehicle per site unless arranged ahead.' },
+      { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full terms are shown before you pay.` },
+    ],
+  },
+  {
+    id: 'camp',
+    title: 'Around camp',
+    icon: 'tent',
+    items: [
+      { q: 'Is there drinking water?', a: 'No potable water, so bring your own. Well water is available by hose near the chicken coop for pets, washing and bikes; purify it before drinking.' },
+      { q: 'Are there showers?', a: 'No. There is a pit toilet by the sites and a composting toilet a short walk away near the house.' },
+      { q: 'Can I have a campfire?', a: 'Yes. There are two communal fire pits and two sites with private pits. Firewood bundles are $8 and can be waiting at your site.' },
+      { q: 'What about trash?', a: 'Please pack it out, or hand us a tied bag when you leave.' },
+    ],
+  },
+  {
+    id: 'guests',
+    title: 'Guests, pets & quiet',
+    icon: 'users',
+    items: [
+      { q: 'How many people can stay on a site?', a: 'Maximum guests per site to come.', pending: true },
+      { q: 'Can I bring my dog?', a: 'Yes, dogs are welcome off leash. Please pick up after them so everyone can enjoy the land.' },
+      { q: 'Are there quiet hours?', a: 'Quiet hours to come.', pending: true },
+      { q: 'Will I hear anything?', a: 'It is a quiet forest, but there is a shooting range nearby and you may hear gunfire during the day.' },
+    ],
+  },
 ]
 
 // Captions for the photos in src/assets/gallery, keyed by file name.
