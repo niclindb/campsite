@@ -19,7 +19,8 @@ const Footer = () => {
         </nav>
       </div>
       <p className="copyright">
-        © {new Date().getFullYear()} {site.name} · Website by lindberg dev
+        © {new Date().getFullYear()} {site.name} · Website by{' '}
+        <a href="https://niclindb.github.io" target="_blank" rel="noopener">lindberg dev</a>
       </p>
     </footer>
   )
