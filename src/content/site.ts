@@ -21,6 +21,8 @@ export const site = {
     recommendPercent: 97,
     ratings: 228,
     reviews: 157,
+    // Shown on the site; round it down so it stays true as reviews grow.
+    reviewsLabel: '150+',
     badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
   },
   // Contact details are still to be decided. Leave blank to hide them.
