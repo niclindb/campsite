@@ -6,7 +6,10 @@ const Footer = () => {
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
-        <img src={logo} alt={site.name} width="160" loading="lazy" />
+
+        <Link to="/#home" onClick={close}>
+          <img src={logo} alt={site.name} width="160" loading="lazy" />
+        </Link>
         <div>
           <p>Between Marquette and Negaunee, Michigan</p>
           <p>Open {site.season}</p>

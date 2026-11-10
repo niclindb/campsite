@@ -44,12 +44,6 @@ const Sites = () => {
           ))}
         </div>
 
-        <ul className="sites-facts">
-          <li><strong>${site.pricePerSiteNight}</strong><span>per site, per night</span></li>
-          <li><strong>20 ft</strong><span>max rig length</span></li>
-          <li><strong>10 acres</strong><span>of maple forest</span></li>
-        </ul>
-
         <div className="sites-good-to-know">
           <h3>Good to know</h3>
           <ul className="check-list two-col">

@@ -76,7 +76,7 @@ const AreaMap = () => (
     </g>
 
     <Dot at={marquette} /><Label at={marquette} dx={10} dy={22} size={23}>Marquette</Label>
-    <Dot at={negaunee} /><Label at={negaunee} dx={-2} dy={24} anchor="middle">Negaunee</Label>
+    <Dot at={negaunee} /><Label at={negaunee} dx={10} dy={30} anchor="middle">Negaunee</Label>
     <Dot at={ishpeming} /><Label at={ishpeming} dx={-10} dy={-10} anchor="end" fill={c.soft} weight={500}>Ishpeming</Label>
     <Dot at={munising} /><Label at={munising} dx={-6} dy={24} anchor="middle">Munising</Label>
     <path d={`M${rocks[0] - 8} ${rocks[1] + 8} l8 -16 8 16 Z`} fill={c.text} />

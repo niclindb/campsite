@@ -30,7 +30,6 @@ const Gallery = () => {
     <section id="gallery" className="section gallery">
       <div className="container">
         <h2>Gallery</h2>
-        <p className="gallery-kicker">Mornings in the maples, evenings on the lake</p>
 
         <div className="pola-main">
           {n > 1 && <button className="pola-arrow" onClick={() => go(-1)} aria-label="Previous photo">←</button>}
