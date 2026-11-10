@@ -30,6 +30,20 @@ export const site = {
   contactPhone: '',
 }
 
+// The Contact us section at the bottom of the home page.
+// The email and phone come from site.contactEmail / site.contactPhone; while
+// those are blank, a dashed placeholder with the text below is shown instead.
+export const contact = {
+  eyebrow: 'Get in touch',
+  heading: 'Contact us',
+  lead: 'Questions about dates, rigs or add-ons? Joy and Brian live right here on the land and usually reply within a day.',
+  emailPlaceholder: 'Email address to come',
+  phonePlaceholder: 'Phone number to come',
+  hipcampLabel: 'Message us on Hipcamp',
+  formTitle: 'Send us a message',
+  noFormNote: 'Our message form is coming soon. Until then, Hipcamp is the quickest way to reach us.',
+}
+
 // The About section on the home page, written in the hosts' voice.
 export const about = {
   heading: 'Our home in the maple woods',

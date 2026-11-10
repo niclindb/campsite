@@ -3,7 +3,7 @@
 export type IconName =
   | 'fire' | 'toilet' | 'table' | 'wifi' | 'paw' | 'grill' | 'shed'
   | 'water' | 'shower' | 'plug' | 'tree' | 'egg' | 'home'
-  | 'tag' | 'pin' | 'tent' | 'calendar'
+  | 'tag' | 'pin' | 'tent' | 'calendar' | 'mail' | 'phone' | 'chat'
   | 'bike' | 'boot' | 'wave' | 'city' | 'fish' | 'cliff'
 
 const paths: Record<IconName, string> = {
@@ -23,6 +23,9 @@ const paths: Record<IconName, string> = {
   tag: 'M3 12V4h8l10 10-8 8ZM7.5 8.5h.01',
   tent: 'M12 4 3 20h18ZM12 4v16M9 20l3-6 3 6',
   calendar: 'M4 6h16v14H4ZM4 10h16M8 3v5M16 3v5',
+  mail: 'M3 6h18v12H3ZM3 6l9 7 9-7',
+  phone: 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z',
+  chat: 'M4 5h16v11H9l-5 4Z',
   bike: 'M5.5 17.5a3.5 3.5 0 1 0 0-.01ZM18.5 17.5a3.5 3.5 0 1 0 0-.01ZM5.5 17.5 9 10h7l2.5 7.5M9 10l3.5 7.5L16 10M8 7h3M15 7h2l1 3',
   boot: 'M7 3h5v8l6 3.5c1.5.9 2 2 2 3.5v1H4V3h3ZM4 15h16M9 7h3M9 10h3',
   wave: 'M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 14c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2',
