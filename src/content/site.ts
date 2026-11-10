@@ -59,11 +59,24 @@ export const quickDistances = [
 
 export const siteDetails = [
   'Dispersed RV and tent sites on 10 acres of mature maple forest',
-  'Open sites plus a couple of more private wooded ones',
+  'No numbered sites: pick your own spot, open or more private and wooded',
   'Rigs under 20 ft: travel trailers, pop-ups, class B, campervans, cars, truck campers and rooftop tents',
   'Pull-in, flat, loose gravel; slideouts fit',
   '1 vehicle per site (more parking near the house if arranged); 2WD accessible',
 ]
+
+// Where guests camp: one open dispersed area with no designated sites.
+// Photos live in src/assets/sites, listed by file name in display order.
+// TEMPORARY: every photo is a stand-in cut from the tent and lake photos
+// until real photos of the area are added. Set `temporaryPhotos` to false
+// once they are real, which removes the "Temporary photo" tags.
+export const campArea = {
+  name: 'The dispersed area',
+  summary: 'There are no numbered sites. Pick your own spot in the maples, from open clearings to a couple of more private wooded corners.',
+  photos: ['area-1.webp', 'area-2.webp', 'area-3.webp', 'area-4.webp', 'area-5.webp'],
+  temporaryPhotos: true,
+  tags: ['RV or tent', 'Pick your own spot', `$${site.pricePerSiteNight} per site per night`],
+}
 
 export type Amenity = { name: string; detail: string; icon: IconName }
 
