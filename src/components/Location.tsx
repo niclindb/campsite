@@ -1,16 +1,24 @@
 import { useEffect, useRef } from 'react'
 
+// Just enough of the Google Maps types for the calls made below.
+type Ctor = new (...args: unknown[]) => unknown
+type MapsWindow = Window & {
+  google?: { maps: { Map: Ctor; Circle: Ctor; Marker: Ctor; Size: Ctor; Point: Ctor } }
+}
+const mapsWindow = window as MapsWindow
+
 const Location = () => {
   const mapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Initialize Google Maps
     const initMap = () => {
-      if ((window as any).google && mapRef.current) {
+      const google = mapsWindow.google
+      if (google && mapRef.current) {
         // General area only, deliberately offset; never put the exact address in code
         const generalArea = { lat: 46.5600, lng: -87.5440 }
         
-        const map = new (window as any).google.maps.Map(mapRef.current, {
+        const map = new google.maps.Map(mapRef.current, {
           center: generalArea,
           zoom: 10.5, // Slightly more zoomed in for better area visibility
           styles: [
@@ -28,7 +36,7 @@ const Location = () => {
         })
 
         // Add a general area circle instead of exact marker
-        new (window as any).google.maps.Circle({
+        new google.maps.Circle({
           strokeColor: '#be3400',
           strokeOpacity: 0.8,
           strokeWeight: 2,
@@ -40,7 +48,7 @@ const Location = () => {
         })
 
         // Add a tent marker in the center of the general area
-        new (window as any).google.maps.Marker({
+        new google.maps.Marker({
           position: generalArea,
           map: map,
           title: "Northern Oasis Camping - General Area",
@@ -53,8 +61,8 @@ const Location = () => {
                 <path d="M18 24H22V26H18V24Z" fill="#be3400"/>
               </svg>
             `),
-            scaledSize: new (window as any).google.maps.Size(40, 40),
-            anchor: new (window as any).google.maps.Point(20, 20)
+            scaledSize: new google.maps.Size(40, 40),
+            anchor: new google.maps.Point(20, 20)
           }
         })
       }
@@ -102,7 +110,7 @@ const Location = () => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
     if (!apiKey) {
       createFallbackMap()
-    } else if (!(window as any).google) {
+    } else if (!mapsWindow.google) {
       const script = document.createElement('script')
       script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}`
       script.async = true
@@ -113,7 +121,7 @@ const Location = () => {
       
       // Fallback if script doesn't load within 3 seconds
       setTimeout(() => {
-        if (!(window as any).google) {
+        if (!mapsWindow.google) {
           createFallbackMap()
         }
       }, 3000)

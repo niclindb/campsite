@@ -1,0 +1,485 @@
+/* Shared layout for the page sections */
+
+section[id] {
+  scroll-margin-top: 90px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.container.narrow {
+  max-width: 760px;
+}
+
+.section {
+  padding: 4rem 0;
+  background: #fdf8f3;
+  color: #2a2a2a;
+}
+
+.section.light {
+  background: #f3ece2;
+}
+
+.section.dark {
+  background: var(--primary-color);
+  color: #fdf8f3;
+}
+
+.section h2 {
+  font-size: 2.2rem;
+  color: var(--primary-color);
+  margin: 0 0 1rem;
+}
+
+.section.dark h2,
+.section.dark h3 {
+  color: #eabaac;
+}
+
+.section h3 {
+  color: var(--primary-color);
+}
+
+.lead {
+  font-size: 1.15rem;
+  margin: 0 0 1.5rem;
+}
+
+.small {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.more-link a {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.section.dark .more-link a {
+  color: #eabaac;
+}
+
+/* Trust strip and quick facts under the hero */
+
+.trust-strip {
+  background: var(--accent-color);
+  color: #fdf8f3;
+  text-align: center;
+  padding: 0.9rem 1rem;
+}
+
+.trust-strip p {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.badge {
+  border: 1px solid #eabaac;
+  color: #eabaac;
+  border-radius: 999px;
+  padding: 0.1rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+.quick-facts {
+  background: var(--primary-color);
+  color: #fdf8f3;
+  padding: 1.25rem 1rem;
+}
+
+.quick-facts ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  text-align: center;
+}
+
+.qf-value {
+  display: block;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #eabaac;
+}
+
+.qf-label {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Sites and amenities */
+
+.check-list {
+  padding-left: 1.2rem;
+  margin: 0 0 2.5rem;
+}
+
+.check-list li {
+  margin-bottom: 0.4rem;
+}
+
+.amenity-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.amenity-grid li {
+  background: #fdf8f3;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--accent-color);
+}
+
+.amenity-grid li.no {
+  border-left-color: var(--secondary-color);
+}
+
+.amenity-name {
+  display: block;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.amenity-grid li.yes .amenity-name span {
+  color: var(--accent-color);
+}
+
+.amenity-grid li.no .amenity-name span {
+  color: var(--secondary-color);
+}
+
+.amenity-detail {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Gallery */
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.gallery-item {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.03);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 13, 34, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.lightbox img {
+  max-height: 90vh;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: 0;
+  color: #fdf8f3;
+  font-size: 2.5rem;
+  cursor: pointer;
+}
+
+/* Reviews */
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.review {
+  margin: 0;
+  padding: 1.5rem;
+  border: 1px solid rgba(234, 186, 172, 0.35);
+  border-radius: 12px;
+}
+
+.review blockquote {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.review figcaption {
+  color: #eabaac;
+  font-size: 0.9rem;
+}
+
+/* Nearby */
+
+.card-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: #fdf8f3;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+.card p {
+  margin: 0;
+  color: #555;
+}
+
+/* FAQ */
+
+.faq details {
+  border-bottom: 1px solid #e3d9cc;
+  padding: 0.9rem 0;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.faq details p {
+  margin: 0.6rem 0 0;
+}
+
+/* Book */
+
+.book-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 3rem;
+}
+
+.price {
+  font-family: 'League Spartan', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #eabaac;
+  margin: 0;
+}
+
+.price span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #fdf8f3;
+}
+
+.plain-list {
+  padding-left: 1.2rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.book-addons table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.book-addons th,
+.book-addons td {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(234, 186, 172, 0.25);
+  vertical-align: top;
+}
+
+.book-addons th {
+  text-align: left;
+  font-weight: 600;
+}
+
+.book-addons th span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.88rem;
+  opacity: 0.8;
+}
+
+.book-addons td {
+  text-align: right;
+  color: #eabaac;
+  font-weight: 600;
+}
+
+/* Contact */
+
+.contact-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.contact-form label {
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.contact-form input,
+.contact-form textarea {
+  font: inherit;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #cfc3b3;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.contact-form button {
+  justify-self: start;
+  cursor: pointer;
+}
+
+.honeypot {
+  display: none;
+}
+
+.form-note {
+  font-weight: 600;
+}
+
+/* Footer */
+
+.site-footer {
+  background: var(--primary-color);
+  color: #fdf8f3;
+  padding: 2.5rem 0 1rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.footer-grid p {
+  margin: 0.2rem 0;
+}
+
+.footer-grid nav {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.footer-grid nav a {
+  color: #eabaac;
+  text-decoration: none;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin: 2rem 0 0;
+}
+
+/* Sticky book button on phones */
+
+.mobile-book-bar {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .section {
+    padding: 3rem 0;
+  }
+
+  .section h2 {
+    font-size: 1.8rem;
+  }
+
+  .book-grid,
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .mobile-book-bar {
+    display: block;
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 900;
+    text-align: center;
+    background: var(--secondary-color);
+    color: #fdf8f3;
+    font-weight: 600;
+    padding: 0.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .site-footer {
+    padding-bottom: 5rem;
+  }
+}
+
+/* Keep hero text readable over bright sky */
+.hero-overlay {
+  background: linear-gradient(90deg, rgba(2, 13, 34, 0.65) 0%, rgba(2, 13, 34, 0.3) 55%, rgba(2, 13, 34, 0.1) 100%);
+}
+
+@media (max-width: 900px) {
+  .hero-overlay {
+    background: rgba(2, 13, 34, 0.5);
+  }
+}
