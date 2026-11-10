@@ -7,7 +7,6 @@ import Gallery from '../components/Gallery'
 import Reviews from '../components/Reviews'
 import Location from '../components/Location'
 import Contact from '../components/Contact'
-import ThingsToDo from '../components/ThingsToDo'
 
 const HomePage = () => (
   <>
@@ -21,7 +20,6 @@ const HomePage = () => (
     <Gallery />
     <Reviews />
     <Location />
-    <ThingsToDo />
     <section className="section light page-links">
       <div className="container link-cards">
         <Link to="/info" className="link-card">

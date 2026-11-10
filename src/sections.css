@@ -1101,8 +1101,6 @@ section[id] {
 
 /* Things to do: a dashed trail from camp, icons on the line */
 .things-to-do { background: #fdf8f3; padding: 5rem 0; }
-.things-to-do h2 { font-size: 2.4rem; }
-.things-to-do .lead { max-width: 620px; margin-bottom: 2.5rem; }
 
 .ttd-trail {
   list-style: none; padding: 0; margin: 0;
@@ -1124,16 +1122,10 @@ section[id] {
 }
 .ttd-dot.camp { background: var(--secondary-color); color: #fff; }
 .ttd-text { display: flex; flex-direction: column; }
-.ttd-miles { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--secondary-color); }
+.ttd-miles { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--secondary-color); white-space: nowrap; }
 .ttd-name { font-family: 'League Spartan', sans-serif; color: var(--primary-color); font-size: 1.05rem; margin: 0.15rem 0 0.3rem; }
 .ttd-detail { font-size: 0.9rem; line-height: 1.5; opacity: 0.85; }
 
-.ttd-dogs {
-  display: inline-flex; align-items: center; gap: 0.6rem;
-  margin: 2.5rem 0 0; padding: 0.7rem 1.1rem;
-  background: var(--accent-color); color: #fdf8f3;
-  border-radius: 999px; font-weight: 600;
-}
 
 @media (max-width: 1000px) {
   .ttd-trail { grid-template-columns: 1fr; gap: 1.1rem; }
@@ -1158,11 +1150,7 @@ section[id] {
   .things-to-do { padding: 3.5rem 0; }
 }
 
-@media (max-width: 560px) {
-  .things-to-do h2 { font-size: 1.9rem; }
-}
-
-/* Where we are: route card beside a drawn map in About's layered frame */
+/* Where we are: intro beside a drawn map in About's layered frame, then the trail */
 .location {
   padding: 5rem 0;
   background: #fdf8f3;
@@ -1182,6 +1170,13 @@ section[id] {
   align-items: center;
 }
 
+.location-sub {
+  font-size: 1.35rem;
+  margin: 4rem 0 1.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(2, 13, 34, 0.12);
+}
+
 .location-lead {
   font-size: 1.1rem;
   line-height: 1.7;
@@ -1189,96 +1184,19 @@ section[id] {
   max-width: 560px;
 }
 
-.location-route {
-  list-style: none;
-  margin: 0 0 1.75rem;
-  padding: 1.1rem 1.4rem;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(2, 13, 34, 0.08);
-}
 
-.location-route li {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.7rem 0;
-}
 
-.location-route li + li {
-  border-top: 1px dashed rgba(2, 13, 34, 0.12);
-}
 
 /* The dotted line joining each stop to the next */
-.location-route li:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 13px;
-  top: 50%;
-  height: 100%;
-  border-left: 2px dotted var(--secondary-color);
-}
 
-.location-route-dot {
-  position: relative;
-  z-index: 1;
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--accent-color);
-  display: grid;
-  place-items: center;
-}
 
-.location-route-start .location-route-dot {
-  background: var(--secondary-color);
-  border-color: var(--secondary-color);
-  color: #fdf8f3;
-}
 
-.location-route-start b {
-  color: var(--secondary-color);
-}
 
-.location-route-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
 
-.location-route-text b {
-  color: var(--primary-color);
-}
 
-.location-route-text span {
-  font-size: 0.88rem;
-  opacity: 0.8;
-}
 
-.location-route strong {
-  font-family: 'League Spartan', sans-serif;
-  font-size: 1.5rem;
-  color: var(--secondary-color);
-  white-space: nowrap;
-}
 
-.location-privacy {
-  display: flex;
-  gap: 0.6rem;
-  align-items: flex-start;
-  font-size: 0.92rem;
-  margin: 0 0 1.5rem;
-  opacity: 0.9;
-}
 
-.location-privacy svg {
-  flex: none;
-  color: var(--secondary-color);
-  margin-top: 1px;
-}
 
 /* The map sits on an offset green block, with a peach outline offset the other way. */
 .location-map {
@@ -1328,13 +1246,7 @@ section[id] {
     font-size: 1.9rem;
   }
 
-  .location-route {
-    padding: 0.9rem 1rem;
-  }
 
-  .location-route strong {
-    font-size: 1.25rem;
-  }
 
   .location-map {
     margin: 0.75rem 1rem 1rem 0.75rem;
@@ -1348,3 +1260,4 @@ section[id] {
     inset: -0.75rem 0.75rem 0.75rem -0.75rem;
   }
 }
+

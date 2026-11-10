@@ -13,7 +13,7 @@ const ExplorePage = () => (
       title="Things to do nearby"
       intro="Lakes and trails right next door, with Marquette and Lake Superior a short drive away."
     />
-    <ThingsToDo showHeading={false} />
+    <ThingsToDo />
   </>
 )
 
