@@ -12,25 +12,19 @@ const Hero = () => {
         </div>
         <div className="hero-content">
           <div className="hero-text">
+            <p className="hero-eyebrow">Michigan's Upper Peninsula</p>
             <h1>{site.tagline}</h1>
-            <p>
-              Five RV and tent sites on 10 acres of maple forest in Michigan's Upper Peninsula,
-              hosted by {site.hosts} Open {site.season}.
-            </p>
+            <p>RV and tent sites on 10 acres of maple forest, hosted by {site.hosts}</p>
             <div className="hero-buttons">
               <Link to="/book" className="hero-btn primary">Book your stay</Link>
               <a href="#sites" className="hero-btn secondary">See the sites</a>
             </div>
+            <p className="hero-rating">
+              <span className="hero-rating-star" aria-hidden="true">★</span>{' '}
+              <strong>{site.rating.recommendPercent}% recommend</strong> · {site.rating.ratings} Hipcamp ratings
+            </p>
           </div>
         </div>
-      </section>
-      <section className="trust-strip" aria-label="Guest ratings">
-        <p>
-          <strong>{site.rating.recommendPercent}% recommend</strong> from {site.rating.ratings} ratings on Hipcamp
-          {site.rating.badges.map((b) => (
-            <span key={b} className="badge">{b}</span>
-          ))}
-        </p>
       </section>
       <section className="quick-facts" aria-label="Quick facts">
         <ul>
