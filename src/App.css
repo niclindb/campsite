@@ -248,159 +248,47 @@
   }
 }
 
-/* ---------- Option A: refined navy bar that slims down on scroll ---------- */
-.hdr-a {
-  border-bottom: 1px solid rgba(234, 186, 172, 0.22);
-}
-
-.hdr-a.is-scrolled {
-  --hdr-h: 62px;
-  box-shadow: 0 6px 20px rgba(2, 13, 34, 0.35);
-}
-
-.hdr-a.is-scrolled .logo img {
-  width: 84px;
-}
-
-@media (max-width: 900px) {
-  .hdr-a.is-scrolled {
-    --hdr-h: 58px;
-  }
-
-  .hdr-a.is-scrolled .logo img {
-    width: 76px;
-  }
-}
-
-/* ---------- Option B: see-through over the home photo, solid on scroll ---------- */
-.hdr-b.is-home {
+/* See-through over the home page photo, solid navy once you scroll */
+.site-header.is-home {
   position: fixed;
   left: 0;
   right: 0;
 }
 
-.hdr-b.is-home:not(.is-scrolled):not(.menu-open) {
+.site-header.is-home:not(.is-scrolled):not(.menu-open) {
   --hdr-bg: transparent;
   background-image: linear-gradient(to bottom, rgba(2, 13, 34, 0.75), rgba(2, 13, 34, 0));
 }
 
-.hdr-b.is-home:not(.is-scrolled):not(.menu-open) .header-container {
+.site-header.is-home:not(.is-scrolled):not(.menu-open) .header-container {
   height: calc(var(--hdr-h) + 16px);
 }
 
-.hdr-b.is-home:not(.is-scrolled) .logo img {
+.site-header.is-home:not(.is-scrolled) .logo img {
   width: 124px;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
-.hdr-b.is-home:not(.is-scrolled) .nav-list a:not(.book-now-btn) {
+.site-header.is-home:not(.is-scrolled) .nav-list a:not(.book-now-btn) {
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 }
 
-.hdr-b.is-scrolled {
+.site-header.is-scrolled {
   --hdr-bg: rgba(2, 13, 34, 0.94);
   backdrop-filter: blur(8px);
   box-shadow: 0 6px 20px rgba(2, 13, 34, 0.35);
 }
 
 @media (max-width: 900px) {
-  .hdr-b.is-home:not(.is-scrolled) .logo img {
+  .site-header.is-home:not(.is-scrolled) .logo img {
     width: 96px;
   }
 }
 
 /* The photo runs up behind the see-through header */
-.hdr-b.is-home ~ main .hero {
+.site-header.is-home ~ main .hero {
   min-height: 100vh;
   padding-top: 110px;
-}
-
-/* ---------- Option C: info strip and a hanging logo badge ---------- */
-.header-strip {
-  background: var(--accent-color);
-  color: #fdf8f3;
-  font-size: 0.82rem;
-  overflow: hidden;
-  max-height: 40px;
-  transition: max-height 0.3s ease;
-}
-
-.header-strip p {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0.45rem clamp(1rem, 4vw, 2rem);
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.6rem;
-  letter-spacing: 0.02em;
-}
-
-.hdr-c.is-scrolled .header-strip {
-  max-height: 0;
-}
-
-.hdr-c {
-  --hdr-h: 68px;
-  box-shadow: 0 4px 14px rgba(2, 13, 34, 0.25);
-}
-
-.hdr-c .logo {
-  align-self: flex-start;
-  position: relative;
-  z-index: 2;
-}
-
-.hdr-c .logo a {
-  background: var(--primary-color);
-  padding: 0.7rem 1.1rem 0.9rem;
-  border-radius: 0 0 18px 18px;
-  box-shadow: 0 12px 22px rgba(2, 13, 34, 0.35);
-  transition: margin 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hdr-c .logo img {
-  width: 116px;
-}
-
-.hdr-c.is-scrolled .logo {
-  align-self: center;
-}
-
-.hdr-c.is-scrolled .logo a {
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.hdr-c.is-scrolled .logo img {
-  width: 84px;
-}
-
-@media (max-width: 900px) {
-  .hdr-c {
-    --hdr-h: 60px;
-  }
-
-  .header-strip p {
-    justify-content: center;
-  }
-
-  .header-strip .strip-extra {
-    display: none;
-  }
-
-  .hdr-c .logo a {
-    padding: 0.55rem 0.8rem 0.7rem;
-    border-radius: 0 0 14px 14px;
-  }
-
-  .hdr-c .logo img {
-    width: 84px;
-  }
-
-  .hdr-c.menu-open .logo a {
-    box-shadow: none;
-  }
 }
 
 /* Hero Component Styles */
