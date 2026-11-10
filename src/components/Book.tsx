@@ -4,9 +4,9 @@ import { addOns, site } from '../content/site'
 // Swap the button below for the widget's embed code when it's ready.
 const Book = () => {
   return (
-    <section id="book" className="section dark">
+    <section id="book" className="section dark book-page">
       <div className="container">
-        <h2>Book your stay</h2>
+        <h1>Book your stay</h1>
         <div className="book-grid">
           <div className="book-summary">
             <p className="price">

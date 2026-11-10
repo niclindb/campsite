@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import lakeImage from '../assets/images/lake.webp'
 import { site, quickFacts } from '../content/site'
 
@@ -17,7 +18,7 @@ const Hero = () => {
               hosted by {site.hosts} Open {site.season}.
             </p>
             <div className="hero-buttons">
-              <a href="#book" className="hero-btn primary">Book your stay</a>
+              <Link to="/book" className="hero-btn primary">Book your stay</Link>
               <a href="#sites" className="hero-btn secondary">See the sites</a>
             </div>
           </div>

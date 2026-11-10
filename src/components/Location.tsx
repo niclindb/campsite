@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 
 // Just enough of the Google Maps types for the calls made below.
@@ -5,12 +6,12 @@ type Ctor = new (...args: unknown[]) => unknown
 type MapsWindow = Window & {
   google?: { maps: { Map: Ctor; Circle: Ctor; Marker: Ctor; Size: Ctor; Point: Ctor } }
 }
-const mapsWindow = window as MapsWindow
 
 const Location = () => {
   const mapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const mapsWindow = window as MapsWindow
     // Initialize Google Maps
     const initMap = () => {
       const google = mapsWindow.google
@@ -147,9 +148,9 @@ const Location = () => {
             </div>
             
             <div className="location-actions">
-              <a href="#contact" className="location-btn primary">
+              <Link to="/#contact" className="location-btn primary">
                 Contact for Directions
-              </a>
+              </Link>
             </div>
             
             <div className="privacy-notice">

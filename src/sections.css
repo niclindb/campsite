@@ -483,3 +483,76 @@ section[id] {
     background: rgba(2, 13, 34, 0.5);
   }
 }
+
+/* Inner page banner */
+.page-header {
+  background: var(--accent-color);
+  color: #fdf8f3;
+  padding: 3rem 0 2.5rem;
+}
+
+.page-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2.4rem;
+  color: #fdf8f3;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.book-page h1 {
+  font-size: 2.4rem;
+  color: #eabaac;
+  margin: 0 0 1rem;
+}
+
+.nav-list a[aria-current='page']:not(.book-now-btn) {
+  color: #eabaac;
+}
+
+/* Links from the home page to the inner pages */
+.link-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.link-card {
+  display: block;
+  background: #fdf8f3;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.link-card:hover,
+.link-card:focus-visible {
+  border-color: var(--secondary-color);
+}
+
+.link-card h3 {
+  margin: 0 0 0.4rem;
+}
+
+.link-card h3::after {
+  content: ' →';
+  color: var(--secondary-color);
+}
+
+.link-card p {
+  margin: 0;
+  color: #555;
+}
+
+@media (max-width: 900px) {
+  .page-header h1,
+  .book-page h1 {
+    font-size: 1.9rem;
+  }
+}

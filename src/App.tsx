@@ -1,38 +1,20 @@
-import './App.css'
-import './sections.css'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import About from './components/About'
-import Sites from './components/Sites'
-import Gallery from './components/Gallery'
-import Reviews from './components/Reviews'
-import Location from './components/Location'
-import Nearby from './components/Nearby'
-import Info from './components/Info'
-import Book from './components/Book'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
+import type { RouteRecord } from 'vite-react-ssg'
+import Layout from './Layout'
+import HomePage from './pages/HomePage'
+import BookPage from './pages/BookPage'
+import InfoPage from './pages/InfoPage'
+import ExplorePage from './pages/ExplorePage'
 
-function App() {
-  return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Sites />
-        <Gallery />
-        <Reviews />
-        <Location />
-        <Nearby />
-        <Info />
-        <Book />
-        <Contact />
-      </main>
-      <Footer />
-      <a href="#book" className="mobile-book-bar">Book your stay</a>
-    </>
-  )
-}
-
-export default App
+export const routes: RouteRecord[] = [
+  {
+    path: '/',
+    element: <Layout />,
+    entry: 'src/Layout.tsx',
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'book', element: <BookPage /> },
+      { path: 'info', element: <InfoPage /> },
+      { path: 'explore', element: <ExplorePage /> },
+    ],
+  },
+]

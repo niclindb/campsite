@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import logo from '../assets/images/logo.webp'
 import { site } from '../content/site'
 
@@ -11,9 +12,9 @@ const Footer = () => {
           <p>Open {site.season}</p>
         </div>
         <nav aria-label="Footer">
-          <a href="#book">Book</a>
-          <a href="#info">FAQ</a>
-          <a href="#contact">Contact</a>
+          <Link to="/book">Book</Link>
+          <Link to="/info">FAQ</Link>
+          <Link to="/#contact">Contact</Link>
           <a href={site.hipcampUrl} target="_blank" rel="noopener">Hipcamp</a>
         </nav>
       </div>
