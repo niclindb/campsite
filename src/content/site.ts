@@ -1,0 +1,108 @@
+import type { IconName } from '../components/Icon'
+
+// All of the site's facts, prices and text live here, so they can be
+// updated in one place without touching the page components.
+
+export const site = {
+  name: 'Northern Oasis Camping',
+  hosts: 'Joy and Brian L.',
+  tagline: 'Quiet forest campsites 7 miles from Marquette',
+  season: 'April to November',
+  pricePerSiteNight: 28,
+  siteCount: 5,
+  checkIn: '1:00 PM to 10:00 PM',
+  checkOut: 'Before 12:00 PM',
+  minNights: 1,
+  bookingWindow: 'Up to 15 months ahead',
+  cancellation: 'Moderate',
+  hipcampUrl:
+    'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
+  rating: {
+    recommendPercent: 97,
+    ratings: 228,
+    reviews: 157,
+    badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
+  },
+  // Contact details are still to be decided. Leave blank to hide them.
+  contactEmail: '',
+  contactPhone: '',
+}
+
+export const quickFacts = [
+  { label: 'From', value: `$${site.pricePerSiteNight} / site / night` },
+  { label: 'Sites', value: `${site.siteCount} RV & tent sites` },
+  { label: 'Open', value: site.season },
+  { label: 'Pets', value: 'Welcome' },
+  { label: 'Marquette', value: '7 miles' },
+  { label: 'Lake Superior', value: '8 miles' },
+  { label: 'Pictured Rocks', value: '53 miles' },
+]
+
+export const siteDetails = [
+  'Dispersed RV and tent sites on 10 acres of mature maple forest',
+  'Open sites plus a couple of more private wooded ones',
+  'Rigs under 20 ft: travel trailers, pop-ups, class B, campervans, cars, truck campers and rooftop tents',
+  'Pull-in, flat, loose gravel; slideouts fit',
+  '1 vehicle per site (more parking near the house if arranged); 2WD accessible',
+]
+
+export type Amenity = { name: string; detail: string; icon: IconName }
+
+// What's on site.
+export const amenities: Amenity[] = [
+  { name: 'Campfires', detail: '2 communal pits; 2 sites have private pits', icon: 'fire' },
+  { name: 'Toilets', detail: 'Pit toilet by the sites, composting toilet near the house', icon: 'toilet' },
+  { name: 'Picnic tables', detail: 'At the sites and by the large fire pit', icon: 'table' },
+  { name: 'Wifi', detail: 'Near the large fire pit and chicken coop', icon: 'wifi' },
+  { name: 'Pets welcome', detail: 'Off leash; please clean up after them', icon: 'paw' },
+  { name: 'Grills', detail: 'Shared charcoal grill; gas grill to rent', icon: 'grill' },
+  { name: 'Red shed', detail: 'Yard games, chairs, a table; storm shelter', icon: 'shed' },
+]
+
+// What isn't, so guests can plan for it.
+export const planFor: Amenity[] = [
+  { name: 'No drinking water', detail: 'Bring your own. Well water by hose near the coop for pets and bikes.', icon: 'water' },
+  { name: 'No showers', detail: 'Nearby lakes are under a mile away for a swim.', icon: 'shower' },
+  { name: 'No hookups', detail: '30 amp electric can be added on 2 sites for $25.', icon: 'plug' },
+]
+
+export type AddOn = { name: string; price: number; note: string }
+
+export const addOns: AddOn[] = [
+  { name: 'Tentsile tree tent', price: 80, note: '3 to 4 people, set up before you arrive' },
+  { name: 'Electric hookup', price: 25, note: '30 amp, 2 sites only' },
+  { name: 'Hammock', price: 25, note: 'Large sleeping hammock with net' },
+  { name: 'Canoe', price: 20, note: 'Traditional canoe with paddles' },
+  { name: 'Kayak', price: 20, note: 'Recreational single; not for Lake Superior or rapids' },
+  { name: 'Gas grill', price: 20, note: 'Portable, tank included' },
+  { name: '4-person tent', price: 20, note: 'Older style, easy to set up' },
+  { name: 'Firewood bundle', price: 8, note: 'Waiting at your site when you arrive' },
+  { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
+]
+
+export const nearby = [
+  { name: 'McClure and Dead River basins', detail: 'Under a mile: fishing, swimming, paddling and a small beach by the boat launch' },
+  { name: 'Mountain biking', detail: 'On the Ore to Shore route, about 15 minutes from the Marji trailhead' },
+  { name: 'Iron Ore Heritage Trail', detail: 'About 4 miles away; the North Country Trail is close too' },
+  { name: 'Marquette and Lake Superior', detail: '7 miles to downtown, 8 miles to the shore' },
+  { name: 'Pictured Rocks National Lakeshore', detail: 'About an hour’s drive' },
+]
+
+export const reviews = [
+  { quote: 'Quiet and secluded but minutes to everything.', name: 'Brent C.' },
+  { quote: 'Such a wonderful big property with plenty of gorgeous shade trees.', name: 'Brian G.' },
+  { quote: 'Amazing forest setting.', name: 'Kyle H.' },
+]
+
+export const faq = [
+  { q: 'What time is check-in and check-out?', a: `Check in ${site.checkIn}; we meet you on arrival. Check out ${site.checkOut}. Early or late check-in may be possible, just ask.` },
+  { q: 'Is there drinking water?', a: 'No potable water, so bring your own. Well water is available by hose near the chicken coop for pets, washing and bikes; purify it before drinking.' },
+  { q: 'Are there showers?', a: 'No. There is a pit toilet by the sites and a composting toilet a short walk away near the house.' },
+  { q: 'Can I bring my dog?', a: 'Yes, dogs are welcome off leash. Please pick up after them so everyone can enjoy the land.' },
+  { q: 'Can I have a campfire?', a: 'Yes. There are two communal fire pits and two sites with private pits. Firewood bundles are $8 and can be waiting at your site.' },
+  { q: 'What about trash?', a: 'Please pack it out, or hand us a tied bag when you leave.' },
+  { q: 'How big a rig fits?', a: 'Vehicles under 20 ft. Sites are pull-in, flat and gravel, and slideouts fit. One vehicle per site unless arranged ahead.' },
+  { q: 'Will I hear anything?', a: 'It is a quiet forest, but there is a shooting range nearby and you may hear gunfire during the day.' },
+  { q: 'Where exactly are you?', a: 'Between Marquette and Negaunee, about 4 miles off US 41. We send exact directions once your booking is confirmed.' },
+  { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full terms are shown before you pay.` },
+]
