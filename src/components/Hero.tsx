@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import lakeImage from '../assets/images/lake.webp'
-import { site, quickFacts } from '../content/site'
+import { site, quickFacts, quickDistances } from '../content/site'
 import Icon from './Icon'
 
 const Hero = () => {
@@ -28,17 +28,28 @@ const Hero = () => {
         </div>
       </section>
       <section className="quick-facts" aria-label="Quick facts">
-        <ul className="qf-card">
-          {quickFacts.map((f) => (
-            <li key={f.label}>
-              <span className="qf-icon"><Icon name={f.icon} size={22} /></span>
-              <span>
-                <span className="qf-value">{f.value}</span>
-                <span className="qf-label">{f.label}</span>
+        <div className="qf-card">
+          <ul className="qf-facts">
+            {quickFacts.map((f) => (
+              <li key={f.label}>
+                <span className="qf-icon"><Icon name={f.icon} size={22} /></span>
+                <span>
+                  <span className="qf-value">{f.value}</span>
+                  <span className="qf-label">{f.label}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="qf-dist">
+            <Icon name="pin" size={16} />
+            {quickDistances.map((d, i) => (
+              <span key={d.place}>
+                {i > 0 && <span className="qf-dot" aria-hidden="true">·</span>}
+                <b>{d.miles} mi</b> {d.place}
               </span>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </p>
+        </div>
       </section>
     </>
   )
