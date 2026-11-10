@@ -1,28 +1,38 @@
 import tentImage from '../assets/images/tent.webp'
-import { site } from '../content/site'
+import { about, site } from '../content/site'
+import Icon from './Icon'
 
 const About = () => {
   return (
-    <section id="about" className="about">
-      <div className="about-container">
-        <div className="about-title">
-          <h2>About Northern Oasis</h2>
-        </div>
-        <div className="about-main">
-          <div className="about-image">
+    <section id="about" className="about" aria-labelledby="about-title">
+      <div className="container">
+        <div className="about-grid">
+          <div className="about-photo">
             <img src={tentImage} alt="Orange tent in the misty maple forest at Northern Oasis" loading="lazy" />
           </div>
-          <div className="about-content">
-            <div className="about-text">
-              <h3>Hosted by {site.hosts}</h3>
-              <p>
-                We built our home here in 2019 and are continually making improvements to the land.
-                We tap our trees for maple syrup in the spring (you will drive by our "sugar shack")
-                and raise chickens in our very nice coop. No roosters to awaken you!
-              </p>
-            </div>
+          <div className="about-text">
+            <p className="about-eyebrow">About Northern Oasis</p>
+            <h2 id="about-title">{about.heading}</h2>
+            {about.paragraphs.map((p) => (
+              <p key={p} className="about-copy">{p}</p>
+            ))}
+            <p className="about-signoff">
+              <span className="about-signoff-name">{site.hosts}</span>
+              <span className="about-signoff-role">Your hosts · {site.rating.badges[0]} on Hipcamp</span>
+            </p>
           </div>
         </div>
+        <ul className="about-highlights">
+          {about.highlights.map((h) => (
+            <li key={h.title}>
+              <span className="about-highlight-icon"><Icon name={h.icon} /></span>
+              <span>
+                <span className="about-highlight-title">{h.title}</span>
+                <span className="about-highlight-detail">{h.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   )

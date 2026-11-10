@@ -28,6 +28,21 @@ export const site = {
   contactPhone: '',
 }
 
+// The About section on the home page, written in the hosts' voice.
+export const about = {
+  heading: 'Our home in the maple woods',
+  paragraphs: [
+    'Northern Oasis is our home: 10 acres of mature maple forest between Marquette and Negaunee. We built our house here in 2019 and keep making improvements to the land every year.',
+    'In spring we tap the maples for syrup, and you will drive past our sugar shack on the way in. Our chickens live in a very nice coop, and there are no roosters to wake you up.',
+  ],
+  highlights: [
+    { title: '10 acres of maple forest', detail: 'Shady, quiet and 7 miles from Marquette', icon: 'tree' },
+    { title: 'Maple syrup country', detail: 'We tap our own trees every spring', icon: 'leaf' },
+    { title: 'Fresh eggs', detail: `A dozen from our coop for $5`, icon: 'egg' },
+    { title: 'Hosts on site', detail: 'We live here and meet you when you arrive', icon: 'home' },
+  ] as { title: string; detail: string; icon: IconName }[],
+}
+
 export const quickFacts = [
   { label: 'From', value: `$${site.pricePerSiteNight} / site / night` },
   { label: 'Sites', value: `${site.siteCount} RV & tent sites` },
