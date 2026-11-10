@@ -307,9 +307,11 @@ header {
 
 /* Hero Mobile Responsive */
 @media (max-width: 640px) {
+  /* Fit the whole hero on one phone screen: trim sky above the text */
   .hero {
+    min-height: 0;
     align-items: flex-end;
-    padding-bottom: 3rem;
+    padding: 5rem 0 2rem;
   }
 
   .hero-eyebrow {
