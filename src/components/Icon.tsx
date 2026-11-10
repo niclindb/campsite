@@ -3,7 +3,7 @@
 export type IconName =
   | 'fire' | 'toilet' | 'table' | 'wifi' | 'paw' | 'grill' | 'shed'
   | 'water' | 'shower' | 'plug' | 'tree' | 'egg' | 'home'
-  | 'tag' | 'pin' | 'tent' | 'calendar'
+  | 'tag' | 'pin' | 'tent' | 'calendar' | 'mail' | 'phone' | 'chat'
 
 const paths: Record<IconName, string> = {
   fire: 'M12 3c1 3 4 4.5 4 8.5A4 4 0 0 1 8 11.5c0-1.6.7-2.7 1.6-3.6.2 1.3.9 2.1 1.9 2.4C11 8 11 5.5 12 3ZM5 21h14M7 18l10 3M17 18 7 21',
@@ -22,6 +22,9 @@ const paths: Record<IconName, string> = {
   tag: 'M3 12V4h8l10 10-8 8ZM7.5 8.5h.01',
   tent: 'M12 4 3 20h18ZM12 4v16M9 20l3-6 3 6',
   calendar: 'M4 6h16v14H4ZM4 10h16M8 3v5M16 3v5',
+  mail: 'M3 6h18v12H3ZM3 6l9 7 9-7',
+  phone: 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z',
+  chat: 'M4 5h16v11H9l-5 4Z',
   pin: 'M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11ZM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
 }
 
