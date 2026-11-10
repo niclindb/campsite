@@ -198,49 +198,168 @@ section[id] {
 
 /* Gallery */
 
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+.gallery-kicker {
+  margin: 0 0 1.5rem;
+  font-size: 1.1rem;
+  opacity: 0.85;
 }
 
-.gallery-item {
+/* Gallery: polaroid snapshots */
+.section.gallery {
+  background-color: #015045;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 18px 18px;
+  color: #fdf8f3;
+}
+
+.gallery h2 { color: #fdf8f3; }
+.gallery .more-link a { color: #eabaac; }
+
+.pola-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.pola-arrow {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  background: transparent;
+  color: #fdf8f3;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pola-arrow:hover { background: #fdf8f3; color: #015045; }
+
+.pola-card {
+  background: #fdf8f3;
+  padding: 14px 14px 0;
+  border-radius: 3px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  margin: 0;
+}
+
+.pola-card.big {
+  width: min(640px, 100%);
+  animation: pola-drop 0.45s ease;
+}
+
+@keyframes pola-drop {
+  from { opacity: 0; transform: translateY(-14px) rotate(-4deg); }
+}
+
+.pola-card.big button {
+  display: block;
+  width: 100%;
   padding: 0;
   border: 0;
-  background: none;
   cursor: zoom-in;
-  border-radius: 12px;
-  overflow: hidden;
   aspect-ratio: 4 / 3;
+  background: #ddd;
 }
 
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
+.pola-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.pola-card figcaption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.8rem;
+  color: #2a2a2a;
+  text-align: center;
+  padding: 0.6rem 0 0.9rem;
 }
 
-.gallery-item:hover img {
-  transform: scale(1.03);
+.pola-strip {
+  display: flex;
+  gap: 1.1rem;
+  overflow-x: auto;
+  padding: 2rem 1rem 2.5rem;
+  justify-content: safe center;
+  scrollbar-width: none;
 }
 
+.pola-card.mini {
+  flex: 0 0 92px;
+  height: 104px;
+  padding: 6px 6px 20px;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s;
+}
+
+.pola-card.mini:hover,
+.pola-card.mini.on {
+  transform: rotate(0) translateY(-8px) scale(1.08) !important;
+  box-shadow: 0 0 0 3px #eabaac, 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 768px) {
+  .pola-main { gap: 0; }
+  .pola-arrow { display: none; }
+  .pola-card.big { padding: 10px 10px 0; }
+  .pola-card figcaption { font-size: 1.5rem; }
+  .pola-strip { margin: 0 -1rem; padding: 1.75rem 1rem 2rem; }
+  .pola-card.mini { flex-basis: 72px; height: 84px; }
+}
+
+/* Full-size viewer */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(2, 13, 34, 0.92);
+  background: rgba(2, 13, 34, 0.97);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 1rem;
+  padding: 1rem 4rem;
+}
+
+.lightbox figure {
+  margin: 0;
+  max-width: 100%;
 }
 
 .lightbox img {
-  max-height: 90vh;
+  max-width: 100%;
+  max-height: 82vh;
   border-radius: 8px;
+  display: block;
+  margin: 0 auto;
 }
+
+.lightbox figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #fdf8f3;
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.lightbox-count {
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: #fdf8f3;
+  font-size: 3rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.lightbox-nav.prev { left: 0.5rem; }
+.lightbox-nav.next { right: 0.5rem; }
 
 .lightbox-close {
   position: absolute;
@@ -251,6 +370,11 @@ section[id] {
   color: #fdf8f3;
   font-size: 2.5rem;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .lightbox { padding: 1rem; }
+  .lightbox-nav { top: auto; bottom: 1rem; transform: none; }
 }
 
 /* Reviews */
