@@ -323,14 +323,12 @@ section[id] {
 
 /* Gallery: polaroid snapshots */
 .section.gallery {
-  background-color: #015045;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 18px 18px;
-  color: #fdf8f3;
+  background: #efe6d6 url('./assets/textures/topo.svg') center / cover;
+  color: var(--primary-color);
 }
 
-.gallery h2 { color: #fdf8f3; }
-.gallery .more-link a { color: #eabaac; }
+.gallery h2 { color: #015045; }
+.gallery .more-link a { color: var(--secondary-color); }
 
 .pola-main {
   display: flex;
@@ -346,19 +344,19 @@ section[id] {
   border-radius: 50%;
   border: 2px solid currentColor;
   background: transparent;
-  color: #fdf8f3;
+  color: #015045;
   font-size: 1.2rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 
-.pola-arrow:hover { background: #fdf8f3; color: #015045; }
+.pola-arrow:hover { background: #015045; color: #fdf8f3; }
 
 .pola-card {
   background: #fdf8f3;
   padding: 14px 14px 0;
   border-radius: 3px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 14px 30px rgba(2, 13, 34, 0.25);
   margin: 0;
 }
 
@@ -412,7 +410,7 @@ section[id] {
 .pola-card.mini:hover,
 .pola-card.mini.on {
   transform: rotate(0) translateY(-8px) scale(1.08) !important;
-  box-shadow: 0 0 0 3px #eabaac, 0 14px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 3px #be3400, 0 14px 30px rgba(2, 13, 34, 0.25);
 }
 
 @media (max-width: 768px) {
