@@ -89,14 +89,12 @@ export const siteDetails = [
 
 // Where guests camp: one open dispersed area with no designated sites.
 // Photos live in src/assets/sites, listed by file name in display order.
-// TEMPORARY: every photo is a stand-in cut from the tent and lake photos
-// until real photos of the area are added. Set `temporaryPhotos` to false
-// once they are real, which removes the "Temporary photo" tags.
+// Set `temporaryPhotos` to true to tag the photos as stand-ins.
 export const campArea = {
   name: 'The dispersed area',
   summary: 'There are no numbered sites. Pick your own spot in the maples, from open clearings to a couple of more private wooded corners.',
   photos: ['area-1.webp', 'area-2.webp', 'area-3.webp', 'area-4.webp', 'area-5.webp'],
-  temporaryPhotos: true,
+  temporaryPhotos: false,
   tags: ['RV or tent', 'Pick your own spot', `$${site.pricePerSiteNight} per site per night`],
 }
 
@@ -170,6 +168,24 @@ export const faq = [
 // They are written under each photo and read by screen readers.
 // Photos without a caption get a generic description.
 export const galleryCaptions: Record<string, string> = {
-  '01-tent.webp': 'Misty morning in the maples',
-  '02-lake.webp': 'A calm lake a short walk from camp',
+  '01-evening-fire.webp': 'Evening fire at camp',
+  '02-misty-morning.webp': 'Misty morning in the maples',
+  '03-fall-coffee.webp': 'Coffee under the fall colors',
+  '04-hammock.webp': 'Hammock time in the maples',
+  '05-communal-fire-pit.webp': 'The big communal fire pit',
+  '06-fire-pit-and-grill.webp': 'Picnic tables, fire pit and grill',
+  '07-bell-tent.webp': 'A bell tent glowing in the trees',
+  '08-canoes.webp': 'Canoes and kayaks to rent',
+  '09-mcclure-basin.webp': 'McClure Basin, under a mile away',
+  '10-pup.webp': 'Dogs love the beach too',
+  '11-falls.webp': 'Waterfalls a short drive away',
+  '12-swing.webp': 'A shady swing to sit a while',
+  '13-car-camping.webp': 'Room for your car and canopy',
+  '14-red-shed.webp': 'The red shed: games, chairs and storm shelter',
+  '15-sunburst.webp': 'Sun through the canopy',
+  '16-fog.webp': 'Fog in the maples',
+  '17-tall-maples.webp': 'Tall maples all around',
+  '18-stars.webp': 'Stars over camp',
+  '19-dusk.webp': 'Dusk in the woods',
+  '20-winter.webp': 'Camp in winter',
 }
