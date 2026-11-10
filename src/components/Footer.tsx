@@ -6,8 +6,7 @@ const Footer = () => {
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
-
-        <Link to="/#home" onClick={close}>
+        <Link to="/#home" aria-label={`${site.name} home`}>
           <img src={logo} alt={site.name} width="160" loading="lazy" />
         </Link>
         <div>
