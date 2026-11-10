@@ -465,16 +465,39 @@ section[id] {
   flex-wrap: wrap;
 }
 
-.footer-grid nav a {
+.footer-grid nav a,
+.copyright a {
   color: #eabaac;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.footer-grid nav a:hover,
+.copyright a:hover {
+  color: #fdf8f3;
+  text-decoration-color: #eabaac;
 }
 
 .copyright {
   text-align: center;
   font-size: 0.85rem;
-  opacity: 0.7;
+  /* Muted text colour instead of opacity, so the credit link stays full strength */
+  color: rgba(253, 248, 243, 0.75);
   margin: 2rem 0 0;
+}
+
+.copyright a {
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-grid nav a,
+  .copyright a {
+    transition: none;
+  }
 }
 
 @media (max-width: 900px) {
