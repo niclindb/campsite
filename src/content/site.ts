@@ -48,9 +48,6 @@ export const about = {
 // The raised card under the hero on the home page.
 export const quickFacts: { icon: IconName; value: string; label: string }[] = [
   { icon: 'tag', value: `$${site.pricePerSiteNight}`, label: 'per site, per night' },
-  { icon: 'tent', value: `${site.siteCount} sites`, label: 'RV & tent' },
-  { icon: 'calendar', value: 'Apr – Nov', label: 'open season' },
-  { icon: 'paw', value: 'Pets', label: 'welcome' },
 ]
 
 // The distances line along the bottom of that card.
