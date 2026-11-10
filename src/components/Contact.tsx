@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { contact, site } from '../content/site'
-import tentImage from '../assets/images/tent.webp'
+import contactImage from '../assets/images/contact.webp'
 import Icon, { type IconName } from './Icon'
 
 // Messages are sent through Formspree. Create a free form at formspree.io and
@@ -35,7 +35,7 @@ const Contact = () => {
 
   return (
     <section id="contact" className="contact" aria-labelledby="contact-title">
-      <img className="contact-bg" src={tentImage} alt="" loading="lazy" />
+      <img className="contact-bg" src={contactImage} alt="" loading="lazy" />
       <div className="container contact-grid">
         <div>
           <p className="contact-eyebrow">{contact.eyebrow}</p>
