@@ -1,27 +1,20 @@
-import './App.css'
-import Hero from './components/Hero'
-import Location from './components/Location'
-import Header from './components/Header'
-import About from './components/About'
+import type { RouteRecord } from 'vite-react-ssg'
+import Layout from './Layout'
+import HomePage from './pages/HomePage'
+import BookPage from './pages/BookPage'
+import InfoPage from './pages/InfoPage'
+import ExplorePage from './pages/ExplorePage'
 
-function App() {
-  return (
-    <>
-      <Header />
-      <Hero />
-      <About />
-      <Location />
-      <main>
-        <h2>Welcome to Northern Oasis Camping</h2>
-        <p>
-          Northern Oasis Camping is a place where you can relax and enjoy the nature.
-        </p>
-      </main>
-      <footer>
-        <p>Copyright 2025 Northern Oasis Camping</p>
-      </footer>
-    </>
-  )
-}
-
-export default App
+export const routes: RouteRecord[] = [
+  {
+    path: '/',
+    element: <Layout />,
+    entry: 'src/Layout.tsx',
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'book', element: <BookPage /> },
+      { path: 'info', element: <InfoPage /> },
+      { path: 'explore', element: <ExplorePage /> },
+    ],
+  },
+]

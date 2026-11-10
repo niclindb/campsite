@@ -1,11 +1,8 @@
 #root {
-  color: #eabaac;
   --accent-color: #015045;
   --text-color: #eabaac;
   --primary-color: #020d22;
   --secondary-color: #be3400;
-  font-family: 'League Spartan', 'Anton', sans-serif;
-  font-family: 'Cabin', 'Nunito', 'Open Sans', sans-serif;
   
 }
 header {
@@ -36,9 +33,10 @@ header {
 }
 
 .logo img {
-  height: 100px;
-  width: 200px;
-  max-width: 400px;
+  height: auto;
+  width: 130px;
+  display: block;
+  padding: 0.4rem 0;
 }
 
 .logo a {
@@ -333,17 +331,6 @@ header {
   }
 }
 
-main {
-  background-color: var(--secondary-color);
-  padding: 1rem;
-}
-
-footer {  
-  background-color: #d4a276;
-  color: #fdf8f3;
-  padding: 1rem;
-  text-align: center;
-}
 
 /* Location Component Styles */
 .location {
