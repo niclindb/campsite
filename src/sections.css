@@ -1161,3 +1161,190 @@ section[id] {
 @media (max-width: 560px) {
   .things-to-do h2 { font-size: 1.9rem; }
 }
+
+/* Where we are: route card beside a drawn map in About's layered frame */
+.location {
+  padding: 5rem 0;
+  background: #fdf8f3;
+  color: #2a2a2a;
+}
+
+.location h2 {
+  font-size: 2.4rem;
+  color: var(--primary-color);
+  margin: 0 0 1.25rem;
+}
+
+.location-grid {
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.location-lead {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin: 0 0 1.5rem;
+  max-width: 560px;
+}
+
+.location-route {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 1.1rem 1.4rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(2, 13, 34, 0.08);
+}
+
+.location-route li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 0;
+}
+
+.location-route li + li {
+  border-top: 1px dashed rgba(2, 13, 34, 0.12);
+}
+
+/* The dotted line joining each stop to the next */
+.location-route li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  height: 100%;
+  border-left: 2px dotted var(--secondary-color);
+}
+
+.location-route-dot {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--accent-color);
+  display: grid;
+  place-items: center;
+}
+
+.location-route-start .location-route-dot {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: #fdf8f3;
+}
+
+.location-route-start b {
+  color: var(--secondary-color);
+}
+
+.location-route-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.location-route-text b {
+  color: var(--primary-color);
+}
+
+.location-route-text span {
+  font-size: 0.88rem;
+  opacity: 0.8;
+}
+
+.location-route strong {
+  font-family: 'League Spartan', sans-serif;
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  white-space: nowrap;
+}
+
+.location-privacy {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  margin: 0 0 1.5rem;
+  opacity: 0.9;
+}
+
+.location-privacy svg {
+  flex: none;
+  color: var(--secondary-color);
+  margin-top: 1px;
+}
+
+/* The map sits on an offset green block, with a peach outline offset the other way. */
+.location-map {
+  position: relative;
+  margin: 0 1.5rem 1.5rem 0;
+}
+
+.location-map::before {
+  content: '';
+  position: absolute;
+  inset: 1.5rem -1.5rem -1.5rem 1.5rem;
+  background: var(--accent-color);
+  border-radius: 16px;
+}
+
+.location-map::after {
+  content: '';
+  position: absolute;
+  inset: -1rem 1rem 1rem -1rem;
+  border: 2px solid #eabaac;
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+.area-map {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(2, 13, 34, 0.25);
+}
+
+@media (max-width: 900px) {
+  .location {
+    padding: 3.5rem 0;
+  }
+
+  .location-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .location h2 {
+    font-size: 1.9rem;
+  }
+
+  .location-route {
+    padding: 0.9rem 1rem;
+  }
+
+  .location-route strong {
+    font-size: 1.25rem;
+  }
+
+  .location-map {
+    margin: 0.75rem 1rem 1rem 0.75rem;
+  }
+
+  .location-map::before {
+    inset: 1rem -1rem -1rem 1rem;
+  }
+
+  .location-map::after {
+    inset: -0.75rem 0.75rem 0.75rem -0.75rem;
+  }
+}

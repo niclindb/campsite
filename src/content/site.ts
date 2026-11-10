@@ -57,6 +57,18 @@ export const quickDistances = [
   { miles: 53, place: 'Pictured Rocks' },
 ]
 
+// The "Where we are" section on the home page.
+export const location = {
+  heading: 'Where we are',
+  intro: 'A quiet forest between Marquette and Negaunee, close to town but far from the noise. About 4 miles off US 41 in Michigan\u2019s Upper Peninsula.',
+  privacy: 'The map shows the general area only. We send exact directions once your booking is confirmed.',
+  distances: [
+    { miles: 7, place: 'Marquette', detail: 'Downtown shops and restaurants' },
+    { miles: 8, place: 'Lake Superior', detail: 'The nearest stretch of shore' },
+    { miles: 53, place: 'Pictured Rocks', detail: 'About an hour\u2019s drive' },
+  ],
+}
+
 export const siteDetails = [
   'Dispersed RV and tent sites on 10 acres of mature maple forest',
   'No numbered sites: pick your own spot, open or more private and wooded',
