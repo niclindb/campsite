@@ -1,3 +1,5 @@
+import type { IconName } from '../components/Icon'
+
 // All of the site's facts, prices and text live here, so they can be
 // updated in one place without touching the page components.
 
@@ -44,19 +46,24 @@ export const siteDetails = [
   '1 vehicle per site (more parking near the house if arranged); 2WD accessible',
 ]
 
-export type Amenity = { name: string; detail: string; available: boolean }
+export type Amenity = { name: string; detail: string; icon: IconName }
 
+// What's on site.
 export const amenities: Amenity[] = [
-  { name: 'Campfires', detail: '2 communal fire pits; 2 sites have private pits (first come, first served)', available: true },
-  { name: 'Toilets', detail: 'Pit toilet by the sites, plus a homemade composting toilet near the house', available: true },
-  { name: 'Picnic tables', detail: 'At the sites and by the large fire pit', available: true },
-  { name: 'Wifi', detail: 'Near the large fire pit and chicken coop', available: true },
-  { name: 'Pets', detail: 'Welcome off leash. Please clean up after them', available: true },
-  { name: 'Grills', detail: 'Shared charcoal grill; gas grill to rent', available: true },
-  { name: 'Red shed', detail: 'Yard games, extra chairs and a table; doubles as a storm shelter', available: true },
-  { name: 'Drinking water', detail: 'None. Bring your own. Well water by hose near the coop for pets and bikes', available: false },
-  { name: 'Showers', detail: 'None', available: false },
-  { name: 'Hookups', detail: 'None by default; 30 amp electric available as an add-on on 2 sites', available: false },
+  { name: 'Campfires', detail: '2 communal pits; 2 sites have private pits', icon: 'fire' },
+  { name: 'Toilets', detail: 'Pit toilet by the sites, composting toilet near the house', icon: 'toilet' },
+  { name: 'Picnic tables', detail: 'At the sites and by the large fire pit', icon: 'table' },
+  { name: 'Wifi', detail: 'Near the large fire pit and chicken coop', icon: 'wifi' },
+  { name: 'Pets welcome', detail: 'Off leash; please clean up after them', icon: 'paw' },
+  { name: 'Grills', detail: 'Shared charcoal grill; gas grill to rent', icon: 'grill' },
+  { name: 'Red shed', detail: 'Yard games, chairs, a table; storm shelter', icon: 'shed' },
+]
+
+// What isn't, so guests can plan for it.
+export const planFor: Amenity[] = [
+  { name: 'No drinking water', detail: 'Bring your own. Well water by hose near the coop for pets and bikes.', icon: 'water' },
+  { name: 'No showers', detail: 'Nearby lakes are under a mile away for a swim.', icon: 'shower' },
+  { name: 'No hookups', detail: '30 amp electric can be added on 2 sites for $25.', icon: 'plug' },
 ]
 
 export type AddOn = { name: string; price: number; note: string }

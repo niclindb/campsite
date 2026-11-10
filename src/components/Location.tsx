@@ -76,12 +76,12 @@ const Location = () => {
           <div style="
             width: 100%; 
             height: 100%; 
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            background: #f3ece2;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            color: #666;
+            color: #4a4a4a;
             font-family: inherit;
           ">
             <div style="
@@ -95,7 +95,7 @@ const Location = () => {
               margin-bottom: 1rem;
               opacity: 0.8;
             ">
-              <span style="color: white; font-size: 2rem;"></span>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20 12 5l9 15ZM12 5v15M9 20l3-5 3 5"/></svg>
             </div>
             <h3 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">Marquette/Negaunee Area</h3>
             <p style="margin: 0; text-align: center; max-width: 200px;">
@@ -136,25 +136,24 @@ const Location = () => {
       <div className="location-container">
         <div className="location-content">
           <div className="location-info">
-            <h2>Find Your Perfect Escape</h2>
-            <p>Located in the heart of nature, Northern Oasis Camping offers the perfect balance of seclusion and accessibility. 
-               For privacy and security, we show only the general area on our map.</p>
+            <h2>Where we are</h2>
+            <p>A quiet forest between Marquette and Negaunee, close to town but far from the noise.</p>
             
             <div className="location-details">
               <div className="detail-item">
-                <h3>📍 Location</h3>
-                <p>Our property is located between Marquette and Negaunee, in Michigan's Upper Peninsula. We are 7 miles from downtown Marquette, 8 miles from the shores of beautiful Lake Superior and 53 miles from Pictured Rocks National Park. We are about 4 miles off of US 41 nestled in a quiet forest like setting.</p>
+                <h3>Getting here</h3>
+                <p>About 4 miles off US 41 in Michigan's Upper Peninsula: 7 miles to downtown Marquette, 8 miles to Lake Superior and about an hour to Pictured Rocks National Lakeshore.</p>
               </div>
             </div>
             
             <div className="location-actions">
               <Link to="/#contact" className="location-btn primary">
-                Contact for Directions
+                Ask us a question
               </Link>
             </div>
             
             <div className="privacy-notice">
-              <p><small>📍 For privacy and security, exact location details are provided only after booking confirmation.</small></p>
+              <p>The map shows the general area only. We send exact directions once your booking is confirmed.</p>
             </div>
           </div>
           
