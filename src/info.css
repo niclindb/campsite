@@ -1,0 +1,77 @@
+/* Guest info & FAQ page: photo banner, raised "At a glance" card,
+   topic tabs over the questions, and a navy contact card alongside */
+
+.info-banner { position: relative; overflow: hidden; color: #fdf8f3; padding: 5rem 0 7.5rem; background: var(--accent-color); }
+.info-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
+.info-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(1, 50, 43, 0.94), rgba(1, 80, 69, 0.35)); }
+.info-banner .container { position: relative; z-index: 2; }
+.info-banner h1 { margin: 0 0 0.5rem; font-size: 2.8rem; color: #fdf8f3; }
+.info-banner p:last-child { margin: 0; font-size: 1.15rem; }
+
+.info-glance {
+  position: relative; z-index: 3; margin-top: -4.5rem; background: #fff; border-radius: 16px;
+  padding: 1.75rem 2rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.14); border-top: 5px solid #eabaac;
+}
+.info-glance h2 { margin: 0 0 1.1rem; font-size: 1.3rem; color: var(--primary-color); }
+.info-glance ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem 1.5rem; }
+.info-glance li { display: flex; gap: 0.8rem; align-items: center; color: var(--primary-color); }
+
+.glance-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; }
+.glance-value { font-weight: 600; }
+
+.info-faq { background: #fdf8f3; padding: 3.5rem 0 4.5rem; }
+.info-grid { display: grid; grid-template-columns: 1fr 320px; gap: 2.5rem; align-items: start; }
+
+.info-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.4rem; }
+.info-tabs button {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.2rem; border-radius: 999px;
+  border: 1.5px solid rgba(2, 13, 34, 0.15); background: #fff; color: var(--primary-color);
+  font: 600 0.98rem 'League Spartan', sans-serif; cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.info-tabs button:hover { border-color: var(--secondary-color); }
+.info-tabs button:focus-visible { outline: 2px solid var(--secondary-color); outline-offset: 2px; }
+.info-tabs button.active { background: var(--secondary-color); border-color: var(--secondary-color); color: #fdf8f3; box-shadow: 0 8px 18px rgba(190, 52, 0, 0.25); }
+
+.info-acc { display: grid; gap: 0.7rem; }
+.info-acc details { background: #fff; border-radius: 12px; padding: 1.05rem 1.3rem; box-shadow: 0 6px 18px rgba(2, 13, 34, 0.06); border-left: 4px solid transparent; transition: border-color 0.2s ease; }
+.info-acc details[open] { border-left-color: var(--secondary-color); }
+.info-acc summary {
+  list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  cursor: pointer; font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--primary-color);
+}
+.info-acc summary::-webkit-details-marker { display: none; }
+.info-acc details p { margin: 0.8rem 0 0.1rem; line-height: 1.7; max-width: 680px; }
+
+/* A rust plus that turns into a minus */
+.faq-toggle { position: relative; flex: none; width: 28px; height: 28px; border-radius: 50%; background: rgba(190, 52, 0, 0.1); }
+.faq-toggle::before, .faq-toggle::after {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px;
+  background: var(--secondary-color); transform: translate(-50%, -50%); transition: transform 0.2s ease;
+}
+.faq-toggle::after { transform: translate(-50%, -50%) rotate(90deg); }
+details[open] .faq-toggle::after { transform: translate(-50%, -50%) rotate(0deg); }
+
+.info-ask { position: sticky; top: 100px; background: var(--primary-color); color: #fdf8f3; border-radius: 16px; padding: 1.75rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.25); border-top: 5px solid #eabaac; }
+.info-ask h2 { margin: 0 0 0.4rem; color: #eabaac; font-size: 1.35rem; }
+.info-ask > p { margin: 0 0 1.1rem; line-height: 1.6; font-size: 0.95rem; }
+.ask-methods { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.ask-methods li { display: flex; align-items: center; gap: 0.6rem; }
+.ask-methods a { color: #eabaac; font-weight: 600; }
+.info-ask .contact-sign { margin: 1.1rem 0 0; font-size: 1.45rem; }
+
+@media (max-width: 900px) {
+  .info-glance ul { grid-template-columns: repeat(2, 1fr); }
+  .info-grid { grid-template-columns: 1fr; }
+  .info-ask { position: static; }
+}
+@media (max-width: 640px) {
+  .info-banner { padding: 3.5rem 0 6.5rem; }
+  .info-banner h1 { font-size: 2.1rem; }
+  .info-glance { padding: 1.4rem 1.25rem; }
+  .info-glance ul { gap: 1rem; }
+  .info-glance li { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .info-tabs { flex-wrap: nowrap; overflow-x: auto; margin: 0 -1rem 1.2rem; padding: 0 1rem 0.4rem; }
+  .info-tabs button { flex: none; font-size: 0.9rem; padding: 0.55rem 1rem; }
+  .info-acc summary { font-size: 1rem; }
+}

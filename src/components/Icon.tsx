@@ -5,6 +5,7 @@ export type IconName =
   | 'water' | 'shower' | 'plug' | 'tree' | 'egg' | 'home'
   | 'tag' | 'pin' | 'tent' | 'calendar' | 'mail' | 'phone' | 'chat'
   | 'bike' | 'boot' | 'wave' | 'city' | 'fish' | 'cliff'
+  | 'clock' | 'moon' | 'users' | 'shield'
 
 const paths: Record<IconName, string> = {
   fire: 'M12 3c1 3 4 4.5 4 8.5A4 4 0 0 1 8 11.5c0-1.6.7-2.7 1.6-3.6.2 1.3.9 2.1 1.9 2.4C11 8 11 5.5 12 3ZM5 21h14M7 18l10 3M17 18 7 21',
@@ -32,6 +33,10 @@ const paths: Record<IconName, string> = {
   city: 'M3 21h18M5 21V10l5-3v14M10 21V4h6v17M16 21v-9h3v9M12.5 8h1M12.5 11h1M12.5 14h1M7 13h1M7 16h1',
   fish: 'M3 12c3-4.5 9-6 14-2l4-3v10l-4-3c-5 4-11 2.5-14-2ZM8 11h.01',
   cliff: 'M3 20h18M4 20V9l4-4 3 3 2-2v14M13 6l3 4 2 0 2 3v7M6 12h2M7 15h3',
+  clock: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM12 7v5l3.5 2',
+  moon: 'M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z',
+  users: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.4c2.1.8 3.5 2.8 3.5 5.6',
+  shield: 'M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6ZM9 12l2 2 4-4',
   pin: 'M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11ZM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
 }
 
