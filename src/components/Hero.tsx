@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import lakeImage from '../assets/images/lake.webp'
 import { site, quickFacts } from '../content/site'
+import Icon from './Icon'
 
 const Hero = () => {
   return (
@@ -27,11 +28,14 @@ const Hero = () => {
         </div>
       </section>
       <section className="quick-facts" aria-label="Quick facts">
-        <ul>
+        <ul className="qf-card">
           {quickFacts.map((f) => (
             <li key={f.label}>
-              <span className="qf-value">{f.value}</span>
-              <span className="qf-label">{f.label}</span>
+              <span className="qf-icon"><Icon name={f.icon} size={22} /></span>
+              <span>
+                <span className="qf-value">{f.value}</span>
+                <span className="qf-label">{f.label}</span>
+              </span>
             </li>
           ))}
         </ul>

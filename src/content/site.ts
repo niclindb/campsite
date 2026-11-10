@@ -43,14 +43,12 @@ export const about = {
   ] as { title: string; detail: string; icon: IconName }[],
 }
 
-export const quickFacts = [
-  { label: 'From', value: `$${site.pricePerSiteNight} / site / night` },
-  { label: 'Sites', value: `${site.siteCount} RV & tent sites` },
-  { label: 'Open', value: site.season },
-  { label: 'Pets', value: 'Welcome' },
-  { label: 'Marquette', value: '7 miles' },
-  { label: 'Lake Superior', value: '8 miles' },
-  { label: 'Pictured Rocks', value: '53 miles' },
+// The raised card under the hero on the home page.
+export const quickFacts: { icon: IconName; value: string; label: string }[] = [
+  { icon: 'tag', value: `$${site.pricePerSiteNight}`, label: 'per site, per night' },
+  { icon: 'pin', value: '7 miles', label: 'to Marquette' },
+  { icon: 'water', value: '8 miles', label: 'to Lake Superior' },
+  { icon: 'tree', value: '53 miles', label: 'to Pictured Rocks' },
 ]
 
 export const siteDetails = [
