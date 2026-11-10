@@ -175,17 +175,15 @@ header {
 /* Hero Component Styles */
 .hero {
   position: relative;
-  height: 70vh;
-  min-height: 500px;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
   overflow: hidden;
 }
 
 .hero-background {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
 }
 
 .hero-background img {
@@ -197,48 +195,42 @@ header {
 
 .hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(2, 13, 34, 0.3) 0%,
-    rgba(1, 80, 69, 0.2) 50%,
-    rgba(190, 52, 0, 0.2) 100%
-  );
+  inset: 0;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  text-align: left;
-  padding: 0 4rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 5vw, 4rem);
 }
 
 .hero-text {
-  max-width: 500px;
   color: #fdf8f3;
 }
 
-.hero-text h1 {
-  font-size: 2.5rem;
+.hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  line-height: 1.2;
+  color: #eabaac;
+  margin: 0 0 0.75rem;
 }
 
-.hero-text p {
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  line-height: 1.5;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  opacity: 0.95;
+.hero-text h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  max-width: 700px;
+  margin: 0 0 1rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hero-text > p:not(.hero-eyebrow):not(.hero-rating) {
+  font-size: 1.15rem;
+  max-width: 560px;
+  margin: 0 0 2rem;
 }
 
 .hero-buttons {
@@ -267,8 +259,10 @@ header {
 }
 
 .hero-btn.primary:hover {
-  background-color: #9a2a00;
-  border-color: #9a2a00;
+  background-color: transparent;
+  color: var(--secondary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(190, 52, 0, 0.3);
 }
 
 .hero-btn.secondary {
@@ -280,52 +274,49 @@ header {
 .hero-btn.secondary:hover {
   background-color: #fdf8f3;
   color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(253, 248, 243, 0.3);
+}
+
+.hero-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  margin: 1.75rem 0 0;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: rgba(2, 13, 34, 0.6);
+  border: 1px solid rgba(253, 248, 243, 0.2);
+}
+
+.hero-rating-star {
+  color: #e8a13a;
+  font-size: 1.1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-btn {
+    transition: none;
+  }
+
+  .hero-btn:hover {
+    transform: none;
+  }
 }
 
 /* Hero Mobile Responsive */
-@media (max-width: 900px) {
+@media (max-width: 640px) {
   .hero {
-    height: 60vh;
-    min-height: 400px;
+    align-items: flex-end;
+    padding-bottom: 3rem;
   }
 
-  .hero-content {
-    padding: 0 2rem;
-  }
-
-  .hero-text h1 {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .hero-text p {
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .hero-btn {
-    width: auto;
-    max-width: 200px;
-    text-align: center;
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
   }
 }
-
-@media (max-width: 480px) {
-  .hero-text h1 {
-    font-size: 1.75rem;
-  }
-
-  .hero-text p {
-    font-size: 0.85rem;
-  }
-}
-
 
 /* Location Component Styles */
 .location {
