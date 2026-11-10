@@ -590,33 +590,6 @@ section[id] {
   }
 }
 
-/* Nearby */
-
-.card-grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
-}
-
-.card {
-  background: #fdf8f3;
-  border-radius: 12px;
-  padding: 1.25rem;
-}
-
-.card h3 {
-  margin: 0 0 0.4rem;
-  font-size: 1.1rem;
-}
-
-.card p {
-  margin: 0;
-  color: #555;
-}
-
 /* FAQ */
 
 .faq details {
@@ -1317,7 +1290,58 @@ section[id] {
   }
 }
 
-/* Where we are: route card beside a drawn map in About's layered frame */
+/* Things to do: a dashed trail from camp, icons on the line */
+.things-to-do { background: #fdf8f3; padding: 5rem 0; }
+
+.ttd-trail {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: 70px repeat(6, 1fr); gap: 1.25rem;
+  position: relative;
+}
+.ttd-trail::before {
+  content: ''; position: absolute; left: 28px; right: 0; top: 28px;
+  border-top: 3px dashed var(--secondary-color); opacity: 0.6;
+}
+.ttd-trail li { display: flex; flex-direction: column; gap: 0.8rem; }
+.ttd-dot {
+  position: relative; z-index: 1;
+  width: 56px; height: 56px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: #fff; color: var(--accent-color);
+  border: 3px solid var(--secondary-color);
+  box-shadow: 0 0 0 6px #fdf8f3, 0 10px 22px rgba(2, 13, 34, 0.12);
+}
+.ttd-dot.camp { background: var(--secondary-color); color: #fff; }
+.ttd-text { display: flex; flex-direction: column; }
+.ttd-miles { font-family: 'League Spartan', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--secondary-color); white-space: nowrap; }
+.ttd-name { font-family: 'League Spartan', sans-serif; color: var(--primary-color); font-size: 1.05rem; margin: 0.15rem 0 0.3rem; }
+.ttd-detail { font-size: 0.9rem; line-height: 1.5; opacity: 0.85; }
+
+
+@media (max-width: 1000px) {
+  .ttd-trail { grid-template-columns: 1fr; gap: 1.1rem; }
+  .ttd-trail::before {
+    left: 22px; top: 22px; bottom: 22px; right: auto;
+    border-top: 0; border-left: 3px dashed var(--secondary-color);
+  }
+  .ttd-trail li { flex-direction: row; align-items: flex-start; gap: 1rem; }
+  .ttd-dot { width: 46px; height: 46px; flex: none; }
+  .ttd-dot svg { width: 20px; height: 20px; }
+  .ttd-text {
+    display: grid; grid-template-columns: auto 1fr; column-gap: 0.5rem;
+    align-items: baseline; padding-top: 0.15rem;
+  }
+  .ttd-start .ttd-text { padding-top: 0.7rem; }
+  .ttd-miles { order: 2; font-size: 0.95rem; }
+  .ttd-name { order: 1; margin: 0; }
+  .ttd-detail { order: 3; grid-column: 1 / -1; font-size: 0.88rem; }
+}
+
+@media (max-width: 900px) {
+  .things-to-do { padding: 3.5rem 0; }
+}
+
+/* Where we are: intro beside a drawn map in About's layered frame, then the trail */
 .location {
   padding: 5rem 0;
   background: #fdf8f3;
@@ -1337,6 +1361,13 @@ section[id] {
   align-items: center;
 }
 
+.location-sub {
+  font-size: 1.35rem;
+  margin: 4rem 0 1.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(2, 13, 34, 0.12);
+}
+
 .location-lead {
   font-size: 1.1rem;
   line-height: 1.7;
@@ -1344,96 +1375,19 @@ section[id] {
   max-width: 560px;
 }
 
-.location-route {
-  list-style: none;
-  margin: 0 0 1.75rem;
-  padding: 1.1rem 1.4rem;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(2, 13, 34, 0.08);
-}
 
-.location-route li {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.7rem 0;
-}
 
-.location-route li + li {
-  border-top: 1px dashed rgba(2, 13, 34, 0.12);
-}
 
 /* The dotted line joining each stop to the next */
-.location-route li:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 13px;
-  top: 50%;
-  height: 100%;
-  border-left: 2px dotted var(--secondary-color);
-}
 
-.location-route-dot {
-  position: relative;
-  z-index: 1;
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--accent-color);
-  display: grid;
-  place-items: center;
-}
 
-.location-route-start .location-route-dot {
-  background: var(--secondary-color);
-  border-color: var(--secondary-color);
-  color: #fdf8f3;
-}
 
-.location-route-start b {
-  color: var(--secondary-color);
-}
 
-.location-route-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
 
-.location-route-text b {
-  color: var(--primary-color);
-}
 
-.location-route-text span {
-  font-size: 0.88rem;
-  opacity: 0.8;
-}
 
-.location-route strong {
-  font-family: 'League Spartan', sans-serif;
-  font-size: 1.5rem;
-  color: var(--secondary-color);
-  white-space: nowrap;
-}
 
-.location-privacy {
-  display: flex;
-  gap: 0.6rem;
-  align-items: flex-start;
-  font-size: 0.92rem;
-  margin: 0 0 1.5rem;
-  opacity: 0.9;
-}
 
-.location-privacy svg {
-  flex: none;
-  color: var(--secondary-color);
-  margin-top: 1px;
-}
 
 /* The map sits on an offset green block, with a peach outline offset the other way. */
 .location-map {
@@ -1483,13 +1437,7 @@ section[id] {
     font-size: 1.9rem;
   }
 
-  .location-route {
-    padding: 0.9rem 1rem;
-  }
 
-  .location-route strong {
-    font-size: 1.25rem;
-  }
 
   .location-map {
     margin: 0.75rem 1rem 1rem 0.75rem;
@@ -1503,3 +1451,4 @@ section[id] {
     inset: -0.75rem 0.75rem 0.75rem -0.75rem;
   }
 }
+

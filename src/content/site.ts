@@ -73,14 +73,10 @@ export const quickDistances = [
 
 // The "Where we are" section on the home page.
 export const location = {
+  eyebrow: 'Location & things to do',
   heading: 'Where we are',
   intro: 'A quiet forest between Marquette and Negaunee, close to town but far from the noise. About 4 miles off US 41 in Michigan\u2019s Upper Peninsula.',
-  privacy: 'The map shows the general area only. We send exact directions once your booking is confirmed.',
-  distances: [
-    { miles: 7, place: 'Marquette', detail: 'Downtown shops and restaurants' },
-    { miles: 8, place: 'Lake Superior', detail: 'The nearest stretch of shore' },
-    { miles: 53, place: 'Pictured Rocks', detail: 'About an hour\u2019s drive' },
-  ],
+  thingsToDoHeading: 'Things to do nearby',
 }
 
 export const siteDetails = [
@@ -138,12 +134,17 @@ export const addOns: AddOn[] = [
   { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
 ]
 
-export const nearby = [
-  { name: 'McClure and Dead River basins', detail: 'Under a mile: fishing, swimming, paddling and a small beach by the boat launch' },
-  { name: 'Mountain biking', detail: 'On the Ore to Shore route, about 15 minutes from the Marji trailhead' },
-  { name: 'Iron Ore Heritage Trail', detail: 'About 4 miles away; the North Country Trail is close too' },
-  { name: 'Marquette and Lake Superior', detail: '7 miles to downtown, 8 miles to the shore' },
-  { name: 'Pictured Rocks National Lakeshore', detail: 'About an hour’s drive' },
+// "Things to do": stops along a trail from camp, shown in this order
+// (nearest first). `distance` is the label shown on the trail.
+export type Activity = { name: string; detail: string; distance: string; icon: IconName }
+
+export const thingsToDo: Activity[] = [
+  { name: 'Swim, fish and paddle', detail: 'McClure and Dead River basins, with a small beach by the boat launch. Rent a canoe or kayak from us.', distance: 'Under 1 mi', icon: 'fish' },
+  { name: 'Mountain biking', detail: 'Camp sits on the Ore to Shore route, about 15 minutes from the Marji trailhead.', distance: '15 min', icon: 'bike' },
+  { name: 'Hiking trails', detail: 'The Iron Ore Heritage Trail, with the North Country Trail close by.', distance: '4 mi', icon: 'boot' },
+  { name: 'Marquette', detail: 'Downtown shops, food, breweries and the harbor.', distance: '7 mi', icon: 'city' },
+  { name: 'Lake Superior', detail: 'Sandy beaches and big-lake sunsets along the shore.', distance: '8 mi', icon: 'wave' },
+  { name: 'Pictured Rocks', detail: 'Painted cliffs, waterfalls and boat tours on the National Lakeshore.', distance: '53 mi', icon: 'cliff' },
 ]
 
 export const reviews = [

@@ -1,6 +1,6 @@
 import PageMeta from '../components/PageMeta'
 import PageHeader from '../components/PageHeader'
-import Nearby from '../components/Nearby'
+import ThingsToDo from '../components/ThingsToDo'
 
 const ExplorePage = () => (
   <>
@@ -13,7 +13,7 @@ const ExplorePage = () => (
       title="Things to do nearby"
       intro="Lakes and trails right next door, with Marquette and Lake Superior a short drive away."
     />
-    <Nearby />
+    <ThingsToDo />
   </>
 )
 

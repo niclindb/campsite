@@ -22,10 +22,6 @@ const HomePage = () => (
     <Location />
     <section className="section light page-links">
       <div className="container link-cards">
-        <Link to="/explore" className="link-card">
-          <h3>Things to do nearby</h3>
-          <p>Lakes under a mile away, bike trails, Marquette and Pictured Rocks.</p>
-        </Link>
         <Link to="/info" className="link-card">
           <h3>Guest info & FAQ</h3>
           <p>Check-in times, water, toilets, pets, fires and more.</p>
