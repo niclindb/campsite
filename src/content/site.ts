@@ -19,7 +19,7 @@ export const site = {
     'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
   rating: {
     recommendPercent: 97,
-    ratings: 228,
+    ratings: '200+',
     reviews: 157,
     // Shown on the site; round it down so it stays true as reviews grow.
     reviewsLabel: '150+',
