@@ -32,3 +32,13 @@ img {
     scroll-behavior: auto;
   }
 }
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #e8862a;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
