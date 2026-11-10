@@ -106,3 +106,11 @@ export const faq = [
   { q: 'Where exactly are you?', a: 'Between Marquette and Negaunee, about 4 miles off US 41. We send exact directions once your booking is confirmed.' },
   { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full terms are shown before you pay.` },
 ]
+
+// Captions for the photos in src/assets/gallery, keyed by file name.
+// They are written under each photo and read by screen readers.
+// Photos without a caption get a generic description.
+export const galleryCaptions: Record<string, string> = {
+  '01-tent.webp': 'Misty morning in the maples',
+  '02-lake.webp': 'A calm lake a short walk from camp',
+}
