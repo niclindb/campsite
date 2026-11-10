@@ -5,50 +5,46 @@
   --secondary-color: #be3400;
   
 }
-header {
-  background-color: var(--primary-color);
-  color: var(--background-color);
-  padding: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+/* ---------- Header (shared) ---------- */
+.site-header {
+  --hdr-h: 84px;
+  --hdr-bg: var(--primary-color);
   position: sticky;
   top: 0;
   z-index: 1000;
+  background-color: var(--hdr-bg);
+  color: #fdf8f3;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 clamp(1rem, 4vw, 2rem);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 70px;
-}
-
-.logo h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #fdf8f3;
-}
-
-.logo img {
-  height: auto;
-  width: 130px;
-  display: block;
-  padding: 0.4rem 0;
+  height: var(--hdr-h);
+  transition: height 0.3s ease;
 }
 
 .logo a {
-  text-decoration: none;
-  color: inherit;
-  transition: opacity 0.3s ease;
   display: flex;
   align-items: center;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.3s ease;
 }
 
 .logo a:hover {
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+.logo img {
+  display: block;
+  width: 120px;
+  height: auto;
+  transition: width 0.3s ease;
 }
 
 .nav-menu {
@@ -70,72 +66,123 @@ header {
 }
 
 .nav-list a {
+  position: relative;
   color: #fdf8f3;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  padding: 0.5rem 0;
-}
-
-.nav-list a:hover {
-  color: #d4a276;
-}
-
-.book-now-btn {
-  background-color: var(--secondary-color);
-  color: #fdf8f3 !important;
-  padding: 0.75rem 1.5rem !important;
-  border-radius: 25px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  border: 2px solid var(--secondary-color);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  padding: 0.4rem 0;
+  transition: color 0.2s ease;
 }
 
-.book-now-btn:hover {
-  background-color: #9a2a00;
-  border-color: #9a2a00;
+/* Peach underline that grows in on hover and marks the current page */
+.nav-list a:not(.book-now-btn)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: #eabaac;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-list a:not(.book-now-btn):hover {
+  color: #eabaac;
+}
+
+.nav-list a:not(.book-now-btn):hover::after,
+.nav-list a[aria-current='page']:not(.book-now-btn)::after {
+  transform: scaleX(1);
+}
+
+/* Same pill as the hero's primary button */
+.nav-list .book-now-btn {
+  display: inline-block;
+  background-color: var(--secondary-color);
+  color: #fdf8f3;
+  padding: 0.6rem 1.4rem;
+  border-radius: 50px;
+  border: 2px solid var(--secondary-color);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.nav-list .book-now-btn:hover,
+.nav-list .book-now-btn[aria-current='page'] {
+  background-color: transparent;
+  color: var(--secondary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(190, 52, 0, 0.3);
 }
 
 .mobile-menu-btn {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0 9px;
   background: none;
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  padding: 0.5rem;
-  gap: 4px;
 }
 
 .mobile-menu-btn span {
-  width: 25px;
-  height: 3px;
+  display: block;
+  width: 26px;
+  height: 2.5px;
+  border-radius: 2px;
   background-color: #fdf8f3;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.2s ease;
 }
 
-/* Mobile responsive styles */
 @media (max-width: 900px) {
+  .site-header {
+    --hdr-h: 68px;
+  }
+
+  .logo img {
+    width: 96px;
+  }
+
+  /* Drops down from right under the header, whatever its height */
   .nav-menu {
-    position: fixed;
-    top: 70px;
-    left: -100%;
-    width: 100%;
-    height: calc(100vh - 70px);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 100dvh;
+    overflow-y: auto;
     background-color: var(--primary-color);
+    border-top: 1px solid rgba(234, 186, 172, 0.25);
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 2rem;
-    transition: left 0.3s ease;
+    padding: 1rem 1.5rem 8rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
   }
 
   .nav-menu.active {
-    left: 0;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
   }
 
   .nav-list {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0;
     width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
   }
 
   .nav-list li {
@@ -146,13 +193,31 @@ header {
   .nav-list a {
     display: block;
     padding: 1rem;
+    font-family: 'League Spartan', 'Cabin', sans-serif;
+    font-size: 1.3rem;
     border-bottom: 1px solid rgba(253, 248, 243, 0.1);
   }
 
-  .book-now-btn {
-    margin: 1rem auto 0;
-    width: 80%;
-    text-align: center;
+  .nav-list a:not(.book-now-btn)::after {
+    display: none;
+  }
+
+  .nav-list a[aria-current='page']:not(.book-now-btn) {
+    color: #eabaac;
+  }
+
+  .nav-list .book-item {
+    margin-top: 1.5rem;
+  }
+
+  .nav-list .book-now-btn {
+    display: block;
+    width: min(80%, 320px);
+    margin: 0 auto;
+    padding: 0.9rem 1.5rem;
+    font-family: inherit;
+    font-size: 1.05rem;
+    border-bottom: 2px solid var(--secondary-color);
   }
 
   .mobile-menu-btn {
@@ -160,7 +225,7 @@ header {
   }
 
   .mobile-menu-btn.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: translateY(7.5px) rotate(45deg);
   }
 
   .mobile-menu-btn.active span:nth-child(2) {
@@ -168,7 +233,173 @@ header {
   }
 
   .mobile-menu-btn.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -6px);
+    transform: translateY(-7.5px) rotate(-45deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header * {
+    transition: none !important;
+  }
+
+  .nav-list .book-now-btn:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Option A: refined navy bar that slims down on scroll ---------- */
+.hdr-a {
+  border-bottom: 1px solid rgba(234, 186, 172, 0.22);
+}
+
+.hdr-a.is-scrolled {
+  --hdr-h: 62px;
+  box-shadow: 0 6px 20px rgba(2, 13, 34, 0.35);
+}
+
+.hdr-a.is-scrolled .logo img {
+  width: 84px;
+}
+
+@media (max-width: 900px) {
+  .hdr-a.is-scrolled {
+    --hdr-h: 58px;
+  }
+
+  .hdr-a.is-scrolled .logo img {
+    width: 76px;
+  }
+}
+
+/* ---------- Option B: see-through over the home photo, solid on scroll ---------- */
+.hdr-b.is-home {
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
+.hdr-b.is-home:not(.is-scrolled):not(.menu-open) {
+  --hdr-bg: transparent;
+  background-image: linear-gradient(to bottom, rgba(2, 13, 34, 0.75), rgba(2, 13, 34, 0));
+}
+
+.hdr-b.is-home:not(.is-scrolled):not(.menu-open) .header-container {
+  height: calc(var(--hdr-h) + 16px);
+}
+
+.hdr-b.is-home:not(.is-scrolled) .logo img {
+  width: 124px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.hdr-b.is-home:not(.is-scrolled) .nav-list a:not(.book-now-btn) {
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+.hdr-b.is-scrolled {
+  --hdr-bg: rgba(2, 13, 34, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 20px rgba(2, 13, 34, 0.35);
+}
+
+@media (max-width: 900px) {
+  .hdr-b.is-home:not(.is-scrolled) .logo img {
+    width: 96px;
+  }
+}
+
+/* The photo runs up behind the see-through header */
+.hdr-b.is-home ~ main .hero {
+  min-height: 100vh;
+  padding-top: 110px;
+}
+
+/* ---------- Option C: info strip and a hanging logo badge ---------- */
+.header-strip {
+  background: var(--accent-color);
+  color: #fdf8f3;
+  font-size: 0.82rem;
+  overflow: hidden;
+  max-height: 40px;
+  transition: max-height 0.3s ease;
+}
+
+.header-strip p {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.45rem clamp(1rem, 4vw, 2rem);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  letter-spacing: 0.02em;
+}
+
+.hdr-c.is-scrolled .header-strip {
+  max-height: 0;
+}
+
+.hdr-c {
+  --hdr-h: 68px;
+  box-shadow: 0 4px 14px rgba(2, 13, 34, 0.25);
+}
+
+.hdr-c .logo {
+  align-self: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.hdr-c .logo a {
+  background: var(--primary-color);
+  padding: 0.7rem 1.1rem 0.9rem;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 12px 22px rgba(2, 13, 34, 0.35);
+  transition: margin 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hdr-c .logo img {
+  width: 116px;
+}
+
+.hdr-c.is-scrolled .logo {
+  align-self: center;
+}
+
+.hdr-c.is-scrolled .logo a {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.hdr-c.is-scrolled .logo img {
+  width: 84px;
+}
+
+@media (max-width: 900px) {
+  .hdr-c {
+    --hdr-h: 60px;
+  }
+
+  .header-strip p {
+    justify-content: center;
+  }
+
+  .header-strip .strip-extra {
+    display: none;
+  }
+
+  .hdr-c .logo a {
+    padding: 0.55rem 0.8rem 0.7rem;
+    border-radius: 0 0 14px 14px;
+  }
+
+  .hdr-c .logo img {
+    width: 84px;
+  }
+
+  .hdr-c.menu-open .logo a {
+    box-shadow: none;
   }
 }
 

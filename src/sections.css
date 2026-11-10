@@ -732,9 +732,6 @@ section[id] {
   margin: 0 0 1rem;
 }
 
-.nav-list a[aria-current='page']:not(.book-now-btn) {
-  color: #eabaac;
-}
 
 /* Links from the home page to the inner pages */
 .link-cards {
