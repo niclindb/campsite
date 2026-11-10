@@ -1012,43 +1012,6 @@ section[id] {
 }
 
 
-/* Links from the home page to the inner pages */
-.link-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
-}
-
-.link-card {
-  display: block;
-  background: #fdf8f3;
-  border-radius: 12px;
-  padding: 1.5rem;
-  text-decoration: none;
-  color: inherit;
-  border: 2px solid transparent;
-  transition: border-color 0.2s ease;
-}
-
-.link-card:hover,
-.link-card:focus-visible {
-  border-color: var(--secondary-color);
-}
-
-.link-card h3 {
-  margin: 0 0 0.4rem;
-}
-
-.link-card h3::after {
-  content: ' →';
-  color: var(--secondary-color);
-}
-
-.link-card p {
-  margin: 0;
-  color: #555;
-}
-
 @media (max-width: 900px) {
   .page-header h1,
   .book-page h1 {
