@@ -2,7 +2,7 @@
 // since every icon sits next to its text label.
 export type IconName =
   | 'fire' | 'toilet' | 'table' | 'wifi' | 'paw' | 'grill' | 'shed'
-  | 'water' | 'shower' | 'plug' | 'tree' | 'leaf' | 'egg' | 'home'
+  | 'water' | 'shower' | 'plug' | 'tree' | 'egg' | 'home'
 
 const paths: Record<IconName, string> = {
   fire: 'M12 3c1 3 4 4.5 4 8.5A4 4 0 0 1 8 11.5c0-1.6.7-2.7 1.6-3.6.2 1.3.9 2.1 1.9 2.4C11 8 11 5.5 12 3ZM5 21h14M7 18l10 3M17 18 7 21',
@@ -16,7 +16,6 @@ const paths: Record<IconName, string> = {
   shower: 'M4 20V7a3 3 0 0 1 6 0M7 10h6a3 3 0 0 0-6 0ZM8 14v.01M10 16v.01M12 14v.01M9 18v.01M11 20v.01',
   plug: 'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0ZM12 17v4',
   tree: 'M12 3 6.5 10.5H9L5 16h14l-4-5.5h2.5ZM12 16v5',
-  leaf: 'M5 19C5 10.5 10 5.5 20 4c-1.3 9.8-6.3 15-15 15ZM5 19l8.5-8.5',
   egg: 'M12 3c3.5 0 6.5 5.6 6.5 10.2a6.5 6.5 0 0 1-13 0C5.5 8.6 8.5 3 12 3Z',
   home: 'M3 11.5 12 4l9 7.5M6 9.7V20h12V9.7M10 20v-5.5h4V20',
 }
