@@ -112,13 +112,25 @@ export const addOns: AddOn[] = [
   { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
 ]
 
-export const nearby = [
-  { name: 'McClure and Dead River basins', detail: 'Under a mile: fishing, swimming, paddling and a small beach by the boat launch' },
-  { name: 'Mountain biking', detail: 'On the Ore to Shore route, about 15 minutes from the Marji trailhead' },
-  { name: 'Iron Ore Heritage Trail', detail: 'About 4 miles away; the North Country Trail is close too' },
-  { name: 'Marquette and Lake Superior', detail: '7 miles to downtown, 8 miles to the shore' },
-  { name: 'Pictured Rocks National Lakeshore', detail: 'About an hour’s drive' },
-]
+// "Things to do": stops along a trail from camp, shown in this order
+// (nearest first). `distance` is the label shown on the trail.
+export type Activity = { name: string; detail: string; distance: string; icon: IconName }
+
+export const thingsToDo = {
+  heading: 'Things to do',
+  intro: 'Lakes and trails right next door, with Marquette and Lake Superior a short drive away.',
+  nextDoor: [
+    { name: 'Swim, fish and paddle', detail: 'McClure and Dead River basins, with a small beach by the boat launch. Rent a canoe or kayak from us.', distance: 'Under 1 mi', icon: 'fish' },
+    { name: 'Mountain biking', detail: 'Camp sits on the Ore to Shore route, about 15 minutes from the Marji trailhead.', distance: '15 min', icon: 'bike' },
+    { name: 'Hiking trails', detail: 'The Iron Ore Heritage Trail, with the North Country Trail close by.', distance: '4 mi', icon: 'boot' },
+  ] as Activity[],
+  dayTrips: [
+    { name: 'Marquette', detail: 'Downtown shops, food, breweries and the harbor.', distance: '7 mi', icon: 'city' },
+    { name: 'Lake Superior', detail: 'Sandy beaches and big-lake sunsets along the shore.', distance: '8 mi', icon: 'wave' },
+    { name: 'Pictured Rocks', detail: 'Painted cliffs, waterfalls and boat tours on the National Lakeshore.', distance: '53 mi', icon: 'cliff' },
+  ] as Activity[],
+  dogs: 'Dogs are welcome to roam off leash at camp.',
+}
 
 export const reviews = [
   { quote: 'Quiet and secluded but minutes to everything.', name: 'Brent C.' },

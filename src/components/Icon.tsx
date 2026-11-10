@@ -4,6 +4,7 @@ export type IconName =
   | 'fire' | 'toilet' | 'table' | 'wifi' | 'paw' | 'grill' | 'shed'
   | 'water' | 'shower' | 'plug' | 'tree' | 'egg' | 'home'
   | 'tag' | 'pin' | 'tent' | 'calendar'
+  | 'bike' | 'boot' | 'wave' | 'city' | 'fish' | 'cliff'
 
 const paths: Record<IconName, string> = {
   fire: 'M12 3c1 3 4 4.5 4 8.5A4 4 0 0 1 8 11.5c0-1.6.7-2.7 1.6-3.6.2 1.3.9 2.1 1.9 2.4C11 8 11 5.5 12 3ZM5 21h14M7 18l10 3M17 18 7 21',
@@ -22,6 +23,12 @@ const paths: Record<IconName, string> = {
   tag: 'M3 12V4h8l10 10-8 8ZM7.5 8.5h.01',
   tent: 'M12 4 3 20h18ZM12 4v16M9 20l3-6 3 6',
   calendar: 'M4 6h16v14H4ZM4 10h16M8 3v5M16 3v5',
+  bike: 'M5.5 17.5a3.5 3.5 0 1 0 0-.01ZM18.5 17.5a3.5 3.5 0 1 0 0-.01ZM5.5 17.5 9 10h7l2.5 7.5M9 10l3.5 7.5L16 10M8 7h3M15 7h2l1 3',
+  boot: 'M7 3h5v8l6 3.5c1.5.9 2 2 2 3.5v1H4V3h3ZM4 15h16M9 7h3M9 10h3',
+  wave: 'M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 14c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2',
+  city: 'M3 21h18M5 21V10l5-3v14M10 21V4h6v17M16 21v-9h3v9M12.5 8h1M12.5 11h1M12.5 14h1M7 13h1M7 16h1',
+  fish: 'M3 12c3-4.5 9-6 14-2l4-3v10l-4-3c-5 4-11 2.5-14-2ZM8 11h.01',
+  cliff: 'M3 20h18M4 20V9l4-4 3 3 2-2v14M13 6l3 4 2 0 2 3v7M6 12h2M7 15h3',
   pin: 'M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11ZM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
 }
 
