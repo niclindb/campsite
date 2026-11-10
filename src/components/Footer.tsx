@@ -18,7 +18,9 @@ const Footer = () => {
           <a href={site.hipcampUrl} target="_blank" rel="noopener">Hipcamp</a>
         </nav>
       </div>
-      <p className="copyright">© {new Date().getFullYear()} {site.name}</p>
+      <p className="copyright">
+        © {new Date().getFullYear()} {site.name} · Website by lindberg dev
+      </p>
     </footer>
   )
 }
