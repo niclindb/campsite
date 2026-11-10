@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import './App.css'
 import './sections.css'
 import Header from './components/Header'
@@ -24,9 +24,6 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
-      {pathname.replace(/\/$/, '') !== '/book' && (
-        <Link to="/book" className="mobile-book-bar">Book your stay</Link>
-      )}
     </>
   )
 }
