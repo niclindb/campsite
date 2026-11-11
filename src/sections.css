@@ -410,14 +410,9 @@ section[id] {
   flex-shrink: 0;
 }
 
-.reviews-btn {
-  display: inline-block;
-  background: var(--secondary-color);
-  color: #fdf8f3;
-  font-weight: 600;
-  border-radius: 999px;
-  padding: 0.7rem 1.3rem;
-  text-decoration: none;
+.reviews-link {
+  color: var(--secondary-color);
+  font-size: 1.05rem;
 }
 
 @media (max-width: 800px) {
@@ -1220,3 +1215,62 @@ section[id] {
   }
 }
 
+
+/* Logo (header and footer): lifts and picks up a warm glow */
+.logo-link {
+  display: inline-flex;
+  border-radius: 8px;
+}
+
+.logo-link img {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease, width 0.3s ease;
+}
+
+.logo-link:hover img,
+.logo-link:focus-visible img {
+  transform: translateY(-2px) scale(1.07);
+  filter: drop-shadow(0 0 12px rgba(234, 186, 172, 0.55)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
+/* Text link with an arrow: the underline draws in and the arrow slides right.
+   Colour comes from the surrounding section. */
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.25s ease, color 0.2s ease;
+}
+
+.arrow-link-icon {
+  flex: none;
+  transition: transform 0.25s ease;
+}
+
+.arrow-link:hover,
+.arrow-link:focus-visible {
+  background-size: 100% 2px;
+}
+
+.arrow-link:hover .arrow-link-icon,
+.arrow-link:focus-visible .arrow-link-icon {
+  transform: translateX(5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-link img,
+  .arrow-link,
+  .arrow-link-icon {
+    transition: none;
+  }
+
+  .logo-link:hover img,
+  .logo-link:focus-visible img,
+  .arrow-link:hover .arrow-link-icon,
+  .arrow-link:focus-visible .arrow-link-icon {
+    transform: none;
+  }
+}

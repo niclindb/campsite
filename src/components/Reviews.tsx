@@ -1,4 +1,5 @@
 import { reviews, site } from '../content/site'
+import ArrowIcon from './ArrowIcon'
 
 const { recommendPercent, badges } = site.rating
 
@@ -30,8 +31,8 @@ const Reviews = () => {
               <li key={b}><AwardIcon />{b}</li>
             ))}
           </ul>
-          <a className="reviews-btn" href={site.hipcampUrl} target="_blank" rel="noopener">
-            Read {site.rating.reviewsLabel} reviews on Hipcamp
+          <a className="arrow-link reviews-link" href={site.hipcampUrl} target="_blank" rel="noopener">
+            Read {site.rating.reviewsLabel} reviews on Hipcamp <ArrowIcon />
           </a>
         </aside>
       </div>

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { contact, site } from '../content/site'
 import contactImage from '../assets/images/contact.webp'
 import Icon, { type IconName } from './Icon'
+import ArrowIcon from './ArrowIcon'
 
 // Messages are sent through Formspree. Create a free form at formspree.io and
 // set VITE_FORMSPREE_ID in .env.local (and in Vercel's environment variables).
@@ -48,7 +49,11 @@ const Contact = () => {
                 <span>
                   <span className="contact-card-label">{m.label}</span>
                   {m.value ? (
-                    <a href={m.href} {...(m.external ? { target: '_blank', rel: 'noopener' } : {})}>{m.value}</a>
+                    m.external ? (
+                      <a className="arrow-link" href={m.href} target="_blank" rel="noopener">{m.value} <ArrowIcon /></a>
+                    ) : (
+                      <a href={m.href}>{m.value}</a>
+                    )
                   ) : (
                     <span className="contact-placeholder">{m.placeholder}</span>
                   )}
