@@ -71,7 +71,6 @@ const AreaMap = () => (
 
     <g fill="none" stroke={c.rust} strokeWidth={3} strokeDasharray="2 9" strokeLinecap="round">
       <polyline points={line([camp, P(46.54, -87.47), marquette])} />
-      <polyline points={line([camp, P(46.59, -87.47), shoreNear])} />
       <polyline points={line([camp, P(46.53, -87.45), ...m28.slice(1), P(46.47, -86.56), rocks])} />
     </g>
 

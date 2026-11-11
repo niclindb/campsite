@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { location } from '../content/site'
 import AreaMap from './location/AreaMap'
 import { Trail } from './ThingsToDo'
@@ -14,7 +13,6 @@ const Location = () => (
           <p className="about-eyebrow">{location.eyebrow}</p>
           <h2 id="location-title">{location.heading}</h2>
           <p className="location-lead">{location.intro}</p>
-          <Link to="/#contact" className="hero-btn primary">Ask us a question</Link>
         </div>
         <div className="location-map">
           <AreaMap />
