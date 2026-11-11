@@ -34,7 +34,6 @@ const negaunee = P(46.4991, -87.6118)
 const ishpeming = P(46.4886, -87.6676)
 const munising = P(46.4111, -86.6479)
 const rocks = P(46.52, -86.45)
-const shoreNear = P(46.6, -87.40)
 
 // Roads drawn loosely: US 41 between the towns, M-28 east along the shore.
 const us41 = [P(46.4886, -87.75), ishpeming, negaunee, P(46.52, -87.52), P(46.535, -87.45), marquette]
