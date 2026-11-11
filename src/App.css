@@ -456,7 +456,8 @@
 /* The photo sits on an offset green block, with a peach outline offset the other way. */
 .about-photo {
   position: relative;
-  margin: 0 1.5rem 1.5rem 0;
+  margin: 0 1.5rem 1.5rem 1.5rem;
+
 }
 
 .about-photo::before {
