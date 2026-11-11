@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { siteDetails, site } from '../content/site'
+import { siteDetails } from '../content/site'
 import { area } from '../content/sites'
 import Amenities from './sites/Amenities'
 import SitePhoto from './sites/SitePhoto'
