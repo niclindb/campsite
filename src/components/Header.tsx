@@ -35,7 +35,7 @@ const Header = () => {
           <ul className="nav-list">
             <li><Link to="/#sites" onClick={close}>Sites</Link></li>
             <li><Link to="/#gallery" onClick={close}>Gallery</Link></li>
-            <li><NavLink to="/explore" onClick={close}>Things to do</NavLink></li>
+            <li><NavLink to="/#location" onClick={close}>Things to do</NavLink></li>
             <li><NavLink to="/info" onClick={close}>Info & FAQ</NavLink></li>
             <li><Link to="/#contact" onClick={close}>Contact</Link></li>
             <li className="book-item"><NavLink to="/book" className="book-now-btn" onClick={close}>Book Now</NavLink></li>
