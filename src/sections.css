@@ -1371,7 +1371,7 @@ section[id] {
 }
 
 
-/* Logo (header and footer): lifts, tilts slightly and picks up a warm glow */
+/* Logo (header and footer): lifts and picks up a warm glow */
 .logo-link {
   display: inline-flex;
   border-radius: 8px;
@@ -1383,7 +1383,7 @@ section[id] {
 
 .logo-link:hover img,
 .logo-link:focus-visible img {
-  transform: translateY(-2px) scale(1.07) rotate(-2deg);
+  transform: translateY(-2px) scale(1.07);
   filter: drop-shadow(0 0 12px rgba(234, 186, 172, 0.55)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
 }
 
