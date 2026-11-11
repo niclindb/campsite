@@ -36,9 +36,6 @@
   transition: opacity 0.2s ease, transform 0.3s ease;
 }
 
-.logo a:hover {
-  opacity: 0.85;
-}
 
 .logo img {
   display: block;
@@ -244,7 +241,8 @@
     transition: none !important;
   }
 
-  .nav-list .book-now-btn:hover {
+  .nav-list .book-now-btn:hover,
+  .logo-link:hover img {
     transform: none;
   }
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { photos } from '../content/gallery'
 import { site } from '../content/site'
 import Lightbox from './gallery/Lightbox'
+import ArrowIcon from './ArrowIcon'
 
 // A slight, fixed tilt per photo so the snapshots look hand-placed.
 const tilts = [-3, 2, -1.5, 3, -2.5, 1.5]
@@ -71,7 +72,7 @@ const Gallery = () => {
         )}
 
         <p className="more-link">
-          <a href={site.hipcampUrl} target="_blank" rel="noopener">See more guest photos on Hipcamp</a>
+          <a className="arrow-link" href={site.hipcampUrl} target="_blank" rel="noopener">Check out more photos on Hipcamp <ArrowIcon /></a>
         </p>
       </div>
       {open !== null && <Lightbox photos={photos} index={open} onChange={setOpen} />}
