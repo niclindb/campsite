@@ -238,5 +238,5 @@ export const galleryCaptions: Record<string, string> = {
   '18-stars.webp': 'Stars over camp',
   '19-dusk.webp': 'Dusk in the woods',
   '20-winter.webp': 'Camp in winter',
-  '21-tire-swing.webp': 'A tire swing in the maples',
+  '21-tire-swing.webp': 'Tire swing',
 }
