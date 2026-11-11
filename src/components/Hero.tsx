@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import lakeImage from '../assets/images/lake.webp'
-import { site, quickFacts, quickDistances } from '../content/site'
-import Icon from './Icon'
+import { site } from '../content/site'
 
 const Hero = () => {
   return (
@@ -25,30 +24,6 @@ const Hero = () => {
               <strong>{site.rating.recommendPercent}% recommend</strong> · {site.rating.ratings} Hipcamp ratings
             </p>
           </div>
-        </div>
-      </section>
-      <section className="quick-facts" aria-label="Quick facts">
-        <div className="qf-card">
-          <ul className="qf-facts">
-            {quickFacts.map((f) => (
-              <li key={f.label}>
-                <span className="qf-icon"><Icon name={f.icon} size={22} /></span>
-                <span>
-                  <span className="qf-value">{f.value}</span>
-                  <span className="qf-label">{f.label}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="qf-dist">
-            <Icon name="pin" size={16} />
-            {quickDistances.map((d, i) => (
-              <span key={d.place}>
-                {i > 0 && <span className="qf-dot" aria-hidden="true">·</span>}
-                <b>{d.miles} mi</b> {d.place}
-              </span>
-            ))}
-          </p>
         </div>
       </section>
     </>

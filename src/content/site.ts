@@ -60,18 +60,6 @@ export const about = {
   ] as { title: string; detail: string; icon: IconName }[],
 }
 
-// The raised card under the hero on the home page.
-export const quickFacts: { icon: IconName; value: string; label: string }[] = [
-  { icon: 'tag', value: `$${site.pricePerSiteNight}`, label: 'per site, per night' },
-]
-
-// The distances line along the bottom of that card.
-export const quickDistances = [
-  { miles: 7, place: 'Marquette' },
-  { miles: 8, place: 'Lake Superior' },
-  { miles: 53, place: 'Pictured Rocks' },
-]
-
 // The "Where we are" section on the home page.
 export const location = {
   eyebrow: 'Location & things to do',
