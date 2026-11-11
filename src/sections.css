@@ -315,12 +315,6 @@ section[id] {
 
 /* Gallery */
 
-.gallery-kicker {
-  margin: 0 0 1.5rem;
-  font-size: 1.1rem;
-  opacity: 0.85;
-}
-
 /* Gallery: polaroid snapshots */
 .section.gallery {
   background: #efe6d6 url('./assets/textures/topo.svg') center / cover;
@@ -1166,34 +1160,6 @@ section[id] {
   font-size: 0.62rem;
 }
 
-.sites-facts {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 3rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-}
-
-.sites-facts li {
-  background: #fff;
-  border-radius: 12px;
-  padding: 0.9rem 1rem;
-  box-shadow: 0 8px 24px rgba(2, 13, 34, 0.08);
-}
-
-.sites-facts strong {
-  display: block;
-  font-family: 'League Spartan', sans-serif;
-  font-size: 1.6rem;
-  color: var(--secondary-color);
-}
-
-.sites-facts span {
-  font-size: 0.88rem;
-  opacity: 0.85;
-}
-
 .sites-good-to-know {
   margin-bottom: 2.5rem;
   padding-top: 2rem;
@@ -1236,12 +1202,6 @@ section[id] {
 @media (max-width: 760px) {
   .check-list.two-col {
     columns: 1;
-  }
-}
-
-@media (max-width: 560px) {
-  .sites-facts strong {
-    font-size: 1.25rem;
   }
 }
 
