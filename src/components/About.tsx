@@ -1,6 +1,6 @@
 import tentImage from '../assets/images/tent.webp'
 import { about, site } from '../content/site'
-import Icon from './Icon'
+// import Icon from './Icon'
 
 const About = () => {
   return (
@@ -22,7 +22,7 @@ const About = () => {
             </p>
           </div>
         </div>
-        <ul className="about-highlights">
+        {/* <ul className="about-highlights">
           {about.highlights.map((h) => (
             <li key={h.title}>
               <span className="about-highlight-icon"><Icon name={h.icon} /></span>
@@ -32,7 +32,7 @@ const About = () => {
               </span>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </section>
   )

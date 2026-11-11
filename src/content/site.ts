@@ -48,8 +48,9 @@ export const contact = {
 export const about = {
   heading: 'Our home in the maple woods',
   paragraphs: [
-    'Northern Oasis is our home: 10 acres of tall, mature forest between Marquette and Negaunee. We built our house here in 2019 and keep making improvements to the land every year.',
-    'In spring we tap the maples for syrup, and you will drive past our sugar shack on the way in. Our chickens live in a very nice coop, and there are no roosters to wake you up.',
+    'Stay on our quiet property near woods, river and trails. Our home is on the property with shared driveway but privacy, peace and quiet is to be had! Adventure awaits!',
+    'We built our home here in 2019 and are continually making improvements to the land. We tap our trees for maple syrup in the spring-you will drive by our "sugar shack" and raise chickens in our very nice coop -no roosters to awaken you!',
+    ['Come and enjoy some peace and quiet at our Northern Oasis!']
   ],
   highlights: [
     { title: 'Quiet and shady', detail: '7 miles from Marquette, 8 from Lake Superior', icon: 'tree' },

@@ -15,9 +15,9 @@ const HomePage = () => (
     />
     <Hero />
     <About />
+    <Reviews />
     <Sites />
     <Gallery />
-    <Reviews />
     <Location />
     <Contact />
   </>
