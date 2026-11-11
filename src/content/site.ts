@@ -83,7 +83,7 @@ export const location = {
 export const siteDetails = [
   'Dispersed RV and tent sites on 10 acres of mature maple forest',
   'No numbered sites: pick your own spot, open or more private and wooded',
-  'Rigs under 20 ft: travel trailers, pop-ups, class B, campervans, cars, truck campers and rooftop tents',
+  'Vehicles under 20 ft: travel trailers, pop-ups, class B, campervans, cars, truck campers and rooftop tents',
   'Pull-in, flat, loose gravel; slideouts fit',
   '1 vehicle per site (more parking near the house if arranged); 2WD accessible',
 ]
@@ -103,20 +103,20 @@ export type Amenity = { name: string; detail: string; icon: IconName }
 
 // What's on site.
 export const amenities: Amenity[] = [
-  { name: 'Campfires', detail: '2 communal pits; 2 sites have private pits', icon: 'fire' },
+  { name: 'Campfires', detail: '2 communal pits, 2 sites have private pits; Fire Wood available for purchase', icon: 'fire' },
   { name: 'Toilets', detail: 'Pit toilet by the sites, composting toilet near the house', icon: 'toilet' },
   { name: 'Picnic tables', detail: 'At the sites and by the large fire pit', icon: 'table' },
   { name: 'Wifi', detail: 'Near the large fire pit and chicken coop', icon: 'wifi' },
   { name: 'Pets welcome', detail: 'Off leash; please clean up after them', icon: 'paw' },
   { name: 'Grills', detail: 'Shared charcoal grill; gas grill to rent', icon: 'grill' },
-  { name: 'Red shed', detail: 'Yard games, chairs, a table; storm shelter', icon: 'shed' },
+  { name: 'Red shed', detail: 'Yard games, chairs, a table; storm shelter if needed', icon: 'shed' },
 ]
 
 // What isn't, so guests can plan for it.
 export const planFor: Amenity[] = [
   { name: 'No drinking water', detail: 'Bring your own. Well water by hose near the coop for pets and bikes.', icon: 'water' },
   { name: 'No showers', detail: 'Nearby lakes are under a mile away for a swim.', icon: 'shower' },
-  { name: 'No hookups', detail: '30 amp electric can be added on 2 sites for $25.', icon: 'plug' },
+  { name: 'No hookups', detail: '30 amp electric can be added on for $25.', icon: 'plug' },
 ]
 
 export type AddOn = { name: string; price: number; note: string }
@@ -139,7 +139,7 @@ export type Activity = { name: string; detail: string; distance: string; icon: I
 
 export const thingsToDo: Activity[] = [
   { name: 'Swim, fish and paddle', detail: 'McClure and Dead River basins, with a small beach by the boat launch. Rent a canoe or kayak from us.', distance: 'Under 1 mi', icon: 'fish' },
-  { name: 'Mountain biking', detail: 'Camp sits on the Ore to Shore route, about 15 minutes from the Marji trailhead.', distance: '15 min', icon: 'bike' },
+  { name: 'Mountain biking', detail: 'Camp sits on the Ore to Shore route, about 15 minutes from the "Marji."', distance: '15 min', icon: 'bike' },
   { name: 'Hiking trails', detail: 'The Iron Ore Heritage Trail, with the North Country Trail close by.', distance: '4 mi', icon: 'boot' },
   { name: 'Marquette', detail: 'Downtown shops, food, breweries and the harbor.', distance: '7 mi', icon: 'city' },
   { name: 'Lake Superior', detail: 'Sandy beaches and big-lake sunsets along the shore.', distance: '8 mi', icon: 'wave' },
@@ -219,12 +219,12 @@ export const faqGroups: FaqGroup[] = [
 // Photos without a caption get a generic description.
 export const galleryCaptions: Record<string, string> = {
   '01-evening-fire.webp': 'Evening fire at camp',
-  '02-misty-morning.webp': 'Misty morning in the maples',
+  '02-misty-morning.webp': 'Misty morning at the campsite',
   '03-fall-coffee.webp': 'Coffee under the fall colors',
-  '04-hammock.webp': 'Hammock time in the maples',
+  '04-hammock.webp': 'Hammock time',
   '05-communal-fire-pit.webp': 'The big communal fire pit',
   '06-fire-pit-and-grill.webp': 'Picnic tables, fire pit and grill',
-  '07-bell-tent.webp': 'A bell tent glowing in the trees',
+  '07-bell-tent.webp': 'Tent glowing in the trees',
   '08-canoes.webp': 'Canoes and kayaks to rent',
   '09-mcclure-basin.webp': 'McClure Basin, under a mile away',
   '10-pup.webp': 'Dogs love the beach too',
@@ -234,7 +234,7 @@ export const galleryCaptions: Record<string, string> = {
   '14-red-shed.webp': 'The red shed: games, chairs and storm shelter',
   '15-sunburst.webp': 'Sun through the canopy',
   '16-fog.webp': 'Fog in the maples',
-  '17-tall-maples.webp': 'Tall maples all around',
+  '17-tall-maples.webp': 'Tall trees all around',
   '18-stars.webp': 'Stars over camp',
   '19-dusk.webp': 'Dusk in the woods',
   '20-winter.webp': 'Camp in winter',

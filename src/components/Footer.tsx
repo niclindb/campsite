@@ -10,8 +10,7 @@ const Footer = () => {
           <img src={logo} alt={site.name} width="160" loading="lazy" />
         </Link>
         <div>
-          <p>Between Marquette and Negaunee, Michigan</p>
-          <p>Open {site.season}</p>
+          <p>Come and enjoy some peace and quiet at our Northern Oasis!</p>
         </div>
         <nav aria-label="Footer">
           <Link to="/book">Book</Link>
