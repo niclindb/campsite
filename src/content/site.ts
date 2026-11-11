@@ -91,7 +91,7 @@ export type Amenity = { name: string; detail: string; icon: IconName }
 
 // What's on site.
 export const amenities: Amenity[] = [
-  { name: 'Campfires', detail: '2 communal pits, 2 sites have private pits; Fire Wood available for purchase', icon: 'fire' },
+  { name: 'Campfires', detail: '2 communal pits, 2 sites have private pits; fire wood available for purchase', icon: 'fire' },
   { name: 'Toilets', detail: 'Pit toilet by the sites, composting toilet near the house', icon: 'toilet' },
   { name: 'Picnic tables', detail: 'At the sites and by the large fire pit', icon: 'table' },
   { name: 'Wifi', detail: 'Near the large fire pit and chicken coop', icon: 'wifi' },

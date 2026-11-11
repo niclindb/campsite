@@ -15,7 +15,6 @@ const Sites = () => {
       <div className="container">
         <p className="about-eyebrow">The sites</p>
         <h2>Where you'll camp</h2>
-        <p className="lead">One open, wooded camping area with room for {site.siteCount} sites.</p>
 
         <div className="a3-stage">
           <div className="a3-hero">
