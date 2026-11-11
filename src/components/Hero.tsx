@@ -15,7 +15,7 @@ const Hero = () => {
           <div className="hero-text">
             <p className="hero-eyebrow">Michigan's Upper Peninsula</p>
             <h1>{site.tagline}</h1>
-            <p>RV and tent sites on 10 acres of maple forest, hosted by {site.hosts}</p>
+            <p>RV and tent sites on 10 acres of maple forest</p>
             <div className="hero-buttons">
               <Link to="/book" className="hero-btn primary">Check availability</Link>
               <a href="#sites" className="hero-btn secondary">See the sites</a>
