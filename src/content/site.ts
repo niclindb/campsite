@@ -329,3 +329,17 @@ export const galleryCaptions: Record<string, string> = {
   '20-winter.webp': 'Camp in winter',
   '21-tire-swing.webp': 'Tire swing',
 }
+
+// The "page not found" page, shown for any web address that doesn't exist.
+export const notFoundPage = {
+  eyebrow: 'Error 404',
+  title: 'This trail doesn’t go anywhere',
+  text: 'Looks like you wandered off the map. The page you were looking for has moved or never existed. Let’s get you back to camp.',
+  homeLabel: 'Back to camp',
+  bookLabel: 'Check availability',
+  moreTitle: 'Or head to',
+  moreLinks: [
+    { label: 'Guest info & FAQ', to: '/info' },
+    { label: 'Photo gallery', to: '/#gallery' },
+  ],
+}
