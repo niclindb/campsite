@@ -43,22 +43,23 @@ export const POST = (request: Request) =>
     if (!quote.ok) return json({ error: 'bad_stay', message: quote.message ?? 'Please pick your dates.' }, 400)
     const extras = pickedAddOns(stay)
 
-    const { data: bookingId, error } = await db().rpc('hold_booking', {
-      p_arrive: stay.arrive,
-      p_depart: stay.depart,
-      p_sites: stay.sites,
-      p_guests: stay.guests,
-      p_hookups: hookupsIn(stay),
-      p_extras: extras.map((a) => ({ name: a.name, price: a.price })),
-      p_total_cents: quote.total * 100,
-      p_name: name,
-      p_email: email,
-      p_phone: phone || null,
-      p_note: note || null,
-      p_capacity: site.siteCount,
-      p_hookup_capacity: site.hookupsPerNight,
-      p_hold_minutes: HOLD_MINUTES,
-    })
+    let bookingId: string
+    let error: Error | undefined
+    try {
+      const rows = await db().query(
+        'select hold_booking($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, $11, $12, $13, $14)::text as id',
+        [
+          stay.arrive, stay.depart, stay.sites, stay.guests, hookupsIn(stay),
+          JSON.stringify(extras.map((a) => ({ name: a.name, price: a.price }))),
+          quote.total * 100, name, email, phone || null, note || null,
+          site.siteCount, site.hookupsPerNight, HOLD_MINUTES,
+        ],
+      )
+      bookingId = (rows[0] as { id: string }).id
+    } catch (e) {
+      error = e as Error
+      bookingId = ''
+    }
     if (error?.message.includes('hookups_sold_out'))
       return json({ error: 'hookups_sold_out', message: 'Both electric hookups are taken on some of those nights. Remove the hookup or try other dates.' }, 409)
     if (error?.message.includes('sold_out'))
@@ -103,6 +104,6 @@ export const POST = (request: Request) =>
       cancel_url: `${base}/book?cancelled=${bookingId}`,
     })
 
-    await db().from('bookings').update({ stripe_session_id: session.id }).eq('id', bookingId)
+    await db().query('update bookings set stripe_session_id = $1 where id = $2', [session.id, bookingId])
     return json({ url: session.url })
   })

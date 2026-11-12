@@ -9,14 +9,12 @@ export const GET = (request: Request) =>
     const sessionId = new URL(request.url).searchParams.get('session_id') ?? ''
     if (!/^cs_[A-Za-z0-9_]{10,}$/.test(sessionId)) return json({ error: 'not_found' }, 404)
 
-    const { data, error } = await db()
-      .from('bookings')
-      .select('status, arrive, depart, sites, guests, extras, total_cents, name')
-      .eq('stripe_session_id', sessionId)
-      .maybeSingle()
-    if (error) throw error
-    if (!data) return json({ error: 'not_found' }, 404)
-    const b = data as Pick<BookingRow, 'status' | 'arrive' | 'depart' | 'sites' | 'guests' | 'extras' | 'total_cents' | 'name'>
+    const rows = await db().query(
+      'select status, arrive::text, depart::text, sites, guests, extras, total_cents, name from bookings where stripe_session_id = $1',
+      [sessionId],
+    )
+    if (!rows[0]) return json({ error: 'not_found' }, 404)
+    const b = rows[0] as Pick<BookingRow, 'status' | 'arrive' | 'depart' | 'sites' | 'guests' | 'extras' | 'total_cents' | 'name'>
     return json({
       status: b.status,
       arrive: b.arrive,

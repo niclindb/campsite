@@ -16,9 +16,8 @@ export const GET = (request: Request) =>
       return json({ error: 'bad_dates', message: 'Please pick an arrival and a later departure.' }, 400)
     }
 
-    const { data, error } = await db().rpc('night_usage', { p_from: arrive, p_to: depart })
-    if (error) throw error
-    const nights = (data as { night: string; sites_used: number; hookups_used: number }[]).map((n) => ({
+    const rows = await db().query('select night::text, sites_used, hookups_used from night_usage($1, $2)', [arrive, depart])
+    const nights = (rows as { night: string; sites_used: number; hookups_used: number }[]).map((n) => ({
       night: String(n.night).slice(0, 10),
       sitesFree: Math.max(0, site.siteCount - n.sites_used),
       hookupsFree: Math.max(0, site.hookupsPerNight - n.hookups_used),

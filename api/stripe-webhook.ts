@@ -3,7 +3,7 @@
 // confirms the booking and sends the emails; an expired one frees the sites.
 
 import type Stripe from 'stripe'
-import { db, env, handle, json, stripe, type BookingRow } from './_lib/server.js'
+import { bookingColumns, db, env, handle, json, stripe, type BookingRow } from './_lib/server.js'
 import { sendBookingEmails } from './_lib/email.js'
 
 export const POST = (request: Request) =>
@@ -27,16 +27,14 @@ export const POST = (request: Request) =>
       (event.type === 'checkout.session.completed' && session.payment_status === 'paid') ||
       event.type === 'checkout.session.async_payment_succeeded'
     ) {
-      const { data, error } = await db().rpc('confirm_booking', { p_id: bookingId, p_session_id: session.id })
-      if (error) throw error
+      const rows = await db().query(`select ${bookingColumns} from confirm_booking($1, $2)`, [bookingId, session.id])
       // Only the first delivery of this event confirms the booking and emails.
-      const booking = (data as BookingRow[])[0]
+      const booking = rows[0] as BookingRow | undefined
       if (booking) await sendBookingEmails(booking, session.amount_total ?? booking.total_cents)
     }
 
     if (event.type === 'checkout.session.expired') {
-      const { error } = await db().rpc('expire_booking', { p_id: bookingId })
-      if (error) throw error
+      await db().query('select expire_booking($1)', [bookingId])
     }
 
     return json({ received: true })

@@ -9,8 +9,8 @@ export const POST = (request: Request) =>
     const { bookingId } = (await request.json().catch(() => ({}))) as { bookingId?: string }
     if (!bookingId || !/^[0-9a-f-]{36}$/.test(bookingId)) return json({ ok: false }, 400)
 
-    const { data } = await db().from('bookings').select('status, stripe_session_id').eq('id', bookingId).maybeSingle()
-    const row = data as { status: string; stripe_session_id: string | null } | null
+    const rows = await db().query('select status, stripe_session_id from bookings where id = $1', [bookingId])
+    const row = rows[0] as { status: string; stripe_session_id: string | null } | null
     if (!row || row.status !== 'held') return json({ ok: true })
 
     // Close the payment page first, so it can't be paid after the sites are freed.
@@ -19,6 +19,6 @@ export const POST = (request: Request) =>
       if (session.status !== 'open') return json({ ok: true })
       await stripe().checkout.sessions.expire(row.stripe_session_id)
     }
-    await db().rpc('expire_booking', { p_id: bookingId })
+    await db().query('select expire_booking($1)', [bookingId])
     return json({ ok: true })
   })

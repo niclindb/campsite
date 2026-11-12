@@ -1,8 +1,8 @@
--- Northern Oasis Camping: bookings database (Supabase / Postgres).
--- Run this once in Supabase -> SQL Editor -> New query. It is safe to run again.
+-- Northern Oasis Camping: bookings database (Neon Postgres).
+-- Run this once in the Neon console -> SQL Editor. It is safe to run again.
 --
--- The website's server functions (api/) call the functions at the bottom with
--- the service role key. Nothing here is readable from the browser.
+-- Only the website's server functions (api/) talk to this database, using the
+-- DATABASE_URL setting. Nothing here is reachable from the browser.
 
 -- One row per booking. A booking starts as 'held' while the guest pays on
 -- Stripe, becomes 'confirmed' when Stripe says the payment went through, and
@@ -32,7 +32,7 @@ create table if not exists bookings (
 create index if not exists bookings_dates on bookings (arrive, depart);
 
 -- Nights the hosts close by hand, e.g. sites sold on Hipcamp or a family
--- weekend. Add a row in Supabase -> Table Editor -> blocked_nights.
+-- weekend. Add a row in the Neon console -> Tables -> blocked_nights.
 -- `sites` is how many of the 5 sites are taken that night.
 create table if not exists blocked_nights (
   night  date primary key,
@@ -112,8 +112,8 @@ language sql as $$
   update bookings set status = 'expired' where id = p_id and status = 'held'
 $$;
 
--- Only the website's server (service role) may call these. Supabase exposes
--- functions in the public schema to the browser roles unless told otherwise.
+-- If this schema is ever loaded into Supabase, which exposes public functions
+-- to browser roles, only its service role may call these. On Neon this does nothing.
 do $$
 declare f text;
 begin

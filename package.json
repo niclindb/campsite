@@ -11,7 +11,7 @@
     "test:db": "node scripts/test-db.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.119.0",
+    "@neondatabase/serverless": "^1.2.0",
     "nodemailer": "^7.0.13",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -2,7 +2,7 @@
 // Settings come from Vercel environment variables (see BOOKING_SETUP.md).
 
 import Stripe from 'stripe'
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { neon, type NeonQueryFunction } from '@neondatabase/serverless'
 
 export const env = (name: string) => process.env[name]?.trim() || ''
 
@@ -27,14 +27,20 @@ export const stripe = () => {
   return stripeClient
 }
 
-let dbClient: SupabaseClient | undefined
+// The Neon database. Vercel's Neon integration sets DATABASE_URL.
+// Each query runs on its own, so anything that must be checked and changed
+// together lives in one SQL function in db/schema.sql.
+let dbClient: NeonQueryFunction<false, false> | undefined
 export const db = () => {
-  need('SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY')
-  dbClient ??= createClient(env('SUPABASE_URL'), env('SUPABASE_SERVICE_ROLE_KEY'), {
-    auth: { persistSession: false, autoRefreshToken: false },
-  })
+  const url = env('DATABASE_URL') || env('POSTGRES_URL')
+  if (!url) throw new NotConfigured('Missing settings: DATABASE_URL')
+  dbClient ??= neon(url)
   return dbClient
 }
+
+// Booking columns with dates as plain YYYY-MM-DD text.
+export const bookingColumns =
+  'id::text, status, arrive::text, depart::text, sites, guests, hookups, extras, total_cents, name, email, phone, note, stripe_session_id'
 
 // Turns any thrown error into a response the booking page can show.
 export const handle = async (fn: () => Promise<Response>) => {

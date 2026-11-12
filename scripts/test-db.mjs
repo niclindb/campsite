@@ -1,10 +1,10 @@
-// Checks the booking database functions in supabase/schema.sql against an
+// Checks the booking database functions in db/schema.sql against an
 // in-memory Postgres (PGlite). Run with: npm run test:db
 import { PGlite } from '@electric-sql/pglite'
 import { readFileSync } from 'node:fs'
 const db = new PGlite()
-await db.exec(readFileSync(new URL("../supabase/schema.sql", import.meta.url), "utf8"))
-await db.exec(readFileSync(new URL("../supabase/schema.sql", import.meta.url), "utf8")) // re-runnable
+await db.exec(readFileSync(new URL("../db/schema.sql", import.meta.url), "utf8"))
+await db.exec(readFileSync(new URL("../db/schema.sql", import.meta.url), "utf8")) // re-runnable
 const hold = (a, d, sites, hookups = 0) => db.query(
   `select hold_booking($1,$2,$3,2,$4,'[]'::jsonb,100,'n','e@x.com',null,null,5,2,30) as id`, [a, d, sites, hookups])
   .then(r => r.rows[0].id).catch(e => 'ERR:' + e.message)
