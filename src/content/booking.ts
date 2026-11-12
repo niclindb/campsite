@@ -1,4 +1,4 @@
-import { addOns, site, type AddOn } from './site'
+import { addOns, site, type AddOn } from './site.js'
 
 // Date and price helpers for the booking form. Dates are plain
 // "YYYY-MM-DD" strings, as used by <input type="date">, and are always
@@ -9,10 +9,10 @@ const DAY = 86_400_000
 const toTime = (iso: string) => Date.parse(`${iso}T00:00:00Z`)
 const toIso = (time: number) => new Date(time).toISOString().slice(0, 10)
 
-export const todayIso = () => {
-  const now = new Date()
-  return toIso(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
-}
+// Today's date in the camp's time zone (Michigan), so "today" is the same for
+// a guest in Michigan and for the server.
+export const todayIso = (now = new Date()) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: site.timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now)
 
 export const addDays = (iso: string, days: number) => toIso(toTime(iso) + days * DAY)
 
@@ -43,6 +43,9 @@ export type Stay = { arrive: string; depart: string; sites: number; guests: numb
 
 // The add-ons picked, in menu order. Add-ons are one-time fees per stay.
 export const pickedAddOns = (stay: Stay): AddOn[] => addOns.filter((a) => stay.extras.includes(a.name))
+
+// Electric hookups in a stay (one per booking at most; 2 a night in all).
+export const hookupsIn = (stay: Stay) => (pickedAddOns(stay).some((a) => a.hookup) ? 1 : 0)
 
 export type Quote =
   | { ok: false; message: string | null }

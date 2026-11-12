@@ -3,5 +3,11 @@
   "framework": "vite",
   "installCommand": "npm ci --include=dev",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "crons": [
+    {
+      "path": "/api/keepalive",
+      "schedule": "0 9 * * *"
+    }
+  ]
 }

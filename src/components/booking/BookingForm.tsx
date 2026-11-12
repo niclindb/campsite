@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { addOns, bookPage, site } from '../../content/site'
-import { addDays, addMonths, formatDay, pickedAddOns, quoteStay, todayIso, type Stay } from '../../content/booking'
+import { addDays, addMonths, formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../../content/booking'
 import Icon from '../Icon'
 import ArrowIcon from '../ArrowIcon'
+import { instantBooking } from './instant'
 
 // Booking requests are emailed to the hosts through Formspree.
 const formId = import.meta.env.VITE_BOOKING_FORMSPREE_ID || bookPage.formspreeId
+
+// Free sites and hookups across every night of the chosen dates.
+type Availability =
+  | { state: 'idle' | 'loading' | 'error' }
+  | { state: 'ready'; sitesFree: number; hookupsFree: number; fullNights: string[] }
 
 type StepperProps = { label: string; value: number; min: number; max: number; onChange: (n: number) => void }
 
@@ -51,10 +57,24 @@ const BookingForm = () => {
   // Errors show after the first Send attempt, then update as people fix them.
   const [submitted, setSubmitted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
+  const [serverError, setServerError] = useState('')
+  const [notice, setNotice] = useState('')
+  const [avail, setAvail] = useState<Availability>({ state: 'idle' })
   const successRef = useRef<HTMLHeadingElement>(null)
   // Today's date is only known in the browser (the page is pre-rendered).
   const [today, setToday] = useState('')
   useEffect(() => setToday(todayIso()), [])
+
+  // Back from an unpaid Stripe page: release the held sites.
+  useEffect(() => {
+    if (!instantBooking) return
+    const params = new URLSearchParams(window.location.search)
+    const cancelled = params.get('cancelled')
+    if (!cancelled) return
+    setNotice(bookPage.instant.cancelledNote)
+    fetch('/api/cancel-hold', { method: 'POST', body: JSON.stringify({ bookingId: cancelled }) }).catch(() => {})
+    window.history.replaceState(null, '', window.location.pathname)
+  }, [])
   useEffect(() => {
     if (status !== 'sent') return
     // Bring the thank-you into view (below the sticky header) and focus it.
@@ -69,6 +89,33 @@ const BookingForm = () => {
   const shown = (f: keyof Details) => (submitted ? errors[f] : undefined)
   const extras = pickedAddOns(stay)
   const maxGuests = stay.sites * site.maxGuestsPerSite
+  const ready = avail.state === 'ready' ? avail : null
+  const maxSites = ready ? Math.max(1, Math.min(site.siteCount, ready.sitesFree)) : site.siteCount
+  const soldOut = !!ready && (ready.sitesFree < stay.sites || (hookupsIn(stay) > ready.hookupsFree))
+
+  // Live availability for the chosen dates.
+  const { arrive, depart } = stay
+  const datesOk = quote.ok
+  useEffect(() => {
+    if (!instantBooking || !datesOk) {
+      setAvail({ state: 'idle' })
+      return
+    }
+    const controller = new AbortController()
+    setAvail({ state: 'loading' })
+    fetch(`/api/availability?arrive=${arrive}&depart=${depart}`, { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d: { nights: { night: string; sitesFree: number; hookupsFree: number }[] }) =>
+        setAvail({
+          state: 'ready',
+          sitesFree: Math.min(...d.nights.map((n) => n.sitesFree)),
+          hookupsFree: Math.min(...d.nights.map((n) => n.hookupsFree)),
+          fullNights: d.nights.filter((n) => n.sitesFree === 0).map((n) => n.night),
+        }),
+      )
+      .catch((err: Error) => err.name !== 'AbortError' && setAvail({ state: 'error' }))
+    return () => controller.abort()
+  }, [arrive, depart, datesOk])
 
   const onArrive = (arrive: string) => {
     // Keep the departure after the arrival; default to one night.
@@ -93,6 +140,29 @@ const BookingForm = () => {
     const firstBad = (['name', 'email'] as const).find((f) => errors[f])
     if (firstBad) {
       e.currentTarget.querySelector<HTMLElement>(`[name="${firstBad}"]`)?.focus()
+      return
+    }
+
+    if (instantBooking) {
+      if (soldOut) return
+      setStatus('sending')
+      setServerError('')
+      try {
+        const res = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ ...stay, ...details }),
+        })
+        const data = (await res.json().catch(() => ({}))) as { url?: string; message?: string }
+        if (res.ok && data.url) {
+          window.location.assign(data.url)
+          return
+        }
+        setServerError(data.message ?? '')
+        setStatus('error')
+      } catch {
+        setStatus('error')
+      }
       return
     }
 
@@ -178,7 +248,7 @@ const BookingForm = () => {
                 onChange={(e) => update({ depart: e.target.value })}
               />
             </label>
-            <Stepper label="Sites" value={stay.sites} min={1} max={site.siteCount} onChange={onSites} />
+            <Stepper label="Sites" value={stay.sites} min={1} max={maxSites} onChange={onSites} />
             <Stepper label="Guests" value={stay.guests} min={1} max={maxGuests} onChange={(guests) => update({ guests })} />
           </div>
           <p className="bk-help">{bookPage.sitesHelp}</p>
@@ -188,16 +258,21 @@ const BookingForm = () => {
           <legend>{bookPage.addOnsTitle}</legend>
           <p className="bk-help">{bookPage.addOnsNote}</p>
           <div className="bk-extras">
-            {addOns.map((a) => (
-              <label key={a.name} className={`bk-extra${stay.extras.includes(a.name) ? ' is-on' : ''}`}>
-                <input type="checkbox" checked={stay.extras.includes(a.name)} onChange={() => toggleExtra(a.name)} />
+            {addOns.map((a) => {
+              const on = stay.extras.includes(a.name)
+              // Both hookups taken on one of the nights: can't add one.
+              const gone = !!a.hookup && !on && !!ready && ready.hookupsFree === 0
+              return (
+              <label key={a.name} className={`bk-extra${on ? ' is-on' : ''}${gone ? ' is-gone' : ''}`}>
+                <input type="checkbox" checked={on} disabled={gone} onChange={() => toggleExtra(a.name)} />
                 <span className="bk-extra-text">
                   <span className="bk-extra-name">{a.name}</span>
-                  <span className="bk-extra-note">{a.note}</span>
+                  <span className="bk-extra-note">{gone ? bookPage.instant.hookupsGone : a.note}</span>
                 </span>
                 <span className="bk-extra-price">{money(a.price)}</span>
               </label>
-            ))}
+              )
+            })}
           </div>
         </fieldset>
 
@@ -258,6 +333,20 @@ const BookingForm = () => {
               </div>
             </dl>
             <p className="bk-guests">{plural(stay.guests, 'guest')}</p>
+            {instantBooking && (
+              <p className={`bk-avail${soldOut ? ' is-out' : ''}`}>
+                {avail.state === 'loading' && bookPage.instant.checking}
+                {avail.state === 'error' && bookPage.instant.checkFailed}
+                {ready &&
+                  (ready.sitesFree === 0
+                    ? `${bookPage.instant.fullOn} ${ready.fullNights.map(formatDay).join(', ')}. ${bookPage.instant.tryOther}`
+                    : soldOut && ready.sitesFree < stay.sites
+                      ? `Only ${plural(ready.sitesFree, 'site')} free on every night. ${bookPage.instant.fewerSites}`
+                      : soldOut
+                        ? bookPage.instant.hookupsGone
+                        : `${ready.sitesFree === site.siteCount ? `All ${site.siteCount}` : `At least ${ready.sitesFree}`} sites free every night of your stay.`)}
+              </p>
+            )}
           </>
         ) : quote.message ? (
           <p className="bk-error" role="alert">{quote.message}</p>
@@ -268,12 +357,21 @@ const BookingForm = () => {
           </p>
         )}
 
-        {status === 'error' && <p className="bk-error" role="alert">{bookPage.errorText}</p>}
+        {notice && <p className="bk-notice">{notice}</p>}
+        {status === 'error' && (
+          <p className="bk-error" role="alert">
+            {serverError || (instantBooking ? bookPage.instant.errorText : bookPage.errorText)}
+          </p>
+        )}
 
-        <button type="submit" className="hero-btn primary bk-cta" disabled={status === 'sending'}>
-          {status === 'sending' ? bookPage.sendingLabel : bookPage.submitLabel}
+        <button type="submit" className="hero-btn primary bk-cta" disabled={status === 'sending' || soldOut}>
+          {status === 'sending'
+            ? instantBooking ? bookPage.instant.sendingLabel : bookPage.sendingLabel
+            : instantBooking
+              ? quote.ok ? `${bookPage.instant.submitLabel} ${money(quote.total)}` : bookPage.instant.submitLabel
+              : bookPage.submitLabel}
         </button>
-        <p className="bk-handoff">{bookPage.payNote}</p>
+        <p className="bk-handoff">{instantBooking ? bookPage.instant.payNote : bookPage.payNote}</p>
         <a className="arrow-link bk-hipcamp" href={site.hipcampUrl} target="_blank" rel="noopener">
           {bookPage.hipcampLabel} <ArrowIcon />
         </a>
