@@ -25,9 +25,9 @@ export const site = {
     reviewsLabel: '150+',
     badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
   },
-  // Contact details are still to be decided. Leave blank to hide them.
-  contactEmail: '',
-  contactPhone: '',
+  // Contact details shown in the Contact section (leave blank to show a placeholder).
+  contactEmail: 'lindberg30@yahoo.com',
+  contactPhone: '(906) 235-8177',
   // Formspree form that delivers Contact form messages by email. Public by design
   // (it sits in the form's address); VITE_FORMSPREE_ID overrides it if set.
   formspreeId: 'xppdwdoy',
