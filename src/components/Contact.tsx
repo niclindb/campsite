@@ -35,7 +35,7 @@ const Contact = () => {
                     m.external ? (
                       <a className="arrow-link" href={m.href} target="_blank" rel="noopener">{m.value} <ArrowIcon /></a>
                     ) : (
-                      <a href={m.href}>{m.value}</a>
+                      <a className="arrow-link" href={m.href}>{m.value}</a>
                     )
                   ) : (
                     <span className="contact-placeholder">{m.placeholder}</span>
