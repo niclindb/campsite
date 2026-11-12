@@ -125,19 +125,33 @@ export const planFor: Amenity[] = [
   { name: 'No hookups', detail: '30 amp electric can be added on for $25.', icon: 'plug' },
 ]
 
-// `hookup` marks the electric hookup, which is limited to site.hookupsPerNight a night.
-export type AddOn = { name: string; price: number; note: string; hookup?: boolean }
+// Extras a guest can add to a stay. Prices are one-time fees for the stay.
+// `kind`: 'rental' is gear we lend out and get back; 'extra' is everything else.
+// `max`: how many one booking can take. `perSite`: priced per site, so a
+// booking can't take more than it has sites. `perNight`: how many we have, so
+// how many can be out on any one night across all bookings (checked on the
+// server). `hookup` marks the electric hookup, limited to site.hookupsPerNight.
+export type AddOn = {
+  name: string
+  price: number
+  note: string
+  kind: 'rental' | 'extra'
+  max: number
+  perNight?: number
+  perSite?: boolean
+  hookup?: boolean
+}
 
 export const addOns: AddOn[] = [
-  { name: 'Tentsile tree tent', price: 80, note: '3 to 4 people, set up before you arrive' },
-  { name: 'Electric hookup', price: 25, note: '30 amp, 2 sites only', hookup: true },
-  { name: 'Hammock', price: 25, note: 'Large sleeping hammock with net' },
-  { name: 'Canoe', price: 20, note: 'Traditional canoe with paddles' },
-  { name: 'Kayak', price: 20, note: 'Recreational single; not for Lake Superior or rapids' },
-  { name: 'Gas grill', price: 20, note: 'Portable, tank included' },
-  { name: '4-person tent', price: 20, note: 'Older style, easy to set up' },
-  { name: 'Firewood bundle', price: 8, note: 'Waiting at your site when you arrive' },
-  { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
+  { name: 'Tentsile tree tent', price: 80, note: '3 to 4 people, set up before you arrive', kind: 'rental', max: 1, perNight: 1 },
+  { name: 'Hammock', price: 25, note: 'Large sleeping hammock with net', kind: 'rental', max: 1, perNight: 1 },
+  { name: '4-person tent', price: 20, note: 'Older style, easy to set up', kind: 'rental', max: 1, perNight: 1 },
+  { name: 'Canoe', price: 20, note: 'Traditional canoe with paddles', kind: 'rental', max: 3, perNight: 3 },
+  { name: 'Kayak', price: 20, note: 'Recreational single; not for Lake Superior or rapids', kind: 'rental', max: 3, perNight: 3 },
+  { name: 'Gas grill', price: 20, note: 'Portable, tank included', kind: 'rental', max: 1, perNight: 1 },
+  { name: 'Electric hookup', price: 25, note: '30 amp, per site, up to 2 sites', kind: 'extra', max: site.hookupsPerNight, perSite: true, perNight: site.hookupsPerNight, hookup: true },
+  { name: 'Firewood bundle', price: 8, note: 'Waiting at your site when you arrive', kind: 'extra', max: 5 },
+  { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop', kind: 'extra', max: 5 },
 ]
 
 // The booking page (/book). Guests send a booking request from the site;
@@ -150,8 +164,17 @@ export const bookPage = {
   intro: 'Pick your nights, how many sites you need and any extras. We\u2019ll confirm by email, usually within a day.',
   stayTitle: 'Your stay',
   sitesHelp: `A site is one camp setup: one tent or rig and one vehicle, up to ${site.maxGuestsPerSite} guests.`,
+  rentalsTitle: 'Gear to rent',
+  rentalsNote: 'We lend these out for your whole stay and you leave them at camp. One-time fee per stay.',
+  rentalLabel: 'Rental',
   addOnsTitle: 'Extras',
-  addOnsNote: 'One-time fees for your stay. Need two of something? Say so in your note.',
+  addOnsNote: 'One-time fees for your stay.',
+  datesLabel: 'Your dates',
+  datesPlaceholder: 'Add dates',
+  pickArrive: 'Pick your arrival day',
+  pickDepart: 'Now pick your departure day',
+  clearDates: 'Clear dates',
+  doneDates: 'Done',
   detailsTitle: 'Your details',
   notePlaceholder: 'Your rig and its length, arrival time, anything we should know',
   summaryTitle: 'Summary',
@@ -185,6 +208,8 @@ export const bookPage = {
     tryOther: 'Please try other dates.',
     fewerSites: 'Try fewer sites or other dates.',
     hookupsGone: 'Both hookups are taken on one of these nights.',
+    rentalGone: 'Already rented on one of these nights.',
+    itemsGone: 'Some of your extras are already rented on one of these nights.',
     cancelledNote: 'Your payment was cancelled, so nothing was charged and your sites were released.',
     steps: [
       { title: 'Pick your stay', detail: 'Choose your dates, sites and extras, and see what\u2019s free.' },

@@ -2,6 +2,7 @@
 // What the confirmation page shows after Stripe sends the guest back.
 // The Stripe session id is long and random, so only the guest has it.
 
+import { pickedLabel } from '../src/content/booking.js'
 import { db, handle, json, type BookingRow } from './_lib/server.js'
 
 export const GET = (request: Request) =>
@@ -21,7 +22,7 @@ export const GET = (request: Request) =>
       depart: b.depart,
       sites: b.sites,
       guests: b.guests,
-      extras: b.extras.map((x) => x.name),
+      extras: b.extras.map((x) => pickedLabel(x.name, x.qty ?? 1)),
       total: b.total_cents / 100,
       firstName: b.name.split(' ')[0],
     })

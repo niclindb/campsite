@@ -32,3 +32,17 @@ await db.query(`insert into blocked_nights(night, sites) values ('2027-08-01', 4
 ok(String(await hold('2027-08-01','2027-08-02',2)).includes('sold_out'),'blocked night counts')
 if (process.exitCode) console.log('\nSome checks failed.')
 else console.log('\nAll booking database checks passed.')
+
+// Rental limits (hold_booking with p_limits)
+const limits = JSON.stringify({ Canoe: 3, Hammock: 1 })
+const rent = (a, d, extras) => db.query(
+  `select hold_booking($1,$2,1,2,0,$3::jsonb,100,'n','e@x.com',null,null,5,2,$4::jsonb,30) as id`, [a, d, JSON.stringify(extras), limits])
+  .then(r => r.rows[0].id).catch(e => 'ERR:' + e.message)
+ok(!String(await rent('2027-09-01','2027-09-04',[{name:'Canoe',price:20,qty:2},{name:'Hammock',price:25,qty:1}])).startsWith('ERR'),'rent 2 canoes + hammock')
+ok(String(await rent('2027-09-03','2027-09-05',[{name:'Hammock',price:25,qty:1}])).includes('item_sold_out:Hammock'),'hammock taken that night')
+ok(!String(await rent('2027-09-04','2027-09-05',[{name:'Hammock',price:25,qty:1}])).startsWith('ERR'),'hammock free on checkout day')
+ok(String(await rent('2027-09-02','2027-09-03',[{name:'Canoe',price:20,qty:2}])).includes('item_sold_out:Canoe'),'4th canoe blocked')
+ok(!String(await rent('2027-09-02','2027-09-03',[{name:'Canoe',price:20,qty:1},{name:'Firewood bundle',price:8,qty:5}])).startsWith('ERR'),'3rd canoe ok, firewood unlimited')
+const iu = await db.query(`select item, used from item_usage('2027-09-02','2027-09-03') where item='Canoe'`)
+ok(iu.rows[0]?.used === 3, 'item_usage counts canoes')
+if (process.exitCode) console.log('\nSome rental checks failed.')

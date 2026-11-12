@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import { addOns, bookPage, site } from '../../content/site'
-import { addDays, addMonths, formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../../content/booking'
+import { addOns, bookPage, site, type AddOn } from '../../content/site'
+import { addMonths, formatDay, hookupsIn, maxFor, pickedAddOns, pickedLabel, quoteStay, todayIso, type Stay } from '../../content/booking'
 import Icon from '../Icon'
 import ArrowIcon from '../ArrowIcon'
 import { instantBooking } from './instant'
+import DateRangePicker from './DateRangePicker'
 
 // Booking requests are emailed to the hosts through Formspree.
 const formId = import.meta.env.VITE_BOOKING_FORMSPREE_ID || bookPage.formspreeId
@@ -11,7 +12,7 @@ const formId = import.meta.env.VITE_BOOKING_FORMSPREE_ID || bookPage.formspreeId
 // Free sites and hookups across every night of the chosen dates.
 type Availability =
   | { state: 'idle' | 'loading' | 'error' }
-  | { state: 'ready'; sitesFree: number; hookupsFree: number; fullNights: string[] }
+  | { state: 'ready'; sitesFree: number; hookupsFree: number; fullNights: string[]; items: Record<string, number> }
 
 type StepperProps = { label: string; value: number; min: number; max: number; onChange: (n: number) => void }
 
@@ -37,7 +38,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 type Details = { name: string; email: string; phone: string; note: string }
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
-const emptyStay: Stay = { arrive: '', depart: '', sites: 1, guests: 2, extras: [] }
+const emptyStay: Stay = { arrive: '', depart: '', sites: 1, guests: 2, extras: {} }
 const emptyDetails: Details = { name: '', email: '', phone: '', note: '' }
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
@@ -91,7 +92,12 @@ const BookingForm = () => {
   const maxGuests = stay.sites * site.maxGuestsPerSite
   const ready = avail.state === 'ready' ? avail : null
   const maxSites = ready ? Math.max(1, Math.min(site.siteCount, ready.sitesFree)) : site.siteCount
-  const soldOut = !!ready && (ready.sitesFree < stay.sites || (hookupsIn(stay) > ready.hookupsFree))
+  // How many of an add-on are still free on every night (rentals and hookups).
+  const freeOf = (a: AddOn) =>
+    !ready ? Infinity : a.hookup ? ready.hookupsFree : a.perNight ? (ready.items[a.name] ?? a.perNight) : Infinity
+  const itemsShort = extras.some((p) => p.qty > freeOf(p.addOn))
+  const hookupsShort = !!ready && hookupsIn(stay) > ready.hookupsFree
+  const soldOut = !!ready && (ready.sitesFree < stay.sites || itemsShort)
 
   // Live availability for the chosen dates.
   const { arrive, depart } = stay
@@ -105,27 +111,27 @@ const BookingForm = () => {
     setAvail({ state: 'loading' })
     fetch(`/api/availability?arrive=${arrive}&depart=${depart}`, { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((d: { nights: { night: string; sitesFree: number; hookupsFree: number }[] }) =>
+      .then((d: { nights: { night: string; sitesFree: number; hookupsFree: number }[]; items?: Record<string, number> }) =>
         setAvail({
           state: 'ready',
           sitesFree: Math.min(...d.nights.map((n) => n.sitesFree)),
           hookupsFree: Math.min(...d.nights.map((n) => n.hookupsFree)),
           fullNights: d.nights.filter((n) => n.sitesFree === 0).map((n) => n.night),
+          items: d.items ?? {},
         }),
       )
       .catch((err: Error) => err.name !== 'AbortError' && setAvail({ state: 'error' }))
     return () => controller.abort()
   }, [arrive, depart, datesOk])
 
-  const onArrive = (arrive: string) => {
-    // Keep the departure after the arrival; default to one night.
-    const depart = !stay.depart || stay.depart <= arrive ? (arrive ? addDays(arrive, 1) : '') : stay.depart
-    update({ arrive, depart })
-  }
   // Fewer sites can hold fewer guests.
   const onSites = (sites: number) => update({ sites, guests: Math.min(stay.guests, sites * site.maxGuestsPerSite) })
-  const toggleExtra = (name: string) =>
-    update({ extras: stay.extras.includes(name) ? stay.extras.filter((x) => x !== name) : [...stay.extras, name] })
+  const setExtra = (name: string, qty: number) => {
+    const extras = { ...stay.extras }
+    if (qty > 0) extras[name] = qty
+    else delete extras[name]
+    update({ extras })
+  }
   const onDetail = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setDetails((d) => ({ ...d, [e.target.name]: e.target.value }))
 
@@ -134,7 +140,7 @@ const BookingForm = () => {
     if (status === 'sending') return
     setSubmitted(true)
     if (!quote.ok) {
-      e.currentTarget.querySelector<HTMLElement>('input[type=date]')?.focus()
+      e.currentTarget.querySelector<HTMLElement>('.bk-dates-trigger')?.focus()
       return
     }
     const firstBad = (['name', 'email'] as const).find((f) => errors[f])
@@ -151,7 +157,7 @@ const BookingForm = () => {
         const res = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ ...stay, ...details }),
+          body: JSON.stringify({ ...stay, extras: Object.fromEntries(extras.map((p) => [p.addOn.name, p.qty])), ...details }),
         })
         const data = (await res.json().catch(() => ({}))) as { url?: string; message?: string }
         if (res.ok && data.url) {
@@ -174,7 +180,7 @@ const BookingForm = () => {
     body.set('Nights', String(quote.nights))
     body.set('Sites', String(stay.sites))
     body.set('Guests', String(stay.guests))
-    body.set('Extras', extras.length ? extras.map((a) => `${a.name} (${money(a.price)})`).join(', ') : 'None')
+    body.set('Extras', extras.length ? extras.map((p) => `${p.addOn.kind === 'rental' ? 'Rental: ' : ''}${pickedLabel(p.addOn.name, p.qty)} (${money(p.addOn.price * p.qty)})`).join(', ') : 'None')
     body.set('Total', money(quote.total))
     body.set('Name', details.name.trim())
     body.set('Email', details.email.trim())
@@ -229,25 +235,65 @@ const BookingForm = () => {
     'aria-describedby': shown(f) ? `bk-${f}-error` : undefined,
   })
 
+  // One add-on: a checkbox when only one can be taken, otherwise a - / + picker.
+  const extraRow = (a: AddOn) => {
+    const qty = Math.min(stay.extras[a.name] ?? 0, maxFor(a, stay.sites))
+    const free = freeOf(a)
+    const most = Math.max(0, Math.min(maxFor(a, stay.sites), free))
+    // None left on one of the nights: can't add it.
+    const gone = qty === 0 && most === 0 && !!ready
+    const short = qty > free
+    const note = gone || short
+      ? a.hookup ? bookPage.instant.hookupsGone : bookPage.instant.rentalGone
+      : a.note
+    const tag = a.kind === 'rental' ? <span className="bk-tag">{bookPage.rentalLabel}</span> : null
+    const price = <span className="bk-extra-price">{money(a.price)}{a.perSite ? <small> / site</small> : null}</span>
+    const cls = `bk-extra${qty ? ' is-on' : ''}${gone ? ' is-gone' : ''}${short ? ' is-short' : ''}`
+    if (a.max === 1) {
+      return (
+        <label key={a.name} className={cls}>
+          <input type="checkbox" checked={qty > 0} disabled={gone} onChange={() => setExtra(a.name, qty ? 0 : 1)} />
+          <span className="bk-extra-text">
+            <span className="bk-extra-name">{a.name} {tag}</span>
+            <span className="bk-extra-note">{note}</span>
+          </span>
+          {price}
+        </label>
+      )
+    }
+    return (
+      <div key={a.name} className={`${cls} has-qty`}>
+        <span className="bk-extra-text">
+          <span className="bk-extra-name" id={`bk-x-${a.name}`}>{a.name} {tag}</span>
+          <span className="bk-extra-note">{note}</span>
+          {price}
+        </span>
+        <div className="bk-qty" role="group" aria-labelledby={`bk-x-${a.name}`}>
+          <button type="button" aria-label={`Fewer: ${a.name}`} disabled={qty <= 0} onClick={() => setExtra(a.name, qty - 1)}>
+            &minus;
+          </button>
+          <output aria-live="polite">{qty}</output>
+          <button type="button" aria-label={`More: ${a.name}`} disabled={qty >= most} onClick={() => setExtra(a.name, qty + 1)}>
+            +
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <form className="bk-form" onSubmit={onSubmit} noValidate aria-busy={status === 'sending'} aria-label="Booking request">
       <div className="bk-main">
         <fieldset className="bk-group">
           <legend>{bookPage.stayTitle}</legend>
           <div className="bk-fields">
-            <label className="bk-field">
-              <span className="bk-label">Arrive</span>
-              <input type="date" value={stay.arrive} min={today || undefined} max={latest} onChange={(e) => onArrive(e.target.value)} />
-            </label>
-            <label className="bk-field">
-              <span className="bk-label">Depart</span>
-              <input
-                type="date"
-                value={stay.depart}
-                min={stay.arrive ? addDays(stay.arrive, 1) : today || undefined}
-                onChange={(e) => update({ depart: e.target.value })}
-              />
-            </label>
+            <DateRangePicker
+              arrive={stay.arrive}
+              depart={stay.depart}
+              today={today}
+              latest={latest}
+              onChange={(arrive, depart) => update({ arrive, depart })}
+            />
             <Stepper label="Sites" value={stay.sites} min={1} max={maxSites} onChange={onSites} />
             <Stepper label="Guests" value={stay.guests} min={1} max={maxGuests} onChange={(guests) => update({ guests })} />
           </div>
@@ -255,25 +301,15 @@ const BookingForm = () => {
         </fieldset>
 
         <fieldset className="bk-group">
+          <legend>{bookPage.rentalsTitle}</legend>
+          <p className="bk-help">{bookPage.rentalsNote}</p>
+          <div className="bk-extras">{addOns.filter((a) => a.kind === 'rental').map(extraRow)}</div>
+        </fieldset>
+
+        <fieldset className="bk-group">
           <legend>{bookPage.addOnsTitle}</legend>
           <p className="bk-help">{bookPage.addOnsNote}</p>
-          <div className="bk-extras">
-            {addOns.map((a) => {
-              const on = stay.extras.includes(a.name)
-              // Both hookups taken on one of the nights: can't add one.
-              const gone = !!a.hookup && !on && !!ready && ready.hookupsFree === 0
-              return (
-              <label key={a.name} className={`bk-extra${on ? ' is-on' : ''}${gone ? ' is-gone' : ''}`}>
-                <input type="checkbox" checked={on} disabled={gone} onChange={() => toggleExtra(a.name)} />
-                <span className="bk-extra-text">
-                  <span className="bk-extra-name">{a.name}</span>
-                  <span className="bk-extra-note">{gone ? bookPage.instant.hookupsGone : a.note}</span>
-                </span>
-                <span className="bk-extra-price">{money(a.price)}</span>
-              </label>
-              )
-            })}
-          </div>
+          <div className="bk-extras">{addOns.filter((a) => a.kind !== 'rental').map(extraRow)}</div>
         </fieldset>
 
         <fieldset className="bk-group">
@@ -321,10 +357,13 @@ const BookingForm = () => {
                 </dt>
                 <dd>{money(quote.sitesTotal)}</dd>
               </div>
-              {extras.map((a) => (
-                <div key={a.name}>
-                  <dt>{a.name}</dt>
-                  <dd>{money(a.price)}</dd>
+              {extras.map(({ addOn, qty }) => (
+                <div key={addOn.name}>
+                  <dt>
+                    {pickedLabel(addOn.name, qty)}
+                    {addOn.kind === 'rental' && <span className="bk-side-tag"> (rental)</span>}
+                  </dt>
+                  <dd>{money(addOn.price * qty)}</dd>
                 </div>
               ))}
               <div className="bk-total">
@@ -343,7 +382,7 @@ const BookingForm = () => {
                     : soldOut && ready.sitesFree < stay.sites
                       ? `Only ${plural(ready.sitesFree, 'site')} free on every night. ${bookPage.instant.fewerSites}`
                       : soldOut
-                        ? bookPage.instant.hookupsGone
+                        ? hookupsShort ? bookPage.instant.hookupsGone : bookPage.instant.itemsGone
                         : `${ready.sitesFree === site.siteCount ? `All ${site.siteCount}` : `At least ${ready.sitesFree}`} sites free every night of your stay.`)}
               </p>
             )}

@@ -11,6 +11,7 @@ Do the steps in order. Use Stripe **test mode** first, then switch to live keys 
 
 1. In Vercel, open **northern_oasis → Storage → Create Database → Neon**, pick the free plan, and connect it to the project with **Production** and **Preview** both ticked. This adds `DATABASE_URL` (or `NEON_DATABASE_URL`) for you. Leave optional extras such as Auth off.
 2. Open the database in the Neon console (Vercel's **Open in Neon** button), go to **SQL Editor**, paste all of [`db/schema.sql`](db/schema.sql), and press **Run**.
+   Run it again whenever `db/schema.sql` changes (it is safe to re-run). The rental limits update (November 2026) needs this before it goes live.
 3. Bookings then show up in **Tables → bookings**. To close nights by hand (for example sites sold on Hipcamp), add rows to **blocked_nights**: the date, and how many of the 5 sites are taken.
 
 Neon's free plan sleeps when idle and wakes on the next request in under a second, so nothing needs to keep it awake.
