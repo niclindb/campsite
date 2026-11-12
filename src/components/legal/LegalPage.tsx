@@ -20,6 +20,7 @@ type Props = {
   summary: LegalHighlight[]
   sections: LegalSection[]
   image: string
+  imageSrcSet?: string
 }
 
 // Which section you're reading, so the table of contents can highlight it:
@@ -80,7 +81,7 @@ const Section = ({ s, n }: { s: LegalSection; n: number }) => (
 
 // A policy page: photo banner, "the short version" cards, a table of contents
 // that follows you down the page, then the full wording section by section.
-const LegalPage = ({ title, intro, lead, eyebrow, summary, sections, image }: Props) => {
+const LegalPage = ({ title, intro, lead, eyebrow, summary, sections, image, imageSrcSet }: Props) => {
   const ids = useMemo(() => sections.map((s) => s.id), [sections])
   const active = useActiveSection(ids)
   const tocRef = useRef<HTMLElement>(null)
@@ -97,7 +98,7 @@ const LegalPage = ({ title, intro, lead, eyebrow, summary, sections, image }: Pr
   return (
     <div className="legal-page">
       <section className="legal-banner">
-        <img src={image} alt="" />
+        <img src={image} srcSet={imageSrcSet} sizes="100vw" alt="" />
         <div className="container">
           <p className="contact-eyebrow">{eyebrow}</p>
           <h1>{title}</h1>

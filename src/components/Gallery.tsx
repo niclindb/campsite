@@ -64,7 +64,7 @@ const Gallery = () => {
             }}
           >
             <button onClick={() => setOpen(cur)} aria-label={`Enlarge: ${p.alt}`}>
-              <img src={p.src} alt={p.alt} />
+              <img src={p.src} srcSet={p.srcSet || undefined} sizes="(max-width: 700px) 90vw, 620px" alt={p.alt} />
             </button>
             <figcaption>{p.alt}</figcaption>
           </figure>
@@ -82,7 +82,7 @@ const Gallery = () => {
                 aria-label={`Show: ${ph.alt}`}
                 aria-current={i === cur}
               >
-                <img src={ph.src} alt="" loading="lazy" />
+                <img src={ph.thumb} alt="" loading="lazy" />
               </button>
             ))}
           </div>

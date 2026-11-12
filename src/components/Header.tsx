@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import logo from '../assets/images/logo.webp'
+import logo from '../assets/images/logo.webp?w=320&imagetools'
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

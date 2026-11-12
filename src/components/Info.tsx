@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { contact, faqGroups, infoGlance, infoPage, site, type FaqItem } from '../content/site'
 import bannerImage from '../assets/images/info.webp'
+import bannerSrcSet from '../assets/images/info.webp?w=800;1600&format=webp&quality=72&as=srcset&imagetools'
 import Icon from './Icon'
 import ArrowIcon from './ArrowIcon'
 
@@ -39,7 +40,7 @@ const Info = () => {
   return (
     <>
       <section className="info-banner">
-        <img src={bannerImage} alt="" />
+        <img src={bannerImage} srcSet={bannerSrcSet} sizes="100vw" alt="" />
         <div className="container">
           <p className="contact-eyebrow">{infoPage.eyebrow}</p>
           <h1>{infoPage.title}</h1>
