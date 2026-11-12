@@ -5,6 +5,7 @@ import BookPage from './pages/BookPage'
 import BookConfirmedPage from './pages/BookConfirmedPage'
 import InfoPage from './pages/InfoPage'
 import ExplorePage from './pages/ExplorePage'
+import NotFoundPage from './pages/NotFoundPage'
 
 export const routes: RouteRecord[] = [
   {
@@ -17,6 +18,8 @@ export const routes: RouteRecord[] = [
       { path: 'book/confirmed', element: <BookConfirmedPage /> },
       { path: 'info', element: <InfoPage /> },
       { path: 'explore', element: <ExplorePage /> },
+      // Any other address. Pre-rendered as 404.html (see vite.config.ts).
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]
