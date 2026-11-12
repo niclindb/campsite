@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { contact, faqGroups, infoGlance, infoPage, site, type FaqItem } from '../content/site'
 import bannerImage from '../assets/images/info.webp'
 import Icon from './Icon'
+import ArrowIcon from './ArrowIcon'
 
 // Answers and facts marked `pending` in site.ts show a dashed "to come" placeholder.
 const Pending = ({ text }: { text: string }) => <span className="contact-placeholder">{text}</span>
@@ -94,15 +95,15 @@ const Info = () => {
             <ul className="ask-methods">
               <li>
                 <Icon name="mail" size={18} />
-                {site.contactEmail ? <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> : <Pending text={contact.emailPlaceholder} />}
+                {site.contactEmail ? <a className="arrow-link" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> : <Pending text={contact.emailPlaceholder} />}
               </li>
               <li>
                 <Icon name="phone" size={18} />
-                {site.contactPhone ? <a href={`tel:${site.contactPhone.replace(/[^\d+]/g, '')}`}>{site.contactPhone}</a> : <Pending text={contact.phonePlaceholder} />}
+                {site.contactPhone ? <a className="arrow-link" href={`tel:${site.contactPhone.replace(/[^\d+]/g, '')}`}>{site.contactPhone}</a> : <Pending text={contact.phonePlaceholder} />}
               </li>
               <li>
                 <Icon name="chat" size={18} />
-                <a href={site.hipcampUrl} target="_blank" rel="noopener">{contact.hipcampLabel}</a>
+                <a className="arrow-link" href={site.hipcampUrl} target="_blank" rel="noopener">{contact.hipcampLabel} <ArrowIcon /></a>
               </li>
             </ul>
             <p className="contact-sign">— {site.hosts}</p>
