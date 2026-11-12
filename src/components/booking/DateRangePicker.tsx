@@ -12,6 +12,8 @@ type Props = {
   today: string
   latest?: string
   onChange: (arrive: string, depart: string) => void
+  // A problem with the dates (missing, not allowed, or full), shown under the field.
+  error?: string
 }
 
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
@@ -35,7 +37,7 @@ const monthDays = (first: string) => {
   return days
 }
 
-const DateRangePicker = ({ arrive, depart, today, latest, onChange }: Props) => {
+const DateRangePicker = ({ arrive, depart, today, latest, onChange, error }: Props) => {
   const [open, setOpen] = useState(false)
   const [view, setView] = useState('')
   // Tapping a month's name swaps the days for a month and year chooser.
@@ -102,10 +104,11 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange }: Props) => 
       <span className="bk-label" id="bk-dates-label">{bookPage.datesLabel}</span>
       <button
         type="button"
-        className={`bk-dates-trigger${open ? ' is-open' : ''}`}
+        className={`bk-dates-trigger${open ? ' is-open' : ''}${error ? ' is-invalid' : ''}`}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-labelledby="bk-dates-label bk-dates-value"
+        aria-describedby={error ? 'bk-dates-error' : undefined}
         onClick={toggle}
       >
         <Icon name="calendar" size={20} />
@@ -121,6 +124,7 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange }: Props) => 
           </span>
         </span>
       </button>
+      {error && <span className="bk-field-error bk-dates-error" id="bk-dates-error" role="alert">{error}</span>}
 
       {open && view && (
         <div className="bk-cal" role="dialog" aria-label={bookPage.datesLabel}>

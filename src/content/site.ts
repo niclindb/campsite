@@ -178,6 +178,7 @@ export const bookPage = {
   addOnsNote: 'One-time fees for your stay.',
   datesLabel: 'Your dates',
   datesPlaceholder: 'Add dates',
+  pickDatesError: 'Please pick your arrival and departure dates.',
   pickArrive: 'Pick your arrival day',
   pickDepart: 'Now pick your departure day',
   clearDates: 'Clear dates',

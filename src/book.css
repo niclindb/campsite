@@ -289,3 +289,7 @@
 .bk-cta.is-waiting { opacity: 0.55; filter: saturate(0.6); }
 .bk-cta.is-waiting:hover { transform: none; box-shadow: none; background-color: var(--secondary-color); color: #fdf8f3; }
 .bk-agree-hint { margin: -0.4rem 0 0; font-size: 0.85rem; text-align: center; color: #eabaac; font-weight: 600; }
+
+/* Dates field with a problem (missing, not allowed, or full) */
+.bk-dates-trigger.is-invalid { border-color: var(--secondary-color); background: #fff1ec; }
+.bk-dates-error { display: block; margin-top: 0.4rem; }
