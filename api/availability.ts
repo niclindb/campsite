@@ -8,12 +8,16 @@ import { db, handle, json } from './_lib/server.js'
 
 const isDate = (s: string | null): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s)
 
+// Long enough for a stay that spans the whole booking window; just a guard
+// against nonsense ranges.
+const MAX_NIGHTS = (site.bookingWindowMonths + 1) * 31
+
 export const GET = (request: Request) =>
   handle(async () => {
     const q = new URL(request.url).searchParams
     const arrive = q.get('arrive')
     const depart = q.get('depart')
-    if (!isDate(arrive) || !isDate(depart) || depart <= arrive || nightsBetween(arrive, depart) > 60) {
+    if (!isDate(arrive) || !isDate(depart) || depart <= arrive || nightsBetween(arrive, depart) > MAX_NIGHTS) {
       return json({ error: 'bad_dates', message: 'Please pick an arrival and a later departure.' }, 400)
     }
 
