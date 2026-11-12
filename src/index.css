@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+/* Cabin's @ is small, heavy and sits low, which looks odd in email addresses.
+   This face swaps in the device's plain sans-serif for just the @ sign. */
+@font-face {
+  font-family: 'At Sign';
+  src: local('Helvetica Neue'), local('Helvetica'), local('Arial'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans');
+  unicode-range: U+0040;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -12,7 +20,7 @@ body {
   margin: 0;
   background: #fdf8f3;
   color: #2a2a2a;
-  font-family: 'Cabin', 'Nunito', 'Open Sans', sans-serif;
+  font-family: 'At Sign', 'Cabin', 'Nunito', 'Open Sans', sans-serif;
   line-height: 1.6;
 }
 
