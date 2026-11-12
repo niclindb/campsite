@@ -4,9 +4,9 @@ import Icon, { type IconName } from './Icon'
 import ArrowIcon from './ArrowIcon'
 import ContactForm from './contact/ContactForm'
 
-// Messages are sent through Formspree. Create a free form at formspree.io and
-// set VITE_FORMSPREE_ID in .env.local (and in Vercel's environment variables).
-const formId = import.meta.env.VITE_FORMSPREE_ID
+// Messages are sent through Formspree, to the form in site.formspreeId.
+// VITE_FORMSPREE_ID (e.g. in .env.local) overrides it for testing.
+const formId = import.meta.env.VITE_FORMSPREE_ID || site.formspreeId
 
 type Method = { icon: IconName; label: string; value: string; href: string; placeholder?: string; external?: boolean }
 

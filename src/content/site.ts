@@ -28,6 +28,9 @@ export const site = {
   // Contact details are still to be decided. Leave blank to hide them.
   contactEmail: '',
   contactPhone: '',
+  // Formspree form that delivers Contact form messages by email. Public by design
+  // (it sits in the form's address); VITE_FORMSPREE_ID overrides it if set.
+  formspreeId: 'xppdwdoy',
 }
 
 // The Contact us section at the bottom of the home page.
