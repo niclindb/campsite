@@ -21,7 +21,7 @@ Neon's free plan sleeps when idle and wakes on the next request in under a secon
 2. Open **Developers → API keys** and copy the **Secret key** (`sk_test_...`).
 3. Open **Developers → Webhooks → Add endpoint**:
    - Endpoint URL: `https://<your site>/api/stripe-webhook`. Vercel's login wall (Deployment Protection) blocks Stripe on preview addresses, so for testing create a secret in **Vercel → Settings → Deployment Protection → Protection Bypass for Automation** and use `https://<preview address>/api/stripe-webhook?x-vercel-protection-bypass=<that secret>`.
-   - Events: `checkout.session.completed`, `checkout.session.expired`, `checkout.session.async_payment_succeeded`
+   - Events: `checkout.session.completed`, `checkout.session.expired`, `checkout.session.async_payment_succeeded`, `charge.refunded`
    - Then copy the endpoint's **Signing secret** (`whsec_...`).
 
 ## 3. Gmail (booking emails)
@@ -52,6 +52,7 @@ The repository is public, so none of these go in the code.
 1. Book a stay on the preview site and pay with Stripe's test card `4242 4242 4242 4242` (any future date, any CVC).
 2. Check that you land on the "You're booked" page, both emails arrive, and the booking shows as `confirmed` in Neon.
 3. Start another booking and press back on the Stripe page. The held sites should be released (status `expired`).
+4. Refund the first booking in full from Stripe (**Payments → the payment → Refund**). The booking should turn `cancelled` and its nights free up. A partial refund leaves the booking as it is.
 
 ## Going live
 
@@ -61,7 +62,7 @@ Finish Stripe's account activation form, swap `STRIPE_SECRET_KEY` and the webhoo
 
 - `api/availability.ts`: free sites and hookups per night.
 - `api/checkout.ts`: checks the stay, holds the sites for 35 minutes, opens Stripe Checkout (31 minutes).
-- `api/stripe-webhook.ts`: confirms paid bookings and sends the emails; frees expired ones.
+- `api/stripe-webhook.ts`: confirms paid bookings and sends the emails; frees expired ones; cancels fully refunded ones.
 - `api/cancel-hold.ts`: frees the sites when a guest backs out of the Stripe page.
 - `api/booking-status.ts`: what the confirmation page shows.
 - `db/schema.sql`: tables plus the `hold_booking` function, which checks and holds in one locked step so two guests can't both take the last site. `npm run test:db` checks it.
