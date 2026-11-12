@@ -16,7 +16,7 @@ export const legal = {
   updatedLabel: 'November 12, 2026',
   // The cancellation policy below is a proposal until the hosts approve it.
   // While this is false, the page marks it "Proposed" with a dashed note.
-  cancellationApproved: false,
+  cancellationApproved: true,
   cancellationDraftNote: 'Proposed policy, to be confirmed by the hosts.',
   // Shown in place of quiet hours until site.quietHours is filled in.
   quietHoursPlaceholder: 'Quiet hours to come',
@@ -201,10 +201,9 @@ export const termsPage = {
       body: [
         {
           list: [
-            'Cancel 7 or more days before your arrival day: full refund.',
-            'Cancel 2 to 6 days before your arrival day: 50% refund.',
-            'Cancel less than 48 hours before arrival, or don’t show up: no refund.',
-            'Leaving early: no refund for the nights you don’t use.',
+            `Cancel more than 48 hours before check-in time (${site.checkIn.split(' to ')[0]} on your arrival day): full refund.`,
+            'Cancel within 48 hours of check-in time: 50% refund.',
+            'After check-in time, including if you don’t show up or leave early: no refund.',
             'Changing dates: ask us. We’ll move your booking if the new dates are free; otherwise the cancellation rules above apply.',
             'If we have to cancel (for example a storm, fire ban, emergency or closure), you get a full refund.',
           ],

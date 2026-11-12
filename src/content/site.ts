@@ -27,7 +27,8 @@ export const site = {
   // Electric hookups sold per night, across all bookings.
   hookupsPerNight: 2,
   timeZone: 'America/Detroit',
-  cancellation: 'Moderate',
+  // Short version; the full policy is on the Terms page (src/content/legal.ts).
+  cancellation: 'Full refund up to 48 hours before arrival',
   // Contact details live in contact-info.ts.
   hipcampUrl: contactInfo.hipcampUrl,
   rating: {
