@@ -5,8 +5,8 @@
 import type Stripe from 'stripe'
 import { addOns, site } from '../src/content/site.js'
 import { formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../src/content/booking.js'
-import { bookingColumns, db, handle, json, origin, stripe, type BookingRow } from './_lib/server.js'
-import { sendBookingEmails } from './_lib/email.js'
+import { db, handle, json, origin, stripe } from './_lib/server.js'
+import { confirmPaid } from './_lib/confirm.js'
 
 // Sites are held for 10 minutes. Stripe payment pages must stay open at least
 // 30 minutes, so once a hold runs out its page can still be open: before
@@ -162,9 +162,7 @@ const reclaimStaleHolds = async (arrive: string, depart: string) => {
       }
     }
     if (session.status === 'complete' && session.payment_status === 'paid') {
-      const confirmed = await db().query(`select ${bookingColumns} from confirm_booking($1, $2)`, [row.id, session.id])
-      const booking = confirmed[0] as BookingRow | undefined
-      if (booking) await sendBookingEmails(booking, session.amount_total ?? booking.total_cents)
+      await confirmPaid(row.id, session)
     } else if (session.status === 'expired') {
       await db().query('select expire_booking($1)', [row.id])
     } else {
