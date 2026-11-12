@@ -15,8 +15,9 @@ export const contactInfo = {
   // The website's own address, e.g. 'https://northernoasiscamping.com' (no
   // slash at the end). Once set, every page gets a canonical link and a
   // full-address share image, and the build writes sitemap.xml. Leave blank
-  // until the domain is live.
-  websiteUrl: '',
+  // until the domain is live. For now this is Vercel's public address;
+  // change it when the camp's own domain is set up.
+  websiteUrl: 'https://northernoasis-sigma.vercel.app',
 
   // The camp's Hipcamp listing.
   hipcampUrl: 'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
