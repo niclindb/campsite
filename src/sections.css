@@ -447,63 +447,6 @@ section[id] {
   margin: 0.6rem 0 0;
 }
 
-/* Book */
-
-.book-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 3rem;
-}
-
-.price {
-  font-family: 'League Spartan', sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
-  color: #eabaac;
-  margin: 0;
-}
-
-.price span {
-  font-size: 1rem;
-  font-weight: 400;
-  color: #fdf8f3;
-}
-
-.plain-list {
-  padding-left: 1.2rem;
-  margin: 1rem 0 1.5rem;
-}
-
-.book-addons table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.book-addons th,
-.book-addons td {
-  padding: 0.6rem 0;
-  border-bottom: 1px solid rgba(234, 186, 172, 0.25);
-  vertical-align: top;
-}
-
-.book-addons th {
-  text-align: left;
-  font-weight: 600;
-}
-
-.book-addons th span {
-  display: block;
-  font-weight: 400;
-  font-size: 0.88rem;
-  opacity: 0.8;
-}
-
-.book-addons td {
-  text-align: right;
-  color: #eabaac;
-  font-weight: 600;
-}
-
 /* Contact: green-tinted forest photo, contact card on the left, form card on the right */
 
 .contact {
@@ -804,7 +747,6 @@ section[id] {
     font-size: 1.8rem;
   }
 
-  .book-grid,
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -845,16 +787,10 @@ section[id] {
   opacity: 0.9;
 }
 
-.book-page h1 {
-  font-size: 2.4rem;
-  color: #eabaac;
-  margin: 0 0 1rem;
-}
 
 
 @media (max-width: 900px) {
-  .page-header h1,
-  .book-page h1 {
+  .page-header h1 {
     font-size: 1.9rem;
   }
 }

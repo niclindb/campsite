@@ -8,12 +8,16 @@ export const site = {
   hosts: 'Joy and Brian L.',
   tagline: 'Quiet forest campsites 7 miles from Marquette',
   season: 'April to November',
+  // Months the camp is open, 1 = January. Guests can stay through the last day of closeMonth.
+  seasonOpenMonth: 4,
+  seasonCloseMonth: 11,
   pricePerSiteNight: 28,
   siteCount: 5,
   checkIn: '1:00 PM to 10:00 PM',
   checkOut: 'Before 12:00 PM',
   minNights: 1,
   bookingWindow: 'Up to 15 months ahead',
+  bookingWindowMonths: 15,
   cancellation: 'Moderate',
   hipcampUrl:
     'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
@@ -120,6 +124,23 @@ export const addOns: AddOn[] = [
   { name: 'Firewood bundle', price: 8, note: 'Waiting at your site when you arrive' },
   { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
 ]
+
+// The booking page (/book). Bookings are finished on Hipcamp until a
+// direct-booking system is set up; the form there opens Hipcamp with the
+// chosen dates and guests filled in.
+export const bookPage = {
+  eyebrow: 'Book your stay',
+  title: 'Pick your dates',
+  intro: 'One quiet forest area, five bookings a night. Choose your nights and how many sites you need.',
+  formTitle: 'Your stay',
+  sitesHelp: 'A site is one camp setup: one tent or rig and one vehicle.',
+  feesNote: 'Hipcamp adds its service fee and any taxes at checkout.',
+  handoffLabel: 'Check availability on Hipcamp',
+  handoffNote: 'You\u2019ll finish booking on Hipcamp, where live availability is kept. Exact directions are sent once you book.',
+  beforeTitle: 'Before you book',
+  addOnsTitle: 'Add to your stay',
+  addOnsNote: 'Add these when you check out on Hipcamp.',
+}
 
 // "Things to do": stops along a trail from camp, shown in this order
 // (nearest first). `distance` is the label shown on the trail.
