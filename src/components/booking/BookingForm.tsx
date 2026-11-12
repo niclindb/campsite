@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import { addOns, bookPage, site, type AddOn } from '../../content/site'
+import { legal, termsCheckbox } from '../../content/legal'
 import { addMonths, formatDay, hookupsIn, maxFor, pickedAddOns, pickedLabel, quoteStay, todayIso, type Stay } from '../../content/booking'
 import Icon from '../Icon'
 import ArrowIcon from '../ArrowIcon'
@@ -56,6 +57,8 @@ const detailErrors = (d: Details) => {
 const BookingForm = () => {
   const [stay, setStay] = useState<Stay>(emptyStay)
   const [details, setDetails] = useState<Details>(emptyDetails)
+  // The guest has ticked the terms and privacy box (checked again on the server).
+  const [agreed, setAgreed] = useState(false)
   // Errors show after the first Send attempt, then update as people fix them.
   const [submitted, setSubmitted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
@@ -149,6 +152,10 @@ const BookingForm = () => {
       e.currentTarget.querySelector<HTMLElement>(`[name="${firstBad}"]`)?.focus()
       return
     }
+    if (!agreed) {
+      e.currentTarget.querySelector<HTMLElement>('[name="agreeTerms"]')?.focus()
+      return
+    }
 
     if (instantBooking) {
       if (soldOut) return
@@ -158,7 +165,13 @@ const BookingForm = () => {
         const res = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ ...stay, extras: Object.fromEntries(extras.map((p) => [p.addOn.name, p.qty])), ...details }),
+          body: JSON.stringify({
+            ...stay,
+            extras: Object.fromEntries(extras.map((p) => [p.addOn.name, p.qty])),
+            ...details,
+            agreedToTerms: agreed,
+            termsVersion: legal.updated,
+          }),
         })
         const data = (await res.json().catch(() => ({}))) as { url?: string; message?: string }
         if (res.ok && data.url) {
@@ -188,6 +201,7 @@ const BookingForm = () => {
     body.set('Email', details.email.trim())
     body.set('Phone', details.phone.trim() || 'Not given')
     body.set('Note', details.note.trim() || 'None')
+    body.set('Agreed to terms and privacy policy', `Yes (version ${legal.updated})`)
     body.set('_gotcha', (e.currentTarget.elements.namedItem('_gotcha') as HTMLInputElement | null)?.value ?? '')
 
     setStatus('sending')
@@ -211,6 +225,7 @@ const BookingForm = () => {
   const reset = () => {
     setStay(emptyStay)
     setDetails(emptyDetails)
+    setAgreed(false)
     setSubmitted(false)
     setStatus('idle')
   }
@@ -410,6 +425,28 @@ const BookingForm = () => {
             {serverError || (instantBooking ? bookPage.instant.errorText : bookPage.errorText)}
           </p>
         )}
+
+        <div className="bk-agree">
+          <label>
+            <input
+              type="checkbox"
+              name="agreeTerms"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              aria-invalid={submitted && !agreed ? true : undefined}
+              aria-describedby={submitted && !agreed ? 'bk-agree-error' : undefined}
+            />
+            <span>
+              {termsCheckbox.before}
+              {/* New tab, so the guest's choices stay filled in. */}
+              <a href="/terms" target="_blank" rel="noopener">{termsCheckbox.termsLabel}</a>
+              {termsCheckbox.middle}
+              <a href="/privacy" target="_blank" rel="noopener">{termsCheckbox.privacyLabel}</a>
+              {termsCheckbox.after}
+            </span>
+          </label>
+          {submitted && !agreed && <span className="bk-agree-error" id="bk-agree-error">{termsCheckbox.error}</span>}
+        </div>
 
         <button type="submit" className="hero-btn primary bk-cta" disabled={status === 'sending' || soldOut}>
           {status === 'sending'

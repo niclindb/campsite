@@ -17,6 +17,9 @@ export const site = {
   siteCount: 5,
   checkIn: '1:00 PM to 10:00 PM',
   checkOut: 'Before 12:00 PM',
+  // e.g. '10:00 PM to 8:00 AM'. Blank shows a "to come" placeholder on the
+  // Info and Terms pages until the hosts decide.
+  quietHours: '',
   minNights: 1,
   bookingWindow: 'Up to 15 months ahead',
   bookingWindowMonths: 15,
@@ -261,8 +264,8 @@ export const infoPage = {
 export const infoGlance: { icon: IconName; label: string; value: string; pending?: boolean }[] = [
   { icon: 'clock', label: 'Check-in', value: site.checkIn },
   { icon: 'clock', label: 'Check-out', value: site.checkOut },
-  { icon: 'moon', label: 'Quiet hours', value: 'Quiet hours to come', pending: true },
-  { icon: 'users', label: 'Guests per site', value: 'Max guests to come', pending: true },
+  { icon: 'moon', label: 'Quiet hours', value: site.quietHours || 'Quiet hours to come', pending: !site.quietHours },
+  { icon: 'users', label: 'Guests per site', value: `Up to ${site.maxGuestsPerSite}` },
   { icon: 'paw', label: 'Pets', value: 'Welcome, off leash' },
   { icon: 'shield', label: 'Cancellation', value: site.cancellation },
 ]
@@ -276,7 +279,7 @@ export const faqGroups: FaqGroup[] = [
       { q: 'What time is check-in and check-out?', a: `Check in ${site.checkIn}; we meet you on arrival. Check out ${site.checkOut.replace("Before", "before")}. Early or late check-in may be possible, just ask.` },
       { q: 'Where exactly are you?', a: 'Between Marquette and Negaunee, about 4 miles off US 41. We send exact directions once your booking is confirmed.' },
       { q: 'How big a rig fits?', a: 'Vehicles under 20 ft. Sites are pull-in, flat and gravel, and slideouts fit. One vehicle per site unless arranged ahead.' },
-      { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full terms are shown before you pay.` },
+      { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full policy is on our Terms & Booking Policy page, linked at the bottom of every page.` },
     ],
   },
   {
@@ -295,9 +298,9 @@ export const faqGroups: FaqGroup[] = [
     title: 'Guests, pets & quiet',
     icon: 'users',
     items: [
-      { q: 'How many people can stay on a site?', a: 'Maximum guests per site to come.', pending: true },
+      { q: 'How many people can stay on a site?', a: `Up to ${site.maxGuestsPerSite} guests per site. Book another site for a bigger group.` },
       { q: 'Can I bring my dog?', a: 'Yes, dogs are welcome off leash. Please pick up after them so everyone can enjoy the land.' },
-      { q: 'Are there quiet hours?', a: 'Quiet hours to come.', pending: true },
+      { q: 'Are there quiet hours?', a: site.quietHours ? `Yes, ${site.quietHours}.` : 'Quiet hours to come.', pending: !site.quietHours },
       { q: 'Will I hear anything?', a: 'It is a quiet forest, but there is a shooting range nearby and you may hear gunfire during the day.' },
     ],
   },

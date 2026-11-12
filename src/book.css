@@ -254,3 +254,12 @@
 .bk-cal-mo.is-current { background: var(--secondary-color); border-color: var(--secondary-color); color: #fdf8f3; }
 .bk-cal-mo:disabled { opacity: 0.35; cursor: default; }
 @media (max-width: 640px) { .bk-cal-month-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Terms and privacy checkbox, above the pay button */
+.bk-agree { display: grid; gap: 0.35rem; font-size: 0.88rem; line-height: 1.5; }
+.bk-agree label { display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer; }
+.bk-agree input { flex: none; width: 18px; height: 18px; margin: 0.15rem 0 0; accent-color: var(--secondary-color); }
+.bk-agree input:focus-visible { outline: 2px solid #eabaac; outline-offset: 2px; }
+.bk-agree a { color: #eabaac; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.bk-agree a:hover { color: #fdf8f3; }
+.bk-agree-error { font-weight: 600; color: #f6b39c; }
