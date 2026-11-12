@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { photos } from '../content/gallery'
+import { photos as filePhotos, type Photo } from '../content/gallery'
 import { site } from '../content/site'
 import Lightbox from './gallery/Lightbox'
 import ArrowIcon from './ArrowIcon'
@@ -8,12 +8,29 @@ import ArrowIcon from './ArrowIcon'
 const tilts = [-3, 2, -1.5, 3, -2.5, 1.5]
 const tilt = (i: number) => tilts[i % tilts.length]
 
+// Fisher-Yates shuffle into a new array, so each visit shows a new order.
+const shuffled = (list: Photo[]) => {
+  const a = [...list]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
 const Gallery = () => {
+  // The pre-rendered page uses file-name order; the shuffle happens in the
+  // browser after load so it doesn't clash with the pre-rendered HTML.
+  const [photos, setPhotos] = useState(filePhotos)
   const [cur, setCur] = useState(0)
   const [open, setOpen] = useState<number | null>(null)
   const strip = useRef<HTMLDivElement>(null)
   const touchX = useRef<number | null>(null)
   const n = photos.length
+
+  useEffect(() => {
+    setPhotos(shuffled(filePhotos))
+  }, [])
 
   // Keep the selected snapshot in view as the strip scrolls.
   useEffect(() => {
