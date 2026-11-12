@@ -1,3 +1,4 @@
+import type { IconName } from '../components/Icon.js'
 import { addOns, site } from './site.js'
 
 // The Privacy Policy (/privacy) and Terms & Booking Policy (/terms) pages.
@@ -22,6 +23,11 @@ export const legal = {
   quietHoursPlaceholder: 'Quiet hours to come',
 }
 
+// A key rule pulled out into a highlight card in "The short version".
+export type LegalHighlight = { icon: IconName; label: string; value: string; detail: string }
+// One step of the refund timeline shown above the cancellation wording.
+export type RefundStep = { when: string; refund: string; tone: 'full' | 'half' | 'none' }
+
 // A paragraph, or a bulleted list.
 export type LegalBlock = string | { list: string[] }
 export type LegalSection = {
@@ -34,7 +40,14 @@ export type LegalSection = {
   proposed?: string
   // A link shown at the end of the section.
   link?: { to: string; label: string }
+  // Show the refund timeline above this section's wording.
+  refundSteps?: RefundStep[]
 }
+
+export const shortVersionTitle = 'The short version'
+export const shortVersionNote = 'A quick summary. The full wording below is what applies.'
+export const tocTitle = 'On this page'
+
 
 const contactLines = [
   site.contactEmail ? `Email: ${site.contactEmail}` : '',
@@ -54,6 +67,13 @@ export const privacyPage = {
   title: 'Privacy Policy',
   intro: 'What we collect when you book or message us, why, and who helps us handle it.',
   lead: `${site.name} is a small family campground. We only collect what we need to take your booking and answer your questions, and we never sell your information.`,
+  eyebrow: 'Your information',
+  summary: [
+    { icon: 'check', label: 'What we collect', value: 'Only what we need', detail: 'Your name, contact details and stay, to take your booking and answer you.' },
+    { icon: 'shield', label: 'Your card', value: 'Stays with Stripe', detail: 'You pay on Stripe’s secure page. We never see your full card number.' },
+    { icon: 'alert', label: 'Selling or ads', value: 'Never', detail: 'No selling, no marketing emails, no ad trackers or analytics cookies.' },
+    { icon: 'mail', label: 'Your choices', value: 'Just ask us', detail: 'We’ll show, correct or delete your information unless tax law needs it kept.' },
+  ] as LegalHighlight[],
   sections: [
     {
       id: 'collect',
@@ -150,6 +170,13 @@ export const termsPage = {
   title: 'Terms & Booking Policy',
   intro: 'How booking, payment, cancellations and camp life work, and the risks that come with camping in the woods.',
   lead: `These terms are an agreement between you and ${site.name}. By booking you agree to them for yourself and everyone in your group. Please read them, especially the cancellation policy and the liability acknowledgement.`,
+  eyebrow: 'Before you book',
+  summary: [
+    { icon: 'calendar', label: 'Cancellation', value: 'Full refund 48+ hours out', detail: 'Half back within 48 hours of check-in. Nothing back after check-in or for no-shows.' },
+    { icon: 'moon', label: 'Quiet hours', value: site.quietHours || legal.quietHoursPlaceholder, detail: 'Keep voices, music and generators down so everyone can sleep.' },
+    { icon: 'users', label: 'Guests per site', value: `Up to ${site.maxGuestsPerSite}`, detail: 'One tent or rig and one vehicle per site. Book another site for more.' },
+    { icon: 'clock', label: 'Checkout hold', value: '10 minutes to pay', detail: 'Your sites are held while you pay, then released if payment isn’t finished.' },
+  ] as LegalHighlight[],
   sections: [
     {
       id: 'booking',
@@ -198,6 +225,11 @@ export const termsPage = {
       id: 'cancellation',
       title: 'Cancellations and refunds',
       proposed: legal.cancellationApproved ? undefined : legal.cancellationDraftNote,
+      refundSteps: [
+        { when: 'More than 48 hours before check-in', refund: 'Full refund', tone: 'full' },
+        { when: 'Within 48 hours of check-in', refund: '50% refund', tone: 'half' },
+        { when: 'After check-in or no-show', refund: 'No refund', tone: 'none' },
+      ],
       body: [
         {
           list: [
