@@ -5,7 +5,7 @@
 import type Stripe from 'stripe'
 import { addOns, site } from '../src/content/site.js'
 import { formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../src/content/booking.js'
-import { bookingColumns, db, env, handle, json, origin, stripe, type BookingRow } from './_lib/server.js'
+import { bookingColumns, db, handle, json, origin, stripe, type BookingRow } from './_lib/server.js'
 import { sendBookingEmails } from './_lib/email.js'
 
 // Sites are held for 10 minutes. Stripe payment pages must stay open at least
@@ -68,7 +68,7 @@ export const POST = (request: Request) =>
         [
           stay.arrive, stay.depart, stay.sites, stay.guests, hookupsIn(stay),
           JSON.stringify(extras.map((p) => ({ name: p.addOn.name, price: p.addOn.price, qty: p.qty }))),
-          quote.total * 100, name, email, phone || null, note || null,
+          quote.totalCents, name, email, phone || null, note || null,
           site.siteCount, site.hookupsPerNight, JSON.stringify(limits), HOLD_MINUTES,
         ],
       )
@@ -96,7 +96,6 @@ export const POST = (request: Request) =>
           product_data: {
             name: 'Campsite night',
             description: `${plural(stay.sites, 'site')} × ${plural(quote.nights, 'night')}, ${dates}`,
-            ...(env('STRIPE_TAX_CODE') ? { tax_code: env('STRIPE_TAX_CODE') } : {}),
           },
         },
       },
@@ -108,6 +107,17 @@ export const POST = (request: Request) =>
           product_data: { name: addOn.kind === 'rental' ? `${addOn.name} (rental)` : addOn.name, description: addOn.note },
         },
       })),
+      // Sales tax as its own line (rate in site.ts); left off while it's 0.
+      ...(quote.taxCents > 0
+        ? [{
+            quantity: 1,
+            price_data: {
+              currency: 'usd',
+              unit_amount: quote.taxCents,
+              product_data: { name: `Sales tax (${site.salesTaxPercent}%)` },
+            },
+          }]
+        : []),
     ]
 
     const base = origin(request)
@@ -121,14 +131,12 @@ export const POST = (request: Request) =>
         description: `${site.name}: ${dates}, ${plural(stay.sites, 'site')}`,
         metadata: { booking_id: String(bookingId) },
       },
-      // Stripe Tax adds Michigan tax when it's switched on in Stripe and STRIPE_TAX=on.
-      automatic_tax: { enabled: env('STRIPE_TAX') === 'on' },
       expires_at: Math.floor(Date.now() / 1000) + PAY_MINUTES * 60,
       success_url: `${base}/book/confirmed?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${base}/book?cancelled=${bookingId}`,
     })
 
-    await db().query('update bookings set stripe_session_id = $1 where id = $2', [session.id, bookingId])
+    await db().query('update bookings set stripe_session_id = $1, tax_cents = $3 where id = $2', [session.id, bookingId, quote.taxCents])
     return json({ url: session.url })
   })
 

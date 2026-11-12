@@ -56,7 +56,20 @@ export const pickedLabel = (name: string, qty: number) => (qty > 1 ? `${name} \u
 
 export type Quote =
   | { ok: false; message: string | null }
-  | { ok: true; nights: number; sitesTotal: number; extrasTotal: number; total: number }
+  | {
+      ok: true
+      nights: number
+      sitesTotal: number
+      extrasTotal: number
+      // Dollars. `tax` can have cents; `taxCents` and `totalCents` are exact.
+      tax: number
+      taxCents: number
+      total: number
+      totalCents: number
+    }
+
+// Sales tax in cents on the taxable part of a stay, rounded to the cent.
+export const taxCentsOn = (taxableDollars: number) => Math.round(taxableDollars * site.salesTaxPercent)
 
 // Checks a stay against the camp's rules and prices it. `message` is null
 // while the guest simply hasn't picked both dates yet.
@@ -71,6 +84,10 @@ export const quoteStay = (stay: Stay, today: string): Quote => {
   if (stay.guests > sites * site.maxGuestsPerSite)
     return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.` }
   const sitesTotal = site.pricePerSiteNight * sites * nights
-  const extrasTotal = pickedAddOns(stay).reduce((sum, p) => sum + p.addOn.price * p.qty, 0)
-  return { ok: true, nights, sitesTotal, extrasTotal, total: sitesTotal + extrasTotal }
+  const picked = pickedAddOns(stay)
+  const extrasTotal = picked.reduce((sum, p) => sum + p.addOn.price * p.qty, 0)
+  const taxFreeTotal = picked.reduce((sum, p) => sum + (p.addOn.taxFree ? p.addOn.price * p.qty : 0), 0)
+  const taxCents = taxCentsOn(sitesTotal + extrasTotal - taxFreeTotal)
+  const totalCents = (sitesTotal + extrasTotal) * 100 + taxCents
+  return { ok: true, nights, sitesTotal, extrasTotal, tax: taxCents / 100, taxCents, total: totalCents / 100, totalCents }
 }

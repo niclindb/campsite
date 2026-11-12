@@ -41,7 +41,7 @@ export const db = () => {
 
 // Booking columns with dates as plain YYYY-MM-DD text.
 export const bookingColumns =
-  'id::text, status, arrive::text, depart::text, sites, guests, hookups, extras, total_cents, name, email, phone, note, stripe_session_id'
+  'id::text, status, arrive::text, depart::text, sites, guests, hookups, extras, total_cents, tax_cents, name, email, phone, note, stripe_session_id'
 
 // Turns any thrown error into a response the booking page can show.
 export const handle = async (fn: () => Promise<Response>) => {
@@ -77,6 +77,8 @@ export type BookingRow = {
   hookups: number
   extras: { name: string; price: number; qty?: number }[]
   total_cents: number
+  // Sales tax included in total_cents.
+  tax_cents: number
   name: string
   email: string
   phone: string | null

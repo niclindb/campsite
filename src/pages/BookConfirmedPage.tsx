@@ -12,8 +12,12 @@ type Booking = {
   guests: number
   extras: string[]
   total: number
+  tax: number
   firstName: string
 }
+
+// e.g. "$84" or "$89.04"
+const money = (n: number) => `$${n.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`
 
 type State = { kind: 'loading' } | { kind: 'missing' } | { kind: 'found'; booking: Booking }
 
@@ -71,7 +75,8 @@ const BookConfirmedPage = () => {
                   <div><dt>Sites</dt><dd>{b.sites}</dd></div>
                   <div><dt>Guests</dt><dd>{b.guests}</dd></div>
                   {b.extras.length > 0 && <div><dt>Extras</dt><dd>{b.extras.join(', ')}</dd></div>}
-                  <div><dt>Paid</dt><dd>${b.total.toLocaleString('en-US')}</dd></div>
+                  {b.tax > 0 && <div><dt>Sales tax</dt><dd>{money(b.tax)}</dd></div>}
+                  <div><dt>Paid</dt><dd>{money(b.total)}</dd></div>
                 </dl>
                 <p>Check-in is {site.checkIn.toLowerCase()}. See you in the maples!</p>
               </>

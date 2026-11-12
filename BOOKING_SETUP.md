@@ -43,7 +43,6 @@ Add these in **Vercel → northern_oasis → Settings → Environment Variables*
 | `BOOKING_ALERTS_TO` | Where new-booking alerts go (optional; defaults to the sender) |
 | `BOOKING_DIRECTIONS` | The exact arrival directions emailed to guests (kept private, never shown on the site) |
 | `VITE_INSTANT_BOOKING` | `on`, to switch the page to instant booking |
-| `STRIPE_TAX` | `on`, only after Stripe Tax is set up in Stripe (optional) |
 | `SITE_URL` | The site's address, e.g. `https://northernoasis.com` (optional; otherwise taken from each request) |
 
 The repository is public, so none of these go in the code.

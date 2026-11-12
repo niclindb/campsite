@@ -18,7 +18,8 @@ const summary = (b: BookingRow, paidCents: number) => {
     `Sites: ${b.sites}`,
     `Guests: ${b.guests}`,
     `Extras: ${b.extras.length ? b.extras.map((x) => `${pickedLabel(x.name, x.qty ?? 1)} ($${x.price * (x.qty ?? 1)})`).join(', ') : 'None'}`,
-    `Paid: ${money(paidCents)}`,
+    ...(b.tax_cents > 0 ? [`Sales tax: ${money(b.tax_cents)}`] : []),
+    `Paid: ${money(paidCents)}${b.tax_cents > 0 ? ' (tax included)' : ''}`,
   ]
 }
 
