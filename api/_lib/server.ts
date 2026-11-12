@@ -27,12 +27,13 @@ export const stripe = () => {
   return stripeClient
 }
 
-// The Neon database. Vercel's Neon integration sets DATABASE_URL.
+// The Neon database. Vercel's Neon integration sets DATABASE_URL, or
+// NEON_DATABASE_URL when it was connected with the NEON_ prefix.
 // Each query runs on its own, so anything that must be checked and changed
 // together lives in one SQL function in db/schema.sql.
 let dbClient: NeonQueryFunction<false, false> | undefined
 export const db = () => {
-  const url = env('DATABASE_URL') || env('POSTGRES_URL')
+  const url = env('DATABASE_URL') || env('NEON_DATABASE_URL') || env('POSTGRES_URL')
   if (!url) throw new NotConfigured('Missing settings: DATABASE_URL')
   dbClient ??= neon(url)
   return dbClient
