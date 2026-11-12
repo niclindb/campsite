@@ -334,6 +334,6 @@ export const notFoundPage = {
   moreTitle: 'Or head to',
   moreLinks: [
     { label: 'Guest info & FAQ', to: '/info' },
-    { label: 'Things to do nearby', to: '/explore' },
+    { label: 'Photo gallery', to: '/#gallery' },
   ],
 }
