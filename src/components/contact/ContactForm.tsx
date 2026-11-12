@@ -34,6 +34,9 @@ const ContactForm = ({ formId }: { formId: string }) => {
   const [submitted, setSubmitted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
   const [serverError, setServerError] = useState('')
+  // Height of the form when it was sent, so the thank-you card keeps the same size
+  // on every screen and the page doesn't jump.
+  const [sentHeight, setSentHeight] = useState<number>()
   const formRef = useRef<HTMLFormElement>(null)
   const successRef = useRef<HTMLHeadingElement>(null)
 
@@ -69,6 +72,7 @@ const ContactForm = ({ formId }: { formId: string }) => {
         signal: controller.signal,
       })
       if (res.ok) {
+        setSentHeight(formRef.current?.offsetHeight)
         setStatus('sent')
         setValues(empty)
         setSubmitted(false)
@@ -87,7 +91,7 @@ const ContactForm = ({ formId }: { formId: string }) => {
 
   if (status === 'sent') {
     return (
-      <div className="contact-success" role="status">
+      <div className="contact-success" role="status" style={{ minHeight: sentHeight }}>
         <span className="contact-success-icon"><Icon name="check" size={40} /></span>
         <h3 ref={successRef} tabIndex={-1}>{contact.successTitle}</h3>
         <p>{contact.successText}</p>

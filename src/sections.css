@@ -773,6 +773,7 @@ section[id] {
 .contact-success {
   display: grid;
   justify-items: start;
+  align-content: center;
   gap: 0.6rem;
   padding: 0.5rem 0;
 }
@@ -794,6 +795,7 @@ section[id] {
 
 .contact-success p {
   margin: 0;
+  max-width: 32ch; /* same line length as on a phone */
   color: #5a5248;
 }
 
