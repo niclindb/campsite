@@ -39,13 +39,25 @@ export const formatDay = (iso: string) =>
     timeZone: 'UTC',
   })
 
-export type Stay = { arrive: string; depart: string; sites: number; guests: number; extras: string[] }
+// `extras` maps an add-on's name to how many the guest wants.
+export type Stay = { arrive: string; depart: string; sites: number; guests: number; extras: Record<string, number> }
 
-// The add-ons picked, in menu order. Add-ons are one-time fees per stay.
-export const pickedAddOns = (stay: Stay): AddOn[] => addOns.filter((a) => stay.extras.includes(a.name))
+export type Picked = { addOn: AddOn; qty: number }
 
-// Electric hookups in a stay (one per booking at most; 2 a night in all).
-export const hookupsIn = (stay: Stay) => (pickedAddOns(stay).some((a) => a.hookup) ? 1 : 0)
+// The most of an add-on one booking can take (per-site add-ons are capped by sites).
+export const maxFor = (a: AddOn, sites: number) => (a.perSite ? Math.min(a.max, sites) : a.max)
+
+// The add-ons picked, in menu order, with quantities kept within each one's limit.
+export const pickedAddOns = (stay: Stay): Picked[] =>
+  addOns
+    .map((addOn) => ({ addOn, qty: Math.min(Math.floor(Number(stay.extras[addOn.name]) || 0), maxFor(addOn, stay.sites)) }))
+    .filter((p) => p.qty > 0)
+
+// Electric hookups in a stay (one per site, 2 a night in all).
+export const hookupsIn = (stay: Stay) => pickedAddOns(stay).find((p) => p.addOn.hookup)?.qty ?? 0
+
+// e.g. "Canoe × 2"
+export const pickedLabel = (name: string, qty: number) => (qty > 1 ? `${name} \u00d7 ${qty}` : name)
 
 export type Quote =
   | { ok: false; message: string | null }
@@ -69,6 +81,6 @@ export const quoteStay = (stay: Stay, today: string): Quote => {
   if (stay.guests > sites * site.maxGuestsPerSite)
     return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.` }
   const sitesTotal = site.pricePerSiteNight * sites * nights
-  const extrasTotal = pickedAddOns(stay).reduce((sum, a) => sum + a.price, 0)
+  const extrasTotal = pickedAddOns(stay).reduce((sum, p) => sum + p.addOn.price * p.qty, 0)
   return { ok: true, nights, sitesTotal, extrasTotal, total: sitesTotal + extrasTotal }
 }

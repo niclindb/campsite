@@ -75,7 +75,7 @@ export type BookingRow = {
   sites: number
   guests: number
   hookups: number
-  extras: { name: string; price: number }[]
+  extras: { name: string; price: number; qty?: number }[]
   total_cents: number
   name: string
   email: string

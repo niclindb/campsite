@@ -5,7 +5,7 @@
 
 import nodemailer from 'nodemailer'
 import { site } from '../../src/content/site.js'
-import { formatDay, nightsBetween } from '../../src/content/booking.js'
+import { formatDay, nightsBetween, pickedLabel } from '../../src/content/booking.js'
 import { env, type BookingRow } from './server.js'
 
 const money = (cents: number) => `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: cents % 100 ? 2 : 0 })}`
@@ -17,7 +17,7 @@ const summary = (b: BookingRow, paidCents: number) => {
     `Dates: ${formatDay(b.arrive)} to ${formatDay(b.depart)} (${plural(nights, 'night')})`,
     `Sites: ${b.sites}`,
     `Guests: ${b.guests}`,
-    `Extras: ${b.extras.length ? b.extras.map((x) => `${x.name} ($${x.price})`).join(', ') : 'None'}`,
+    `Extras: ${b.extras.length ? b.extras.map((x) => `${pickedLabel(x.name, x.qty ?? 1)} ($${x.price * (x.qty ?? 1)})`).join(', ') : 'None'}`,
     `Paid: ${money(paidCents)}`,
   ]
 }

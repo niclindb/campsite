@@ -93,6 +93,69 @@ begin
 end
 $$;
 
+-- Rental gear and other limited extras in use on each night from p_from up
+-- to (not including) p_to, by name. Each booking's `extras` lists
+-- {name, price, qty}; older bookings without qty count as 1.
+create or replace function item_usage(p_from date, p_to date)
+returns table (night date, item text, used int)
+language sql stable as $$
+  select d::date as night, e->>'name' as item,
+         sum(coalesce((e->>'qty')::int, 1))::int as used
+  from generate_series(p_from, p_to - 1, interval '1 day') as d
+  join bookings b
+    on b.arrive <= d::date and b.depart > d::date
+   and (b.status = 'confirmed' or (b.status = 'held' and b.hold_expires_at > now()))
+  cross join lateral jsonb_array_elements(b.extras) as e
+  group by d, e->>'name'
+  order by d
+$$;
+
+-- Same as hold_booking above, and also checks limited extras: p_limits maps
+-- an extra's name to how many exist (e.g. {"Canoe": 3}). Raises
+-- 'item_sold_out:<name>' when one would run out on any night. The older
+-- version above stays so the live site keeps working until this one is in use.
+create or replace function hold_booking(
+  p_arrive date, p_depart date, p_sites int, p_guests int, p_hookups int,
+  p_extras jsonb, p_total_cents int, p_name text, p_email text, p_phone text, p_note text,
+  p_capacity int, p_hookup_capacity int, p_limits jsonb, p_hold_minutes int
+) returns uuid
+language plpgsql as $$
+declare
+  v_id uuid;
+  v_item text;
+begin
+  -- One booking is checked at a time.
+  perform pg_advisory_xact_lock(4242);
+
+  if exists (select 1 from night_usage(p_arrive, p_depart) u where u.sites_used + p_sites > p_capacity) then
+    raise exception 'sold_out';
+  end if;
+  if p_hookups > 0 and exists (
+    select 1 from night_usage(p_arrive, p_depart) u where u.hookups_used + p_hookups > p_hookup_capacity
+  ) then
+    raise exception 'hookups_sold_out';
+  end if;
+
+  select e->>'name' into v_item
+  from jsonb_array_elements(p_extras) as e
+  where p_limits ? (e->>'name')
+    and coalesce((e->>'qty')::int, 1) + coalesce((
+          select max(u.used) from item_usage(p_arrive, p_depart) u where u.item = e->>'name'
+        ), 0) > (p_limits->>(e->>'name'))::int
+  limit 1;
+  if v_item is not null then
+    raise exception 'item_sold_out:%', v_item;
+  end if;
+
+  insert into bookings (status, hold_expires_at, arrive, depart, sites, guests, hookups, extras,
+                        total_cents, name, email, phone, note)
+  values ('held', now() + make_interval(mins => p_hold_minutes), p_arrive, p_depart, p_sites, p_guests,
+          p_hookups, p_extras, p_total_cents, p_name, p_email, p_phone, p_note)
+  returning id into v_id;
+  return v_id;
+end
+$$;
+
 -- Marks a booking paid. Returns the booking only the first time, so the
 -- confirmation emails go out once even if Stripe sends the event twice.
 create or replace function confirm_booking(p_id uuid, p_session_id text)
@@ -121,6 +184,8 @@ begin
     foreach f in array array[
       'night_usage(date, date)',
       'hold_booking(date, date, int, int, int, jsonb, int, text, text, text, text, int, int, int)',
+      'hold_booking(date, date, int, int, int, jsonb, int, text, text, text, text, int, int, jsonb, int)',
+      'item_usage(date, date)',
       'confirm_booking(uuid, text)',
       'expire_booking(uuid)'
     ] loop

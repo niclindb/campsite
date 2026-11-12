@@ -12,10 +12,20 @@ import { db, env, handle, json, origin, stripe } from './_lib/server.js'
 const PAY_MINUTES = 31
 const HOLD_MINUTES = 35
 
-type Body = Partial<Stay> & { name?: string; email?: string; phone?: string; note?: string }
+type Body = Partial<Omit<Stay, 'extras'>> & { extras?: unknown; name?: string; email?: string; phone?: string; note?: string }
 
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+// Only known add-ons, with whole-number quantities.
+const readExtras = (v: unknown): Record<string, number> => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return {}
+  const out: Record<string, number> = {}
+  for (const a of addOns) {
+    const n = (v as Record<string, unknown>)[a.name]
+    if (typeof n === 'number' && Number.isInteger(n) && n > 0) out[a.name] = n
+  }
+  return out
+}
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
 export const POST = (request: Request) =>
@@ -26,7 +36,7 @@ export const POST = (request: Request) =>
       depart: text(body.depart, 10),
       sites: Number.isInteger(body.sites) ? Number(body.sites) : 0,
       guests: Number.isInteger(body.guests) ? Number(body.guests) : 0,
-      extras: Array.isArray(body.extras) ? body.extras.filter((x) => addOns.some((a) => a.name === x)) : [],
+      extras: readExtras(body.extras),
     }
     const name = text(body.name, 100)
     const email = text(body.email, 200)
@@ -42,17 +52,19 @@ export const POST = (request: Request) =>
     const quote = quoteStay(stay, todayIso())
     if (!quote.ok) return json({ error: 'bad_stay', message: quote.message ?? 'Please pick your dates.' }, 400)
     const extras = pickedAddOns(stay)
+    // How many of each rental exist; hookups are checked separately.
+    const limits = Object.fromEntries(addOns.filter((a) => a.perNight && !a.hookup).map((a) => [a.name, a.perNight]))
 
     let bookingId: string
     let error: Error | undefined
     try {
       const rows = await db().query(
-        'select hold_booking($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, $11, $12, $13, $14)::text as id',
+        'select hold_booking($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, $11, $12, $13, $14::jsonb, $15)::text as id',
         [
           stay.arrive, stay.depart, stay.sites, stay.guests, hookupsIn(stay),
-          JSON.stringify(extras.map((a) => ({ name: a.name, price: a.price }))),
+          JSON.stringify(extras.map((p) => ({ name: p.addOn.name, price: p.addOn.price, qty: p.qty }))),
           quote.total * 100, name, email, phone || null, note || null,
-          site.siteCount, site.hookupsPerNight, HOLD_MINUTES,
+          site.siteCount, site.hookupsPerNight, JSON.stringify(limits), HOLD_MINUTES,
         ],
       )
       bookingId = (rows[0] as { id: string }).id
@@ -60,6 +72,9 @@ export const POST = (request: Request) =>
       error = e as Error
       bookingId = ''
     }
+    const item = error?.message.match(/item_sold_out:(.+)/)?.[1]?.trim()
+    if (item)
+      return json({ error: 'item_sold_out', message: `There aren’t enough of the ${item.toLowerCase()} rental left on some of those nights. Take fewer, remove it, or try other dates.` }, 409)
     if (error?.message.includes('hookups_sold_out'))
       return json({ error: 'hookups_sold_out', message: 'Both electric hookups are taken on some of those nights. Remove the hookup or try other dates.' }, 409)
     if (error?.message.includes('sold_out'))
@@ -80,9 +95,13 @@ export const POST = (request: Request) =>
           },
         },
       },
-      ...extras.map((a) => ({
-        quantity: 1,
-        price_data: { currency: 'usd', unit_amount: a.price * 100, product_data: { name: a.name, description: a.note } },
+      ...extras.map(({ addOn, qty }) => ({
+        quantity: qty,
+        price_data: {
+          currency: 'usd',
+          unit_amount: addOn.price * 100,
+          product_data: { name: addOn.kind === 'rental' ? `${addOn.name} (rental)` : addOn.name, description: addOn.note },
+        },
       })),
     ]
 
