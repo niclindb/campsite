@@ -329,7 +329,7 @@ export const termsPage = {
 export const termsCheckbox = {
   before: 'I agree to the ',
   termsLabel: 'Terms & Booking Policy',
-  middle: ', including the cancellation policy and liability acknowledgement, and the ',
+  middle: ' and ',
   privacyLabel: 'Privacy Policy',
   after: '.',
   error: 'Please tick this box to agree to the terms before you book.',
