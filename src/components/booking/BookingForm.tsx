@@ -152,33 +152,44 @@ const BookingForm = () => {
   const onDetail = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setDetails((d) => ({ ...d, [e.target.name]: e.target.value }))
 
+  // Everything still missing before the guest can book, in page order.
+  // Each item jumps to the field that fixes it.
+  const needed: { label: string; target: string }[] = []
+  if (!quote.ok && !quote.guests) needed.push({ label: stay.arrive && stay.depart ? 'Different dates' : 'Your dates', target: '.bk-dates-trigger' })
+  else if (fullMessage) needed.push({ label: 'Different dates (yours are full)', target: '.bk-dates-trigger' })
+  if (!quote.ok && quote.guests) needed.push({ label: 'Another site for your group', target: '[aria-label="More sites"]' })
+  if (ready && !fullMessage && ready.sitesFree < stay.sites) needed.push({ label: 'Fewer sites', target: '[aria-label="Fewer sites"]' })
+  if (itemsShort) needed.push({ label: 'Fewer rentals or extras', target: '.bk-extra.is-short' })
+  if (errors.name) needed.push({ label: 'Your name', target: '[name="name"]' })
+  if (errors.email) needed.push({ label: details.email.trim() ? 'A valid email' : 'Your email', target: '[name="email"]' })
+  if (!agreed) needed.push({ label: 'Tick the terms box', target: '[name="agreeTerms"]' })
+
+  // Scroll to a field and focus it; the terms box also shakes.
+  const jumpTo = (target: string) => {
+    const el = document.querySelector<HTMLElement>(`.bk-form ${target}`)
+    if (!el) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' })
+    const focusable = el.matches('button, input, textarea') ? el : el.querySelector<HTMLElement>('button, input')
+    focusable?.focus({ preventScroll: true })
+    if (target === '[name="agreeTerms"]') {
+      setShake(false)
+      requestAnimationFrame(() => setShake(true))
+    }
+  }
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (status === 'sending') return
     setSubmitted(true)
-    if (!quote.ok) {
-      const trigger = e.currentTarget.querySelector<HTMLElement>('.bk-dates-trigger')
-      trigger?.scrollIntoView({ block: 'center' })
-      trigger?.focus({ preventScroll: true })
+    if (needed.length) {
+      jumpTo(needed[0].target)
       return
     }
-    const firstBad = (['name', 'email'] as const).find((f) => errors[f])
-    if (firstBad) {
-      e.currentTarget.querySelector<HTMLElement>(`[name="${firstBad}"]`)?.focus()
-      return
-    }
-    if (!agreed) {
-      // Bring the box into view, focus it and shake it so it can't be missed.
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      agreeRef.current?.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' })
-      agreeRef.current?.querySelector<HTMLElement>('[name="agreeTerms"]')?.focus({ preventScroll: true })
-      setShake(false)
-      requestAnimationFrame(() => setShake(true))
-      return
-    }
+    // Already covered by `needed`; this narrows the type for the code below.
+    if (!quote.ok) return
 
     if (instantBooking) {
-      if (soldOut) return
       setStatus('sending')
       setServerError('')
       try {
@@ -477,15 +488,26 @@ const BookingForm = () => {
           )}
         </div>
 
-        {/* Not disabled, so a click still points the guest at the box. */}
-        <button type="submit" className={`hero-btn primary bk-cta${agreed ? '' : ' is-waiting'}`} disabled={status === 'sending' || soldOut}>
+        {/* Never disabled: a click shows what's still needed instead. */}
+        <button type="submit" className="hero-btn primary bk-cta" disabled={status === 'sending'}>
           {status === 'sending'
             ? instantBooking ? bookPage.instant.sendingLabel : bookPage.sendingLabel
             : instantBooking
               ? quote.ok ? `${bookPage.instant.submitLabel} ${money(quote.total)}` : bookPage.instant.submitLabel
               : bookPage.submitLabel}
         </button>
-        {!agreed && !soldOut && <p className="bk-agree-hint">{termsCheckbox.hint}</p>}
+        {submitted && needed.length > 0 && (
+          <div className="bk-needed" role="status">
+            <p>Still needed to book:</p>
+            <ul>
+              {needed.map((n) => (
+                <li key={n.label}>
+                  <button type="button" onClick={() => jumpTo(n.target)}>{n.label}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <p className="bk-handoff">{instantBooking ? bookPage.instant.payNote : bookPage.payNote}</p>
         <a className="arrow-link bk-hipcamp" href={site.hipcampUrl} target="_blank" rel="noopener">
           {bookPage.hipcampLabel} <ArrowIcon />
