@@ -30,7 +30,7 @@
 .bk-field input, .bk-field textarea {
   width: 100%; min-width: 0; box-sizing: border-box; padding: 0 0.8rem; border-radius: 12px;
   border: 1.5px solid rgba(2, 13, 34, 0.18); background: #fff; color: var(--primary-color);
-  font: 600 1rem 'Cabin', sans-serif; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font: 600 1rem 'At Sign', 'Cabin', sans-serif; transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .bk-field input { height: 52px; }
 .bk-field textarea { padding: 0.8rem; font-weight: 400; resize: vertical; min-height: 90px; }
