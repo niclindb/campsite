@@ -20,7 +20,8 @@ const Footer = () => {
         </nav>
       </div>
       <p className="copyright">
-        © {new Date().getFullYear()} {site.name} · Website by{' '}
+        © {new Date().getFullYear()} {site.name} · <Link to="/privacy">Privacy</Link> ·{' '}
+        <Link to="/terms">Terms</Link> · Website by{' '}
         <a href="https://niclindb.github.io" target="_blank" rel="noopener">Lindberg Dev</a>
       </p>
     </footer>

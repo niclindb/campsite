@@ -4,6 +4,7 @@
 
 import type Stripe from 'stripe'
 import { addOns, site } from '../src/content/site.js'
+import { legal, termsCheckbox } from '../src/content/legal.js'
 import { formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../src/content/booking.js'
 import { db, handle, json, origin, stripe } from './_lib/server.js'
 import { confirmPaid } from './_lib/confirm.js'
@@ -15,7 +16,15 @@ import { confirmPaid } from './_lib/confirm.js'
 const PAY_MINUTES = 31
 const HOLD_MINUTES = 10
 
-type Body = Partial<Omit<Stay, 'extras'>> & { extras?: unknown; name?: string; email?: string; phone?: string; note?: string }
+type Body = Partial<Omit<Stay, 'extras'>> & {
+  extras?: unknown
+  name?: string
+  email?: string
+  phone?: string
+  note?: string
+  agreedToTerms?: unknown
+  termsVersion?: unknown
+}
 
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -50,6 +59,11 @@ export const POST = (request: Request) =>
       return json({ error: 'bad_stay', message: 'Please choose your sites and guests.' }, 400)
     if (!name || !emailPattern.test(email))
       return json({ error: 'bad_details', message: 'Please add your name and a working email.' }, 400)
+    // The guest must tick the terms and privacy box; the browser can't skip it.
+    if (body.agreedToTerms !== true)
+      return json({ error: 'terms_not_agreed', message: termsCheckbox.serverError }, 400)
+    // Which wording they agreed to: the page they saw, or today's if it's missing.
+    const termsVersion = text(body.termsVersion, 10) || legal.updated
 
     // The same checks and prices as the booking page, so the browser can't change them.
     const quote = quoteStay(stay, todayIso())
@@ -126,10 +140,11 @@ export const POST = (request: Request) =>
       line_items: lineItems,
       customer_email: email,
       client_reference_id: String(bookingId),
-      metadata: { booking_id: String(bookingId) },
+      // A record that the guest agreed to the terms and privacy policy, and when.
+      metadata: { booking_id: String(bookingId), terms_version: termsVersion, terms_agreed_at: new Date().toISOString() },
       payment_intent_data: {
         description: `${site.name}: ${dates}, ${plural(stay.sites, 'site')}`,
-        metadata: { booking_id: String(bookingId) },
+        metadata: { booking_id: String(bookingId), terms_version: termsVersion },
       },
       expires_at: Math.floor(Date.now() / 1000) + PAY_MINUTES * 60,
       success_url: `${base}/book/confirmed?session_id={CHECKOUT_SESSION_ID}`,
