@@ -1,6 +1,8 @@
 // POST /api/stripe-webhook
-// Stripe calls this when a payment page is paid or expires. A paid page
-// confirms the booking and sends the emails; an expired one frees the sites.
+// Stripe calls this when a payment page is paid or expires, and when a
+// payment is refunded. A paid page confirms the booking and sends the emails;
+// an expired one frees the sites; a full refund cancels the booking and frees
+// its sites too.
 
 import type Stripe from 'stripe'
 import { bookingColumns, db, env, handle, json, stripe, type BookingRow } from './_lib/server.js'
@@ -17,6 +19,11 @@ export const POST = (request: Request) =>
       event = await stripe().webhooks.constructEventAsync(await request.text(), signature, secret)
     } catch {
       return json({ error: 'bad_signature' }, 400)
+    }
+
+    if (event.type === 'charge.refunded') {
+      await cancelRefunded(event.data.object)
+      return json({ received: true })
     }
 
     const session = event.data.object as Stripe.Checkout.Session
@@ -39,3 +46,17 @@ export const POST = (request: Request) =>
 
     return json({ received: true })
   })
+
+// Stripe sets `refunded` only once the whole charge is refunded, so a partial
+// refund (say, for one night) keeps the booking. The booking id rides on the
+// payment's metadata, set when the payment page was made.
+const cancelRefunded = async (charge: Stripe.Charge) => {
+  if (!charge.refunded || !charge.payment_intent) return
+  const intent =
+    typeof charge.payment_intent === 'string'
+      ? await stripe().paymentIntents.retrieve(charge.payment_intent)
+      : charge.payment_intent
+  const bookingId = intent.metadata?.booking_id
+  if (!bookingId || !/^[0-9a-f-]{36}$/.test(bookingId)) return
+  await db().query("update bookings set status = 'cancelled' where id = $1 and status = 'confirmed'", [bookingId])
+}
