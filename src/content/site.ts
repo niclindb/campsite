@@ -10,6 +10,10 @@ export const site = {
   tagline: 'Quiet forest campsites 7 miles from Marquette',
   season: 'Open year round',
   pricePerSiteNight: 28,
+  // Sales tax added to every booking, in percent. 6 is a placeholder until
+  // the camp registers for Michigan sales/use tax; change it here only.
+  // Add-ons marked `taxFree` (like the eggs) are left out of it.
+  salesTaxPercent: 6,
   siteCount: 5,
   checkIn: '1:00 PM to 10:00 PM',
   checkOut: 'Before 12:00 PM',
@@ -128,6 +132,7 @@ export const planFor: Amenity[] = [
 // booking can't take more than it has sites. `perNight`: how many we have, so
 // how many can be out on any one night across all bookings (checked on the
 // server). `hookup` marks the electric hookup, limited to site.hookupsPerNight.
+// `taxFree`: no sales tax on it (Michigan doesn't tax groceries like eggs).
 export type AddOn = {
   name: string
   price: number
@@ -137,6 +142,7 @@ export type AddOn = {
   perNight?: number
   perSite?: boolean
   hookup?: boolean
+  taxFree?: boolean
 }
 
 export const addOns: AddOn[] = [
@@ -148,7 +154,7 @@ export const addOns: AddOn[] = [
   { name: 'Gas grill', price: 20, note: 'Portable, tank included', kind: 'rental', max: 1, perNight: 1 },
   { name: 'Electric hookup', price: 25, note: '30 amp, per site, up to 2 sites', kind: 'extra', max: site.hookupsPerNight, perSite: true, perNight: site.hookupsPerNight, hookup: true },
   { name: 'Firewood bundle', price: 8, note: 'Waiting at your site when you arrive', kind: 'extra', max: 5 },
-  { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop', kind: 'extra', max: 5 },
+  { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop', kind: 'extra', max: 5, taxFree: true },
 ]
 
 // The booking page (/book). Guests send a booking request from the site;

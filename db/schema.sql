@@ -29,6 +29,9 @@ create table if not exists bookings (
   check (depart > arrive)
 );
 
+-- Sales tax charged, in cents, already counted in total_cents.
+alter table bookings add column if not exists tax_cents int not null default 0;
+
 create index if not exists bookings_dates on bookings (arrive, depart);
 
 -- Nights the hosts close by hand, e.g. sites sold on Hipcamp or a family

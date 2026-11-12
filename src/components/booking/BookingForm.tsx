@@ -32,7 +32,8 @@ const Stepper = ({ label, value, min, max, onChange }: StepperProps) => (
   </div>
 )
 
-const money = (n: number) => `$${n.toLocaleString('en-US')}`
+// e.g. "$84" or "$89.04"
+const money = (n: number) => `$${n.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
 type Details = { name: string; email: string; phone: string; note: string }
@@ -181,6 +182,7 @@ const BookingForm = () => {
     body.set('Sites', String(stay.sites))
     body.set('Guests', String(stay.guests))
     body.set('Extras', extras.length ? extras.map((p) => `${p.addOn.kind === 'rental' ? 'Rental: ' : ''}${pickedLabel(p.addOn.name, p.qty)} (${money(p.addOn.price * p.qty)})`).join(', ') : 'None')
+    body.set('Sales tax', money(quote.tax))
     body.set('Total', money(quote.total))
     body.set('Name', details.name.trim())
     body.set('Email', details.email.trim())
@@ -366,6 +368,12 @@ const BookingForm = () => {
                   <dd>{money(addOn.price * qty)}</dd>
                 </div>
               ))}
+              {quote.taxCents > 0 && (
+                <div>
+                  <dt>Sales tax ({site.salesTaxPercent}%)</dt>
+                  <dd>{money(quote.tax)}</dd>
+                </div>
+              )}
               <div className="bk-total">
                 <dt>Total</dt>
                 <dd>{money(quote.total)}</dd>
