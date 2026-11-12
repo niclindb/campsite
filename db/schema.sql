@@ -205,6 +205,40 @@ begin
 end
 $$;
 
+-- Page views for the host dashboard (/host). No cookies and nothing about the
+-- visitor is stored: just a count per page per day (Michigan time). `visits`
+-- counts views where someone arrived from outside the site, and
+-- visit_sources counts those arrivals by the referring website's name only
+-- (e.g. google.com), or 'direct' when there is none.
+create table if not exists page_views (
+  day    date not null,
+  path   text not null,
+  views  int  not null default 0,
+  visits int  not null default 0,
+  primary key (day, path)
+);
+create table if not exists visit_sources (
+  day    date not null,
+  source text not null,
+  visits int  not null default 0,
+  primary key (day, source)
+);
+alter table page_views enable row level security;
+alter table visit_sources enable row level security;
+
+-- Counts one view of p_path on p_day. p_source is set only when the visitor
+-- arrived from outside the site, which also counts as a visit.
+create or replace function record_page_view(p_day date, p_path text, p_source text)
+returns void
+language sql as $$
+  insert into page_views as v (day, path, views, visits)
+  values (p_day, p_path, 1, case when p_source is null then 0 else 1 end)
+  on conflict (day, path) do update set views = v.views + 1, visits = v.visits + excluded.visits;
+  insert into visit_sources as s (day, source, visits)
+  select p_day, p_source, 1 where p_source is not null
+  on conflict (day, source) do update set visits = s.visits + 1;
+$$;
+
 -- If this schema is ever loaded into Supabase, which exposes public functions
 -- to browser roles, only its service role may call these. On Neon this does nothing.
 do $$
@@ -218,7 +252,8 @@ begin
       'item_usage(date, date)',
       'confirm_booking(uuid, text)',
       'expire_booking(uuid)',
-      'hit_rate_limit(text, int, int)'
+      'hit_rate_limit(text, int, int)',
+      'record_page_view(date, text, text)'
     ] loop
       execute format('revoke execute on function %s from public, anon, authenticated', f);
       execute format('grant execute on function %s to service_role', f);
