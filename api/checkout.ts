@@ -8,6 +8,7 @@ import { legal, termsCheckbox } from '../src/content/legal.js'
 import { formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../src/content/booking.js'
 import { db, handle, json, origin, stripe } from './_lib/server.js'
 import { confirmPaid } from './_lib/confirm.js'
+import { rateLimited } from './_lib/rate-limit.js'
 
 // Sites are held for 10 minutes. Stripe payment pages must stay open at least
 // 30 minutes, so once a hold runs out its page can still be open: before
@@ -23,10 +24,10 @@ type Body = Partial<Omit<Stay, 'extras'>> & {
   phone?: string
   note?: string
   agreedToTerms?: unknown
-  termsVersion?: unknown
 }
 
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
+const isDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(`${s}T00:00:00Z`))
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 // Only known add-ons, with whole-number quantities.
 const readExtras = (v: unknown): Record<string, number> => {
@@ -42,6 +43,8 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
 export const POST = (request: Request) =>
   handle(async () => {
+    const limited = await rateLimited(request, 'checkout')
+    if (limited) return limited
     const body = (await request.json().catch(() => ({}))) as Body
     const stay: Stay = {
       arrive: text(body.arrive, 10),
@@ -55,6 +58,8 @@ export const POST = (request: Request) =>
     const phone = text(body.phone, 40)
     const note = text(body.note, 2000)
 
+    if (!isDate(stay.arrive) || !isDate(stay.depart))
+      return json({ error: 'bad_stay', message: 'Please pick your dates.' }, 400)
     if (stay.sites < 1 || stay.sites > site.siteCount || stay.guests < 1)
       return json({ error: 'bad_stay', message: 'Please choose your sites and guests.' }, 400)
     if (!name || !emailPattern.test(email))
@@ -62,8 +67,9 @@ export const POST = (request: Request) =>
     // The guest must tick the terms and privacy box; the browser can't skip it.
     if (body.agreedToTerms !== true)
       return json({ error: 'terms_not_agreed', message: termsCheckbox.serverError }, 400)
-    // Which wording they agreed to: the page they saw, or today's if it's missing.
-    const termsVersion = text(body.termsVersion, 10) || legal.updated
+    // Which wording they agreed to: the version live on the site now. (The
+    // browser's own claim isn't stored, since anyone could send any value.)
+    const termsVersion = legal.updated
 
     // The same checks and prices as the booking page, so the browser can't change them.
     const quote = quoteStay(stay, todayIso())
@@ -137,6 +143,10 @@ export const POST = (request: Request) =>
     const base = origin(request)
     const session = await stripe().checkout.sessions.create({
       mode: 'payment',
+      // Cards and Link only (Apple Pay and Google Pay count as cards). Bank
+      // debits take days to clear, far longer than a hold, and would tie up
+      // the nights while they do.
+      allowed_payment_method_types: ['card', 'link'],
       line_items: lineItems,
       customer_email: email,
       client_reference_id: String(bookingId),

@@ -3,10 +3,13 @@
 // The Stripe session id is long and random, so only the guest has it.
 
 import { pickedLabel } from '../src/content/booking.js'
+import { rateLimited } from './_lib/rate-limit.js'
 import { db, handle, json, type BookingRow } from './_lib/server.js'
 
 export const GET = (request: Request) =>
   handle(async () => {
+    const limited = await rateLimited(request, 'bookingStatus')
+    if (limited) return limited
     const sessionId = new URL(request.url).searchParams.get('session_id') ?? ''
     if (!/^cs_[A-Za-z0-9_]{10,}$/.test(sessionId)) return json({ error: 'not_found' }, 404)
 

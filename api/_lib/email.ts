@@ -121,3 +121,28 @@ export const sendFailureAlert = async (f: FailedPayment) => {
     console.error('Failure alert email failed:', e)
   }
 }
+
+// Tells the hosts that a late payment confirmed a booking on nights that
+// were already full. Never throws.
+export const sendOverbookedAlert = async (b: BookingRow, nights: string[]) => {
+  const from = env('BOOKING_EMAIL_FROM')
+  const pass = env('GMAIL_APP_PASSWORD')
+  if (!from || !pass) return
+  const text = [
+    `${b.name} paid just after their 10-minute hold ran out, and their booking was confirmed.`,
+    `Meanwhile those sites were booked by someone else, so these nights now have more sites booked than the camp has:`,
+    '',
+    ...nights.map((n) => `- ${n}`),
+    '',
+    `Guest: ${b.name} (${b.email}${b.phone ? `, ${b.phone}` : ''})`,
+    `Booking id: ${b.id}`,
+    '',
+    'Contact the guest to find a fix, or refund them in Stripe (a full refund cancels the booking).',
+  ].join('\n')
+  try {
+    const transport = nodemailer.createTransport({ service: 'gmail', auth: { user: from, pass } })
+    await transport.sendMail({ from: `"${site.name}" <${from}>`, to: env('BOOKING_ALERTS_TO') || from, replyTo: b.email, subject: `Action needed: nights overbooked (${b.name})`, text })
+  } catch (e) {
+    console.error('Overbooking alert email failed:', e)
+  }
+}

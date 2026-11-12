@@ -21,6 +21,9 @@ export const site = {
   // Info and Terms pages until the hosts decide.
   quietHours: 'Midnight to 8:00 AM',
   minNights: 1,
+  // Longest stay one booking can take. Longer stays can be booked by
+  // contacting the hosts. Checked by the server too.
+  maxNights: 14,
   bookingWindow: 'Up to 15 months ahead',
   bookingWindowMonths: 15,
   maxGuestsPerSite: 3,
