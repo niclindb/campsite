@@ -11,7 +11,7 @@ Do the steps in order. Use Stripe **test mode** first, then switch to live keys 
 
 1. In Vercel, open **northern_oasis → Storage → Create Database → Neon**, pick the free plan, and connect it to the project with **Production** and **Preview** both ticked. This adds `DATABASE_URL` (or `NEON_DATABASE_URL`) for you. Leave optional extras such as Auth off.
 2. Open the database in the Neon console (Vercel's **Open in Neon** button), go to **SQL Editor**, paste all of [`db/schema.sql`](db/schema.sql), and press **Run**.
-   Run it again whenever `db/schema.sql` changes (it is safe to re-run). The rental limits update (November 2026) needs this before it goes live.
+   Run it again whenever `db/schema.sql` changes (it is safe to re-run). The rental limits update (November 2026) needs this before it goes live, and so does the rate limit update (the `rate_limits` table; until it exists, requests simply aren't limited).
 3. Bookings then show up in **Tables → bookings**. To close nights by hand (for example sites sold on Hipcamp), add rows to **blocked_nights**: the date, and how many of the 5 sites are taken.
 
 Neon's free plan sleeps when idle and wakes on the next request in under a second, so nothing needs to keep it awake.
@@ -65,4 +65,6 @@ Finish Stripe's account activation form, swap `STRIPE_SECRET_KEY` and the webhoo
 - `api/stripe-webhook.ts`: confirms paid bookings and sends the emails; frees expired ones; cancels fully refunded ones.
 - `api/cancel-hold.ts`: frees the sites when a guest backs out of the Stripe page.
 - `api/booking-status.ts`: what the confirmation page shows.
+- `api/_lib/rate-limit.ts`: limits how often one visitor can call each function (checkout: 6 per 10 minutes). Over the limit, the guest sees "Too many tries".
+- Stays are capped at `maxNights` (14) in `src/content/site.ts`, checked by the calendar and the server. Stripe offers cards (with Apple Pay and Google Pay) and Link only.
 - `db/schema.sql`: tables plus the `hold_booking` function, which checks and holds in one locked step so two guests can't both take the last site. `npm run test:db` checks it.

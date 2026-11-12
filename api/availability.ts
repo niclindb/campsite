@@ -4,6 +4,7 @@
 
 import { addOns, site } from '../src/content/site.js'
 import { nightsBetween } from '../src/content/booking.js'
+import { rateLimited } from './_lib/rate-limit.js'
 import { db, handle, json } from './_lib/server.js'
 
 const isDate = (s: string | null): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s)
@@ -14,6 +15,8 @@ const MAX_NIGHTS = (site.bookingWindowMonths + 1) * 31
 
 export const GET = (request: Request) =>
   handle(async () => {
+    const limited = await rateLimited(request, 'availability')
+    if (limited) return limited
     const q = new URL(request.url).searchParams
     const arrive = q.get('arrive')
     const depart = q.get('depart')

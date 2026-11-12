@@ -2,10 +2,13 @@
 // When a guest backs out of the Stripe page, free their held sites right away
 // instead of waiting for the hold to run out.
 
+import { rateLimited } from './_lib/rate-limit.js'
 import { db, handle, json, stripe } from './_lib/server.js'
 
 export const POST = (request: Request) =>
   handle(async () => {
+    const limited = await rateLimited(request, 'cancelHold')
+    if (limited) return limited
     const { bookingId } = (await request.json().catch(() => ({}))) as { bookingId?: string }
     if (!bookingId || !/^[0-9a-f-]{36}$/.test(bookingId)) return json({ ok: false }, 400)
 

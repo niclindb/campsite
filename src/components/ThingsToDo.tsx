@@ -22,14 +22,3 @@ export const Trail = () => (
     ))}
   </ol>
 )
-
-// The /explore page: just the trail, under that page's own header.
-const ThingsToDo = () => (
-  <section className="section things-to-do" aria-label="Things to do nearby">
-    <div className="container">
-      <Trail />
-    </div>
-  </section>
-)
-
-export default ThingsToDo

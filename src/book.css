@@ -164,7 +164,7 @@
 .bk-dates-value { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
 .bk-dates-value > span:not(.bk-dates-sep) { display: grid; flex: 1; min-width: 0; }
 .bk-dates-value small { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; }
-.bk-dates-value .is-empty { color: rgba(2, 13, 34, 0.45); font-weight: 500; }
+.bk-dates-value .is-empty { color: rgba(2, 13, 34, 0.62); font-weight: 500; }
 .bk-dates-sep { opacity: 0.4; }
 
 .bk-cal {
@@ -206,7 +206,7 @@
   display: inline-block; vertical-align: 0.1em; margin-left: 0.3rem; padding: 0.1rem 0.45rem; border-radius: 999px;
   background: rgba(1, 80, 69, 0.1); color: var(--accent-color); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
 }
-.bk-extra-price small { font-weight: 600; opacity: 0.75; }
+.bk-extra-price small { font-weight: 600; }
 .bk-extra.has-qty { cursor: default; }
 .bk-extra.has-qty .bk-extra-price { font-size: 0.92rem; }
 .bk-extra.is-short { border-color: var(--secondary-color); background: #fff8f5; }

@@ -82,6 +82,8 @@ export const quoteStay = (stay: Stay, today: string): Quote => {
     return { ok: false, message: `We take bookings ${site.bookingWindow.toLowerCase()}.` }
   const nights = nightsBetween(arrive, depart)
   if (nights < site.minNights) return { ok: false, message: 'Your departure needs to be after your arrival.' }
+  if (nights > site.maxNights)
+    return { ok: false, message: `Stays can be up to ${site.maxNights} nights. For a longer stay, please contact us.` }
   if (stay.guests > sites * site.maxGuestsPerSite)
     return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.`, guests: true }
   const sitesTotal = site.pricePerSiteNight * sites * nights

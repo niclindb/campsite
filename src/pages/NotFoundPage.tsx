@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import PageMeta from '../components/PageMeta'
 import ArrowIcon from '../components/ArrowIcon'
 import bgImage from '../assets/gallery/11-falls.webp'
+import bgSrcSet from '../assets/gallery/11-falls.webp?w=800;1600&format=webp&quality=72&as=srcset&imagetools'
 import { notFoundPage as copy, site } from '../content/site'
 
 // Shown for any address that isn't a real page. The build saves it as 404.html,
@@ -10,7 +11,7 @@ const NotFoundPage = () => (
   <>
     <PageMeta title="Page not found" path="/404" description={`This page doesn’t exist on the ${site.name} website.`} />
     <section className="not-found">
-      <img className="not-found-bg" src={bgImage} alt="" />
+      <img className="not-found-bg" src={bgImage} srcSet={bgSrcSet} sizes="100vw" alt="" />
       <div className="container">
         <div className="not-found-card">
           <svg className="not-found-icon" viewBox="0 0 64 64" aria-hidden="true">

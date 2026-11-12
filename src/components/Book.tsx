@@ -10,7 +10,7 @@ const facts: { icon: IconName; label: string; value: string }[] = [
   { icon: 'clock', label: 'Check-in', value: site.checkIn },
   { icon: 'clock', label: 'Check-out', value: site.checkOut },
   { icon: 'users', label: 'Guests per site', value: `Up to ${site.maxGuestsPerSite}` },
-  { icon: 'tag', label: 'Book', value: site.bookingWindow },
+  { icon: 'tag', label: 'Book', value: `${site.bookingWindow}, stays up to ${site.maxNights} nights` },
   { icon: 'shield', label: 'Cancellation', value: site.cancellation },
 ]
 

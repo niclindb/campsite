@@ -18,7 +18,7 @@ const Sites = () => {
 
         <div className="a3-stage">
           <div className="a3-hero">
-            <SitePhoto key={cur} src={area.srcs[cur]} alt={`The camping area, photo ${cur + 1}`} temporary={area.temporaryPhotos} />
+            <SitePhoto key={cur} src={area.photos[cur].src} srcSet={area.photos[cur].srcSet} sizes="(max-width: 700px) 100vw, 1140px" alt={`The camping area, photo ${cur + 1}`} temporary={area.temporaryPhotos} />
           </div>
           <div className="a3-card">
             <h3>{area.name}</h3>
@@ -30,15 +30,15 @@ const Sites = () => {
           </div>
         </div>
         <div className="a3-strip">
-          {area.srcs.map((src, i) => (
+          {area.photos.map((photo, i) => (
             <button
-              key={src}
+              key={photo.src}
               className={i === cur ? 'active' : ''}
               onClick={() => setCur(i)}
               aria-label={`Show photo ${i + 1}`}
               aria-pressed={i === cur}
             >
-              <SitePhoto src={src} alt="" temporary={area.temporaryPhotos} />
+              <SitePhoto src={photo.thumb} alt="" temporary={area.temporaryPhotos} />
             </button>
           ))}
         </div>

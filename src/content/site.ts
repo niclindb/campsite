@@ -21,6 +21,9 @@ export const site = {
   // Info and Terms pages until the hosts decide.
   quietHours: 'Midnight to 8:00 AM',
   minNights: 1,
+  // Longest stay one booking can take. Longer stays can be booked by
+  // contacting the hosts. Checked by the server too.
+  maxNights: 14,
   bookingWindow: 'Up to 15 months ahead',
   bookingWindowMonths: 15,
   maxGuestsPerSite: 3,
@@ -30,6 +33,7 @@ export const site = {
   // Short version; the full policy is on the Terms page (src/content/legal.ts).
   cancellation: 'Full refund up to 48 hours before arrival',
   // Contact details live in contact-info.ts.
+  url: contactInfo.websiteUrl.replace(/\/$/, ''),
   hipcampUrl: contactInfo.hipcampUrl,
   rating: {
     recommendPercent: 97,

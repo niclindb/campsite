@@ -39,7 +39,9 @@ export const POST = (request: Request) =>
       await confirmPaid(bookingId, session)
     }
 
-    if (event.type === 'checkout.session.expired') {
+    // A delayed payment that failed (only possible if delayed methods are ever
+    // turned on) frees the sites like an expired page.
+    if (event.type === 'checkout.session.expired' || event.type === 'checkout.session.async_payment_failed') {
       await db().query('select expire_booking($1)', [bookingId])
     }
 

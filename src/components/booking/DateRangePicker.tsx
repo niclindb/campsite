@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { bookPage } from '../../content/site'
-import { addDays, addMonths, formatDay } from '../../content/booking'
+import { bookPage, site } from '../../content/site'
+import { addDays, addMonths, formatDay, nightsBetween } from '../../content/booking'
 import Icon from '../Icon'
 
 // One calendar for both dates: the first tap picks the arrival, the second
@@ -69,9 +69,10 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange, error }: Pro
     setOpen(!open)
   }
 
-  // A day can start a stay if it's bookable; it can end one if it's after the arrival.
+  // A day can start a stay if it's bookable; it can end one if it's after the
+  // arrival and the stay is no longer than site.maxNights.
   const canArrive = (d: string) => (!today || d >= today) && (!latest || d <= latest)
-  const canDepart = (d: string) => d > arrive
+  const canDepart = (d: string) => d > arrive && nightsBetween(arrive, d) <= site.maxNights
   const enabled = (d: string) => (pickingDepart ? canDepart(d) || canArrive(d) : canArrive(d))
 
   const pick = (d: string) => {

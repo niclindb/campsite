@@ -1,5 +1,6 @@
 import { contact, site } from '../content/site'
 import contactImage from '../assets/images/contact.webp'
+import contactSrcSet from '../assets/images/contact.webp?w=800;1600&format=webp&quality=72&as=srcset&imagetools'
 import Icon, { type IconName } from './Icon'
 import ArrowIcon from './ArrowIcon'
 import ContactForm from './contact/ContactForm'
@@ -19,7 +20,7 @@ const methods: Method[] = [
 const Contact = () => {
   return (
     <section id="contact" className="contact" aria-labelledby="contact-title">
-      <img className="contact-bg" src={contactImage} alt="" loading="lazy" />
+      <img className="contact-bg" src={contactImage} srcSet={contactSrcSet} sizes="100vw" alt="" loading="lazy" />
       <div className="container contact-grid">
         <div>
           <p className="contact-eyebrow">{contact.eyebrow}</p>

@@ -178,6 +178,33 @@ language sql as $$
   update bookings set status = 'expired' where id = p_id and status = 'held'
 $$;
 
+-- Rate limits for the booking server functions: how many requests one
+-- visitor (by IP address) made in the current window, per action.
+create table if not exists rate_limits (
+  key           text primary key,
+  window_start  timestamptz not null default now(),
+  hits          int not null default 1
+);
+alter table rate_limits enable row level security;
+
+-- Counts one request for p_key and returns true while it is within p_limit
+-- requests per p_window_seconds. Old rows are cleared as it goes.
+create or replace function hit_rate_limit(p_key text, p_limit int, p_window_seconds int)
+returns boolean
+language plpgsql as $$
+declare
+  v_hits int;
+begin
+  delete from rate_limits where window_start < now() - interval '1 day';
+  insert into rate_limits as r (key, window_start, hits) values (p_key, now(), 1)
+  on conflict (key) do update
+    set hits = case when r.window_start < now() - make_interval(secs => p_window_seconds) then 1 else r.hits + 1 end,
+        window_start = case when r.window_start < now() - make_interval(secs => p_window_seconds) then now() else r.window_start end
+  returning hits into v_hits;
+  return v_hits <= p_limit;
+end
+$$;
+
 -- If this schema is ever loaded into Supabase, which exposes public functions
 -- to browser roles, only its service role may call these. On Neon this does nothing.
 do $$
@@ -190,7 +217,8 @@ begin
       'hold_booking(date, date, int, int, int, jsonb, int, text, text, text, text, int, int, jsonb, int)',
       'item_usage(date, date)',
       'confirm_booking(uuid, text)',
-      'expire_booking(uuid)'
+      'expire_booking(uuid)',
+      'hit_rate_limit(text, int, int)'
     ] loop
       execute format('revoke execute on function %s from public, anon, authenticated', f);
       execute format('grant execute on function %s to service_role', f);
