@@ -220,7 +220,7 @@ export const bookPage = {
     itemsGone: 'Some of your extras are already rented on one of these nights.',
     cancelledNote: 'Your payment was cancelled, so nothing was charged and your sites were released.',
     steps: [
-      { title: 'Pick your stay', detail: 'Choose your dates, sites and extras, and see what\u2019s free.' },
+      { title: 'Pick your stay', detail: 'Choose your dates, sites and extras.' },
       { title: 'Pay securely', detail: 'Pay in full by card on Stripe. It takes a minute.' },
       { title: 'You\u2019re booked', detail: 'Your confirmation email has the exact directions to camp.' },
     ],
