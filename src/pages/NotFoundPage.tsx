@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import PageMeta from '../components/PageMeta'
 import ArrowIcon from '../components/ArrowIcon'
-import bgImage from '../assets/gallery/01-evening-fire.webp'
+import bgImage from '../assets/gallery/11-falls.webp'
 import { notFoundPage as copy, site } from '../content/site'
 
 // Shown for any address that isn't a real page. The build saves it as 404.html,
