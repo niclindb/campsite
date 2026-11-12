@@ -300,6 +300,8 @@ export const termsCheckbox = {
   middle: ', including the cancellation policy and liability acknowledgement, and the ',
   privacyLabel: 'Privacy Policy',
   after: '.',
-  error: 'Please agree to the terms to book.',
+  error: 'Please tick this box to agree to the terms before you book.',
+  // Under the pay button until the box is ticked.
+  hint: 'Tick the terms box above to book.',
   serverError: 'Please agree to the Terms & Booking Policy and Privacy Policy to book.',
 }

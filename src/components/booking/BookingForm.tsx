@@ -66,6 +66,9 @@ const BookingForm = () => {
   const [notice, setNotice] = useState('')
   const [avail, setAvail] = useState<Availability>({ state: 'idle' })
   const successRef = useRef<HTMLHeadingElement>(null)
+  const agreeRef = useRef<HTMLDivElement>(null)
+  // The terms box shakes when someone tries to book without ticking it.
+  const [shake, setShake] = useState(false)
   // Today's date is only known in the browser (the page is pre-rendered).
   const [today, setToday] = useState('')
   useEffect(() => setToday(todayIso()), [])
@@ -102,6 +105,16 @@ const BookingForm = () => {
   const itemsShort = extras.some((p) => p.qty > freeOf(p.addOn))
   const hookupsShort = !!ready && hookupsIn(stay) > ready.hookupsFree
   const soldOut = !!ready && (ready.sitesFree < stay.sites || itemsShort)
+  const fullMessage = ready && ready.sitesFree === 0
+    ? `${bookPage.instant.fullOn} ${ready.fullNights.map(formatDay).join(', ')}. ${bookPage.instant.tryOther}`
+    : ''
+  // Shown right on the dates field, where the guest fixes it.
+  const datesError =
+    !quote.ok && quote.message && !quote.guests
+      ? quote.message
+      : !stay.arrive || !stay.depart
+        ? submitted ? bookPage.pickDatesError : undefined
+        : fullMessage || undefined
 
   // Live availability for the chosen dates.
   const { arrive, depart } = stay
@@ -144,7 +157,9 @@ const BookingForm = () => {
     if (status === 'sending') return
     setSubmitted(true)
     if (!quote.ok) {
-      e.currentTarget.querySelector<HTMLElement>('.bk-dates-trigger')?.focus()
+      const trigger = e.currentTarget.querySelector<HTMLElement>('.bk-dates-trigger')
+      trigger?.scrollIntoView({ block: 'center' })
+      trigger?.focus({ preventScroll: true })
       return
     }
     const firstBad = (['name', 'email'] as const).find((f) => errors[f])
@@ -153,7 +168,12 @@ const BookingForm = () => {
       return
     }
     if (!agreed) {
-      e.currentTarget.querySelector<HTMLElement>('[name="agreeTerms"]')?.focus()
+      // Bring the box into view, focus it and shake it so it can't be missed.
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      agreeRef.current?.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' })
+      agreeRef.current?.querySelector<HTMLElement>('[name="agreeTerms"]')?.focus({ preventScroll: true })
+      setShake(false)
+      requestAnimationFrame(() => setShake(true))
       return
     }
 
@@ -310,6 +330,7 @@ const BookingForm = () => {
               today={today}
               latest={latest}
               onChange={(arrive, depart) => update({ arrive, depart })}
+              error={datesError}
             />
             <Stepper label="Sites" value={stay.sites} min={1} max={maxSites} onChange={onSites} />
             <Stepper label="Guests" value={stay.guests} min={1} max={maxGuests} onChange={(guests) => update({ guests })} />
@@ -395,18 +416,18 @@ const BookingForm = () => {
               </div>
             </dl>
             <p className="bk-guests">{plural(stay.guests, 'guest')}</p>
-            {instantBooking && (
+            {/* Only speak up when something's wrong: nothing to say when the dates are free. */}
+            {instantBooking && (avail.state === 'error' || soldOut || (ready && ready.sitesFree === 0)) && (
               <p className={`bk-avail${soldOut ? ' is-out' : ''}`}>
-                {avail.state === 'loading' && bookPage.instant.checking}
                 {avail.state === 'error' && bookPage.instant.checkFailed}
                 {ready &&
-                  (ready.sitesFree === 0
-                    ? `${bookPage.instant.fullOn} ${ready.fullNights.map(formatDay).join(', ')}. ${bookPage.instant.tryOther}`
+                  (fullMessage
+                    ? fullMessage
                     : soldOut && ready.sitesFree < stay.sites
                       ? `Only ${plural(ready.sitesFree, 'site')} free on every night. ${bookPage.instant.fewerSites}`
                       : soldOut
                         ? hookupsShort ? bookPage.instant.hookupsGone : bookPage.instant.itemsGone
-                        : `${ready.sitesFree === site.siteCount ? `All ${site.siteCount}` : `At least ${ready.sitesFree}`} sites free every night of your stay.`)}
+                        : null)}
               </p>
             )}
           </>
@@ -426,7 +447,11 @@ const BookingForm = () => {
           </p>
         )}
 
-        <div className="bk-agree">
+        <div
+          ref={agreeRef}
+          className={`bk-agree${submitted && !agreed ? ' is-missing' : ''}${agreed ? ' is-checked' : ''}${shake ? ' is-nudged' : ''}`}
+          onAnimationEnd={() => setShake(false)}
+        >
           <label>
             <input
               type="checkbox"
@@ -445,16 +470,22 @@ const BookingForm = () => {
               {termsCheckbox.after}
             </span>
           </label>
-          {submitted && !agreed && <span className="bk-agree-error" id="bk-agree-error">{termsCheckbox.error}</span>}
+          {submitted && !agreed && (
+            <span className="bk-agree-error" id="bk-agree-error" role="alert">
+              <span aria-hidden="true">!</span> {termsCheckbox.error}
+            </span>
+          )}
         </div>
 
-        <button type="submit" className="hero-btn primary bk-cta" disabled={status === 'sending' || soldOut}>
+        {/* Not disabled, so a click still points the guest at the box. */}
+        <button type="submit" className={`hero-btn primary bk-cta${agreed ? '' : ' is-waiting'}`} disabled={status === 'sending' || soldOut}>
           {status === 'sending'
             ? instantBooking ? bookPage.instant.sendingLabel : bookPage.sendingLabel
             : instantBooking
               ? quote.ok ? `${bookPage.instant.submitLabel} ${money(quote.total)}` : bookPage.instant.submitLabel
               : bookPage.submitLabel}
         </button>
+        {!agreed && !soldOut && <p className="bk-agree-hint">{termsCheckbox.hint}</p>}
         <p className="bk-handoff">{instantBooking ? bookPage.instant.payNote : bookPage.payNote}</p>
         <a className="arrow-link bk-hipcamp" href={site.hipcampUrl} target="_blank" rel="noopener">
           {bookPage.hipcampLabel} <ArrowIcon />

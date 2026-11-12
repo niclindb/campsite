@@ -55,7 +55,8 @@ export const hookupsIn = (stay: Stay) => pickedAddOns(stay).find((p) => p.addOn.
 export const pickedLabel = (name: string, qty: number) => (qty > 1 ? `${name} \u00d7 ${qty}` : name)
 
 export type Quote =
-  | { ok: false; message: string | null }
+  // `guests` marks the one problem that isn't about the dates.
+  | { ok: false; message: string | null; guests?: true }
   | {
       ok: true
       nights: number
@@ -82,7 +83,7 @@ export const quoteStay = (stay: Stay, today: string): Quote => {
   const nights = nightsBetween(arrive, depart)
   if (nights < site.minNights) return { ok: false, message: 'Your departure needs to be after your arrival.' }
   if (stay.guests > sites * site.maxGuestsPerSite)
-    return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.` }
+    return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.`, guests: true }
   const sitesTotal = site.pricePerSiteNight * sites * nights
   const picked = pickedAddOns(stay)
   const extrasTotal = picked.reduce((sum, p) => sum + p.addOn.price * p.qty, 0)

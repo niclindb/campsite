@@ -263,3 +263,33 @@
 .bk-agree a { color: #eabaac; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .bk-agree a:hover { color: #fdf8f3; }
 .bk-agree-error { font-weight: 600; color: #f6b39c; }
+
+/* Terms box: a clear panel, red when someone tries to book without ticking it */
+.bk-agree {
+  padding: 0.85rem 0.95rem; border-radius: 12px; border: 2px solid rgba(253, 248, 243, 0.22);
+  background: rgba(253, 248, 243, 0.06); transition: border-color 0.2s, background-color 0.2s;
+}
+.bk-agree input { width: 22px; height: 22px; margin-top: 0.05rem; }
+.bk-agree.is-checked { border-color: rgba(185, 227, 215, 0.55); background: rgba(185, 227, 215, 0.08); }
+.bk-agree.is-missing { border-color: #ff7a59; background: rgba(255, 122, 89, 0.16); box-shadow: 0 0 0 4px rgba(255, 122, 89, 0.18); }
+.bk-agree.is-missing input { outline: 2px solid #ff7a59; outline-offset: 2px; }
+.bk-agree-error { display: flex; gap: 0.5rem; align-items: center; color: #ffd2c4; font-size: 0.92rem; }
+.bk-agree-error > span {
+  flex: none; display: grid; place-items: center; width: 1.3rem; height: 1.3rem; border-radius: 50%;
+  background: #ff7a59; color: #020d22; font-weight: 800; font-size: 0.85rem;
+}
+.bk-agree.is-missing.is-nudged { animation: bk-shake 0.4s ease-in-out; }
+@keyframes bk-shake {
+  20% { transform: translateX(-6px); } 40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) { .bk-agree.is-missing.is-nudged { animation: none; } }
+
+/* Pay button looks paused until the terms are ticked (still clickable, to point at the box) */
+.bk-cta.is-waiting { opacity: 0.55; filter: saturate(0.6); }
+.bk-cta.is-waiting:hover { transform: none; box-shadow: none; background-color: var(--secondary-color); color: #fdf8f3; }
+.bk-agree-hint { margin: -0.4rem 0 0; font-size: 0.85rem; text-align: center; color: #eabaac; font-weight: 600; }
+
+/* Dates field with a problem (missing, not allowed, or full) */
+.bk-dates-trigger.is-invalid { border-color: var(--secondary-color); background: #fff1ec; }
+.bk-dates-error { display: block; margin-top: 0.4rem; }
