@@ -5,12 +5,15 @@
 import type Stripe from 'stripe'
 import { addOns, site } from '../src/content/site.js'
 import { formatDay, hookupsIn, pickedAddOns, quoteStay, todayIso, type Stay } from '../src/content/booking.js'
-import { db, env, handle, json, origin, stripe } from './_lib/server.js'
+import { bookingColumns, db, env, handle, json, origin, stripe, type BookingRow } from './_lib/server.js'
+import { sendBookingEmails } from './_lib/email.js'
 
-// Stripe payment pages must stay open at least 30 minutes; the hold lasts a
-// little longer so a guest who pays at the last moment still has their sites.
+// Sites are held for 10 minutes. Stripe payment pages must stay open at least
+// 30 minutes, so once a hold runs out its page can still be open: before
+// holding, reclaimStaleHolds closes any such page on the same nights, so
+// nobody can pay for sites that were given to someone else.
 const PAY_MINUTES = 31
-const HOLD_MINUTES = 35
+const HOLD_MINUTES = 10
 
 type Body = Partial<Stay> & { name?: string; email?: string; phone?: string; note?: string }
 
@@ -42,6 +45,8 @@ export const POST = (request: Request) =>
     const quote = quoteStay(stay, todayIso())
     if (!quote.ok) return json({ error: 'bad_stay', message: quote.message ?? 'Please pick your dates.' }, 400)
     const extras = pickedAddOns(stay)
+
+    await reclaimStaleHolds(stay.arrive, stay.depart)
 
     let bookingId: string
     let error: Error | undefined
@@ -107,3 +112,37 @@ export const POST = (request: Request) =>
     await db().query('update bookings set stripe_session_id = $1 where id = $2', [session.id, bookingId])
     return json({ url: session.url })
   })
+
+// Holds on these nights whose 10 minutes are up but whose Stripe page may still
+// be open. Close each page so it can't be paid, then free its sites. If the
+// guest paid just before we got there, confirm their booking instead (the
+// webhook would do the same moments later, and confirms only once).
+const reclaimStaleHolds = async (arrive: string, depart: string) => {
+  const rows = (await db().query(
+    `select id::text, stripe_session_id from bookings
+      where status = 'held' and hold_expires_at <= now() and stripe_session_id is not null
+        and arrive < $2 and depart > $1`,
+    [arrive, depart],
+  )) as { id: string; stripe_session_id: string }[]
+
+  for (const row of rows) {
+    let session = await stripe().checkout.sessions.retrieve(row.stripe_session_id)
+    if (session.status === 'open') {
+      try {
+        session = await stripe().checkout.sessions.expire(row.stripe_session_id)
+      } catch {
+        session = await stripe().checkout.sessions.retrieve(row.stripe_session_id)
+      }
+    }
+    if (session.status === 'complete' && session.payment_status === 'paid') {
+      const confirmed = await db().query(`select ${bookingColumns} from confirm_booking($1, $2)`, [row.id, session.id])
+      const booking = confirmed[0] as BookingRow | undefined
+      if (booking) await sendBookingEmails(booking, session.amount_total ?? booking.total_cents)
+    } else if (session.status === 'expired') {
+      await db().query('select expire_booking($1)', [row.id])
+    } else {
+      // Couldn't close the page; better to ask this guest to retry than risk a double booking.
+      throw new Error(`stale hold ${row.id} still payable`)
+    }
+  }
+}

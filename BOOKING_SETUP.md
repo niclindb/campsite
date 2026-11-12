@@ -61,7 +61,7 @@ Finish Stripe's account activation form, swap `STRIPE_SECRET_KEY` and the webhoo
 ## How it works
 
 - `api/availability.ts`: free sites and hookups per night.
-- `api/checkout.ts`: checks the stay, holds the sites for 35 minutes, opens Stripe Checkout (31 minutes).
+- `api/checkout.ts`: checks the stay, holds the sites for 10 minutes and opens Stripe Checkout (open 31 minutes, Stripe's minimum is 30). When a hold has run out, the next checkout on those nights closes its Stripe page before taking the sites, so a late payer can't double-book.
 - `api/stripe-webhook.ts`: confirms paid bookings and sends the emails; frees expired ones; cancels fully refunded ones.
 - `api/cancel-hold.ts`: frees the sites when a guest backs out of the Stripe page.
 - `api/booking-status.ts`: what the confirmation page shows.

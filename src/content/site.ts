@@ -177,7 +177,7 @@ export const bookPage = {
     intro: 'Pick your nights, how many sites you need and any extras, then pay securely. You\u2019re confirmed right away.',
     submitLabel: 'Book and pay',
     sendingLabel: 'Opening secure payment\u2026',
-    payNote: 'You\u2019ll pay in full on Stripe\u2019s secure page. We hold your sites for 30 minutes while you pay.',
+    payNote: 'You\u2019ll pay in full on Stripe\u2019s secure page. We hold your sites for 10 minutes while you pay.',
     errorText: 'We couldn\u2019t start your payment. Please try again, or book on Hipcamp instead.',
     checking: 'Checking availability\u2026',
     checkFailed: 'We couldn\u2019t check availability just now. You can still try to book.',
