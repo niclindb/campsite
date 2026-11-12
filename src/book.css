@@ -228,3 +228,29 @@
   .bk-cal-nav { top: 2.95rem; }
   .bk-dates-value { gap: 0.6rem; }
 }
+
+/* Month and year chooser: tap a month's name in the calendar */
+.bk-cal-title {
+  border: none; background: none; cursor: pointer; padding: 0.25rem 0.6rem; border-radius: 999px;
+  font: inherit; color: inherit; transition: background-color 0.2s ease;
+}
+.bk-cal-title span { font-size: 0.7em; color: var(--secondary-color); }
+.bk-cal-title:hover { background: rgba(190, 52, 0, 0.1); }
+.bk-cal-title:focus-visible { outline: 2px solid var(--secondary-color); outline-offset: 2px; }
+.bk-cal-year { display: flex; align-items: center; justify-content: space-between; margin: 0.35rem 0 0.9rem; }
+.bk-cal-year h3 { margin: 0; font: 700 1.15rem 'League Spartan', sans-serif; color: var(--primary-color); }
+.bk-cal-year button {
+  width: 34px; height: 34px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(190, 52, 0, 0.1); color: var(--secondary-color); font: 700 1.4rem/1 'League Spartan', sans-serif;
+}
+.bk-cal-year button:disabled { opacity: 0.3; cursor: default; }
+.bk-cal-month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.bk-cal-mo {
+  height: 48px; border-radius: 12px; border: 1.5px solid rgba(2, 13, 34, 0.12); background: #fdf8f3; cursor: pointer;
+  font: 600 0.95rem 'Cabin', sans-serif; color: var(--primary-color);
+}
+.bk-cal-mo:hover:not(:disabled) { border-color: var(--secondary-color); }
+.bk-cal-mo:focus-visible { outline: 2px solid var(--secondary-color); outline-offset: 2px; }
+.bk-cal-mo.is-current { background: var(--secondary-color); border-color: var(--secondary-color); color: #fdf8f3; }
+.bk-cal-mo:disabled { opacity: 0.35; cursor: default; }
+@media (max-width: 640px) { .bk-cal-month-grid { grid-template-columns: repeat(3, 1fr); } }
