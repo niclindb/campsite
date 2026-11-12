@@ -18,6 +18,7 @@ export const site = {
   minNights: 1,
   bookingWindow: 'Up to 15 months ahead',
   bookingWindowMonths: 15,
+  maxGuestsPerSite: 3,
   cancellation: 'Moderate',
   hipcampUrl:
     'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
@@ -125,21 +126,38 @@ export const addOns: AddOn[] = [
   { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
 ]
 
-// The booking page (/book). Bookings are finished on Hipcamp until a
-// direct-booking system is set up; the form there opens Hipcamp with the
-// chosen dates and guests filled in.
+// The booking page (/book). Guests send a booking request from the site;
+// the hosts check the calendar, confirm by email and send payment details.
+// Requests arrive by email through Formspree (form id below; public by
+// design, it sits in the form's address). VITE_BOOKING_FORMSPREE_ID overrides it.
 export const bookPage = {
+  formspreeId: 'xppdwdoy',
   eyebrow: 'Book your stay',
-  title: 'Pick your dates',
-  intro: 'One quiet forest area, five bookings a night. Choose your nights and how many sites you need.',
-  formTitle: 'Your stay',
-  sitesHelp: 'A site is one camp setup: one tent or rig and one vehicle.',
-  feesNote: 'Hipcamp adds its service fee and any taxes at checkout.',
-  handoffLabel: 'Check availability on Hipcamp',
-  handoffNote: 'You\u2019ll finish booking on Hipcamp, where live availability is kept. Exact directions are sent once you book.',
+  title: 'Book direct with us',
+  intro: 'Pick your nights, how many sites you need and any extras. We\u2019ll confirm by email, usually within a day.',
+  stayTitle: 'Your stay',
+  sitesHelp: `A site is one camp setup: one tent or rig and one vehicle, up to ${site.maxGuestsPerSite} guests.`,
+  addOnsTitle: 'Extras',
+  addOnsNote: 'One-time fees for your stay. Need two of something? Say so in your note.',
+  detailsTitle: 'Your details',
+  notePlaceholder: 'Your rig and its length, arrival time, anything we should know',
+  summaryTitle: 'Summary',
+  payNote: 'Nothing is charged now. We\u2019ll confirm your dates by email and send payment details.',
+  submitLabel: 'Request to book',
+  sendingLabel: 'Sending\u2026',
+  errorText: 'Your request didn\u2019t go through. Please try again, or book on Hipcamp instead.',
+  successTitle: 'Request sent. Thank you!',
+  successText: 'Joy and Brian will check the calendar and email you to confirm, usually within a day. Exact directions come with your confirmation.',
+  anotherLabel: 'Start another request',
+  hipcampLabel: 'Prefer Hipcamp? Book there',
+  emailSubject: 'Booking request',
+  stepsTitle: 'How booking works',
+  steps: [
+    { title: 'Send a request', detail: 'Choose your dates, sites and extras. It takes a minute.' },
+    { title: 'We confirm', detail: 'We check the calendar and email you back, usually within a day.' },
+    { title: 'Pay and pack', detail: 'Pay with the link we send, and get exact directions to camp.' },
+  ],
   beforeTitle: 'Before you book',
-  addOnsTitle: 'Add to your stay',
-  addOnsNote: 'Add these when you check out on Hipcamp.',
 }
 
 // "Things to do": stops along a trail from camp, shown in this order

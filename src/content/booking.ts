@@ -1,4 +1,4 @@
-import { site } from './site'
+import { addOns, site, type AddOn } from './site'
 
 // Date and price helpers for the booking form. Dates are plain
 // "YYYY-MM-DD" strings, as used by <input type="date">, and are always
@@ -39,11 +39,14 @@ export const formatDay = (iso: string) =>
     timeZone: 'UTC',
   })
 
-export type Stay = { arrive: string; depart: string; sites: number; guests: number }
+export type Stay = { arrive: string; depart: string; sites: number; guests: number; extras: string[] }
+
+// The add-ons picked, in menu order. Add-ons are one-time fees per stay.
+export const pickedAddOns = (stay: Stay): AddOn[] => addOns.filter((a) => stay.extras.includes(a.name))
 
 export type Quote =
   | { ok: false; message: string | null }
-  | { ok: true; nights: number; perNight: number; total: number }
+  | { ok: true; nights: number; sitesTotal: number; extrasTotal: number; total: number }
 
 // Checks a stay against the camp's rules and prices it. `message` is null
 // while the guest simply hasn't picked both dates yet.
@@ -60,17 +63,9 @@ export const quoteStay = (stay: Stay, today: string): Quote => {
   const lastNight = addDays(depart, -1)
   if (!inSeason(arrive) || !inSeason(lastNight) || arrive.slice(0, 4) !== lastNight.slice(0, 4))
     return { ok: false, message: `We’re open ${site.season}. Please choose dates in season.` }
-  const perNight = site.pricePerSiteNight * sites
-  return { ok: true, nights, perNight, total: perNight * nights }
-}
-
-// The Hipcamp listing with the stay filled in, so guests land on their dates.
-export const hipcampLink = (stay: Stay, quote: Quote) => {
-  const url = new URL(site.hipcampUrl)
-  url.searchParams.set('adults', String(stay.guests))
-  if (quote.ok) {
-    url.searchParams.set('arrive', stay.arrive)
-    url.searchParams.set('depart', stay.depart)
-  }
-  return url.toString()
+  if (stay.guests > sites * site.maxGuestsPerSite)
+    return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.` }
+  const sitesTotal = site.pricePerSiteNight * sites * nights
+  const extrasTotal = pickedAddOns(stay).reduce((sum, a) => sum + a.price, 0)
+  return { ok: true, nights, sitesTotal, extrasTotal, total: sitesTotal + extrasTotal }
 }
