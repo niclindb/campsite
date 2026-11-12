@@ -71,3 +71,53 @@ export const sendBookingEmails = async (b: BookingRow, paidCents: number) => {
   ])
   results.forEach((r) => r.status === 'rejected' && console.error('Booking email failed:', r.reason))
 }
+
+// Tells the hosts that a guest paid but their booking couldn't be confirmed
+// (say, the database is down or out of date). Stripe keeps retrying, and the
+// booking confirms itself once the problem is fixed, but the guest gets no
+// email until then. Never throws.
+export type FailedPayment = {
+  bookingId: string
+  sessionId: string
+  guestName: string | null
+  guestEmail: string | null
+  paidCents: number | null
+  dates: string | null
+  error: unknown
+}
+
+export const sendFailureAlert = async (f: FailedPayment) => {
+  const from = env('BOOKING_EMAIL_FROM')
+  const pass = env('GMAIL_APP_PASSWORD')
+  if (!from || !pass) return
+  const reason = f.error instanceof Error ? f.error.message : String(f.error)
+  const text = [
+    'A guest paid, but their booking could not be confirmed, so they have not had a confirmation email yet.',
+    '',
+    `Guest: ${f.guestName || 'Unknown'} (${f.guestEmail || 'no email'})`,
+    `Dates: ${f.dates || 'Unknown'}`,
+    `Paid: ${f.paidCents == null ? 'Unknown' : money(f.paidCents)}`,
+    `Booking id: ${f.bookingId}`,
+    `Stripe payment page: ${f.sessionId}`,
+    '',
+    `Error: ${reason}`,
+    '',
+    'Their nights stay reserved for them. Stripe retries for up to 3 days, and the',
+    'booking confirms and emails the guest as soon as the problem is fixed.',
+    'If the error mentions a missing column or function, run db/schema.sql in the',
+    'Neon SQL Editor, then press Resend on the failed event in Stripe',
+    '(Developers -> Webhooks).',
+  ].join('\n')
+  try {
+    const transport = nodemailer.createTransport({ service: 'gmail', auth: { user: from, pass } })
+    await transport.sendMail({
+      from: `"${site.name}" <${from}>`,
+      to: env('BOOKING_ALERTS_TO') || from,
+      replyTo: f.guestEmail || from,
+      subject: `Action needed: paid booking not confirmed (${f.guestName || 'guest'})`,
+      text,
+    })
+  } catch (e) {
+    console.error('Failure alert email failed:', e)
+  }
+}

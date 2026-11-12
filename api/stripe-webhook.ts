@@ -5,8 +5,8 @@
 // its sites too.
 
 import type Stripe from 'stripe'
-import { bookingColumns, db, env, handle, json, stripe, type BookingRow } from './_lib/server.js'
-import { sendBookingEmails } from './_lib/email.js'
+import { db, env, handle, json, stripe } from './_lib/server.js'
+import { confirmPaid } from './_lib/confirm.js'
 
 export const POST = (request: Request) =>
   handle(async () => {
@@ -34,10 +34,9 @@ export const POST = (request: Request) =>
       (event.type === 'checkout.session.completed' && session.payment_status === 'paid') ||
       event.type === 'checkout.session.async_payment_succeeded'
     ) {
-      const rows = await db().query(`select ${bookingColumns} from confirm_booking($1, $2)`, [bookingId, session.id])
       // Only the first delivery of this event confirms the booking and emails.
-      const booking = rows[0] as BookingRow | undefined
-      if (booking) await sendBookingEmails(booking, session.amount_total ?? booking.total_cents)
+      // If it fails, the hosts are emailed once and Stripe retries.
+      await confirmPaid(bookingId, session)
     }
 
     if (event.type === 'checkout.session.expired') {
