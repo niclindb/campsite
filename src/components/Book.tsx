@@ -1,47 +1,70 @@
-import { addOns, site } from '../content/site'
+import { bookPage, site } from '../content/site'
+import type { IconName } from './Icon'
+import Icon from './Icon'
+import BookingForm from './booking/BookingForm'
+import { instantBooking } from './booking/instant'
+import bannerImage from '../assets/images/lake.webp'
 
-// Until a direct-booking widget is chosen, bookings go through Hipcamp.
-// Swap the button below for the widget's embed code when it's ready.
+const facts: { icon: IconName; label: string; value: string }[] = [
+  { icon: 'calendar', label: 'Season', value: site.season },
+  { icon: 'clock', label: 'Check-in', value: site.checkIn },
+  { icon: 'clock', label: 'Check-out', value: site.checkOut },
+  { icon: 'users', label: 'Guests per site', value: `Up to ${site.maxGuestsPerSite}` },
+  { icon: 'tag', label: 'Book', value: site.bookingWindow },
+  { icon: 'shield', label: 'Cancellation', value: site.cancellation },
+]
+
+// The booking page: photo banner, the booking request form in a raised
+// card, then how booking works and the house basics.
 const Book = () => {
+  const copy = instantBooking ? { ...bookPage, ...bookPage.instant } : bookPage
   return (
-    <section id="book" className="section dark book-page">
+  <div className="bk-page">
+    <section className="info-banner bk-banner">
+      <img src={bannerImage} alt="" />
       <div className="container">
-        <h1>Book your stay</h1>
-        <div className="book-grid">
-          <div className="book-summary">
-            <p className="price">
-              ${site.pricePerSiteNight}<span> / site / night</span>
-            </p>
-            <ul className="plain-list">
-              <li>Open {site.season}</li>
-              <li>Check in {site.checkIn}, check out {site.checkOut}</li>
-              <li>Minimum stay {site.minNights} night; book {site.bookingWindow.toLowerCase()}</li>
-              <li>{site.cancellation} cancellation policy</li>
-            </ul>
-            <a href={site.hipcampUrl} className="hero-btn primary" target="_blank" rel="noopener">
-              Check dates and book
-            </a>
-            <p className="small">Booking opens on Hipcamp. Exact directions are sent after you book.</p>
-          </div>
-          <div className="book-addons">
-            <h3>Add to your stay</h3>
-            <table>
-              <tbody>
-                {addOns.map((a) => (
-                  <tr key={a.name}>
-                    <th scope="row">
-                      {a.name}
-                      <span>{a.note}</span>
-                    </th>
-                    <td>${a.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <p className="contact-eyebrow">{bookPage.eyebrow}</p>
+        <h1>{copy.title}</h1>
+        <p>{copy.intro}</p>
+      </div>
+    </section>
+
+    <div className="container">
+      <section id="book" className="bk-card" aria-label={bookPage.eyebrow}>
+        <BookingForm />
+      </section>
+    </div>
+
+    <section className="bk-below">
+      <div className="container bk-below-grid">
+        <div>
+          <h2>{bookPage.stepsTitle}</h2>
+          <ol className="bk-steps">
+            {copy.steps.map((s) => (
+              <li key={s.title}>
+                <strong>{s.title}</strong>
+                <span>{s.detail}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div>
+          <h2>{bookPage.beforeTitle}</h2>
+          <ul className="bk-facts">
+            {facts.map((f) => (
+              <li key={f.label}>
+                <span className="about-highlight-icon"><Icon name={f.icon} size={18} /></span>
+                <span>
+                  <span className="glance-label">{f.label}</span>
+                  <span className="glance-value">{f.value}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
+  </div>
   )
 }
 

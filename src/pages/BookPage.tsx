@@ -6,7 +6,7 @@ const BookPage = () => (
     <PageMeta
       title="Book your stay"
       path="/book"
-      description="Book an RV or tent site at Northern Oasis Camping near Marquette, MI. $28 per site per night, with canoe, kayak, tree tent and firewood add-ons."
+      description="Book a tent or RV site direct with the hosts at Northern Oasis Camping near Marquette, MI. $28 per site per night, April to November."
     />
     <Book />
   </>

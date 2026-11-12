@@ -1,4 +1,5 @@
-import type { IconName } from '../components/Icon'
+import type { IconName } from '../components/Icon.js'
+import { contactInfo } from './contact-info.js'
 
 // All of the site's facts, prices and text live here, so they can be
 // updated in one place without touching the page components.
@@ -8,15 +9,23 @@ export const site = {
   hosts: 'Joy and Brian L.',
   tagline: 'Quiet forest campsites 7 miles from Marquette',
   season: 'April to November',
+  // Months the camp is open, 1 = January. Guests can stay through the last day of closeMonth.
+  seasonOpenMonth: 4,
+  seasonCloseMonth: 11,
   pricePerSiteNight: 28,
   siteCount: 5,
   checkIn: '1:00 PM to 10:00 PM',
   checkOut: 'Before 12:00 PM',
   minNights: 1,
   bookingWindow: 'Up to 15 months ahead',
+  bookingWindowMonths: 15,
+  maxGuestsPerSite: 3,
+  // Electric hookups sold per night, across all bookings.
+  hookupsPerNight: 2,
+  timeZone: 'America/Detroit',
   cancellation: 'Moderate',
-  hipcampUrl:
-    'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
+  // Contact details live in contact-info.ts.
+  hipcampUrl: contactInfo.hipcampUrl,
   rating: {
     recommendPercent: 97,
     ratings: '200+',
@@ -25,12 +34,9 @@ export const site = {
     reviewsLabel: '150+',
     badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
   },
-  // Contact details shown in the Contact section (leave blank to show a placeholder).
-  contactEmail: 'lindberg30@yahoo.com',
-  contactPhone: '(906) 235-8177',
-  // Formspree form that delivers Contact form messages by email. Public by design
-  // (it sits in the form's address); VITE_FORMSPREE_ID overrides it if set.
-  formspreeId: 'xppdwdoy',
+  contactEmail: contactInfo.email,
+  contactPhone: contactInfo.phone,
+  formspreeId: contactInfo.contactFormId,
 }
 
 // The Contact us section at the bottom of the home page.
@@ -119,11 +125,12 @@ export const planFor: Amenity[] = [
   { name: 'No hookups', detail: '30 amp electric can be added on for $25.', icon: 'plug' },
 ]
 
-export type AddOn = { name: string; price: number; note: string }
+// `hookup` marks the electric hookup, which is limited to site.hookupsPerNight a night.
+export type AddOn = { name: string; price: number; note: string; hookup?: boolean }
 
 export const addOns: AddOn[] = [
   { name: 'Tentsile tree tent', price: 80, note: '3 to 4 people, set up before you arrive' },
-  { name: 'Electric hookup', price: 25, note: '30 amp, 2 sites only' },
+  { name: 'Electric hookup', price: 25, note: '30 amp, 2 sites only', hookup: true },
   { name: 'Hammock', price: 25, note: 'Large sleeping hammock with net' },
   { name: 'Canoe', price: 20, note: 'Traditional canoe with paddles' },
   { name: 'Kayak', price: 20, note: 'Recreational single; not for Lake Superior or rapids' },
@@ -132,6 +139,60 @@ export const addOns: AddOn[] = [
   { name: 'Firewood bundle', price: 8, note: 'Waiting at your site when you arrive' },
   { name: 'Dozen eggs', price: 5, note: 'Fresh from our coop' },
 ]
+
+// The booking page (/book). Guests send a booking request from the site;
+// the hosts check the calendar, confirm by email and send payment details.
+// Requests arrive by email through Formspree (contactInfo.bookingFormId).
+export const bookPage = {
+  formspreeId: contactInfo.bookingFormId,
+  eyebrow: 'Book your stay',
+  title: 'Book direct with us',
+  intro: 'Pick your nights, how many sites you need and any extras. We\u2019ll confirm by email, usually within a day.',
+  stayTitle: 'Your stay',
+  sitesHelp: `A site is one camp setup: one tent or rig and one vehicle, up to ${site.maxGuestsPerSite} guests.`,
+  addOnsTitle: 'Extras',
+  addOnsNote: 'One-time fees for your stay. Need two of something? Say so in your note.',
+  detailsTitle: 'Your details',
+  notePlaceholder: 'Your rig and its length, arrival time, anything we should know',
+  summaryTitle: 'Summary',
+  payNote: 'Nothing is charged now. We\u2019ll confirm your dates by email and send payment details.',
+  submitLabel: 'Request to book',
+  sendingLabel: 'Sending\u2026',
+  errorText: 'Your request didn\u2019t go through. Please try again, or book on Hipcamp instead.',
+  successTitle: 'Request sent. Thank you!',
+  successText: 'Joy and Brian will check the calendar and email you to confirm, usually within a day. Exact directions come with your confirmation.',
+  anotherLabel: 'Start another request',
+  hipcampLabel: 'Prefer Hipcamp? Book there',
+  emailSubject: 'Booking request',
+  stepsTitle: 'How booking works',
+  steps: [
+    { title: 'Send a request', detail: 'Choose your dates, sites and extras. It takes a minute.' },
+    { title: 'We confirm', detail: 'We check the calendar and email you back, usually within a day.' },
+    { title: 'Pay and pack', detail: 'Pay with the link we send, and get exact directions to camp.' },
+  ],
+  beforeTitle: 'Before you book',
+  // Used instead of the request wording above once instant booking is on.
+  instant: {
+    title: 'Book direct with us',
+    intro: 'Pick your nights, how many sites you need and any extras, then pay securely. You\u2019re confirmed right away.',
+    submitLabel: 'Book and pay',
+    sendingLabel: 'Opening secure payment\u2026',
+    payNote: 'You\u2019ll pay in full on Stripe\u2019s secure page. We hold your sites for 30 minutes while you pay.',
+    errorText: 'We couldn\u2019t start your payment. Please try again, or book on Hipcamp instead.',
+    checking: 'Checking availability\u2026',
+    checkFailed: 'We couldn\u2019t check availability just now. You can still try to book.',
+    fullOn: 'We\u2019re full on',
+    tryOther: 'Please try other dates.',
+    fewerSites: 'Try fewer sites or other dates.',
+    hookupsGone: 'Both hookups are taken on one of these nights.',
+    cancelledNote: 'Your payment was cancelled, so nothing was charged and your sites were released.',
+    steps: [
+      { title: 'Pick your stay', detail: 'Choose your dates, sites and extras, and see what\u2019s free.' },
+      { title: 'Pay securely', detail: 'Pay in full by card on Stripe. It takes a minute.' },
+      { title: 'You\u2019re booked', detail: 'Your confirmation email has the exact directions to camp.' },
+    ],
+  },
+}
 
 // "Things to do": stops along a trail from camp, shown in this order
 // (nearest first). `distance` is the label shown on the trail.
