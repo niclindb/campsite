@@ -25,11 +25,6 @@ export const addMonths = (iso: string, months: number) => {
 export const nightsBetween = (arrive: string, depart: string) =>
   Math.round((toTime(depart) - toTime(arrive)) / DAY)
 
-const month = (iso: string) => Number(iso.slice(5, 7))
-
-// The night of `iso` falls inside the season.
-const inSeason = (iso: string) => month(iso) >= site.seasonOpenMonth && month(iso) <= site.seasonCloseMonth
-
 // e.g. "Fri, Jun 12"
 export const formatDay = (iso: string) =>
   new Date(toTime(iso)).toLocaleDateString('en-US', {
@@ -73,11 +68,6 @@ export const quoteStay = (stay: Stay, today: string): Quote => {
     return { ok: false, message: `We take bookings ${site.bookingWindow.toLowerCase()}.` }
   const nights = nightsBetween(arrive, depart)
   if (nights < site.minNights) return { ok: false, message: 'Your departure needs to be after your arrival.' }
-  // Every night must be in one season: the first and last nights (the last is
-  // the day before departure) both in season, and in the same year.
-  const lastNight = addDays(depart, -1)
-  if (!inSeason(arrive) || !inSeason(lastNight) || arrive.slice(0, 4) !== lastNight.slice(0, 4))
-    return { ok: false, message: `We’re open ${site.season}. Please choose dates in season.` }
   if (stay.guests > sites * site.maxGuestsPerSite)
     return { ok: false, message: `Each site fits up to ${site.maxGuestsPerSite} guests. Add a site for a bigger group.` }
   const sitesTotal = site.pricePerSiteNight * sites * nights

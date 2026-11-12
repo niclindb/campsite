@@ -11,7 +11,7 @@ const HomePage = () => (
   <>
     <PageMeta
       path="/"
-      description="Quiet forest RV and tent sites 7 miles from Marquette in Michigan's Upper Peninsula. $28 per site per night, pets welcome, open April to November."
+      description="Quiet forest RV and tent sites 7 miles from Marquette in Michigan's Upper Peninsula. $28 per site per night, pets welcome, open year round."
     />
     <Hero />
     <About />

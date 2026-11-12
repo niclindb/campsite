@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { bookPage, site } from '../../content/site'
+import { bookPage } from '../../content/site'
 import { addDays, addMonths, formatDay } from '../../content/booking'
 import Icon from '../Icon'
 
@@ -15,23 +15,14 @@ type Props = {
 }
 
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-const monthOf = (iso: string) => Number(iso.slice(5, 7))
-const inSeason = (iso: string) => monthOf(iso) >= site.seasonOpenMonth && monthOf(iso) <= site.seasonCloseMonth
 const firstOfMonth = (iso: string) => `${iso.slice(0, 7)}-01`
 const monthTitle = (first: string) =>
   new Date(`${first}T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
 const longDay = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
 
-// The first month worth showing: the arrival's, or this month if the camp is
-// open, otherwise the month the next season opens.
-const startMonth = (arrive: string, today: string) => {
-  if (arrive) return firstOfMonth(arrive)
-  if (!today) return ''
-  if (inSeason(today)) return firstOfMonth(today)
-  const year = Number(today.slice(0, 4)) + (monthOf(today) > site.seasonCloseMonth ? 1 : 0)
-  return `${year}-${String(site.seasonOpenMonth).padStart(2, '0')}-01`
-}
+// The first month worth showing: the arrival's, otherwise this month.
+const startMonth = (arrive: string, today: string) => (arrive ? firstOfMonth(arrive) : today ? firstOfMonth(today) : '')
 
 // The days of one month, padded with blanks so the 1st lands on its weekday.
 const monthDays = (first: string) => {
@@ -70,10 +61,9 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange }: Props) => 
     setOpen(!open)
   }
 
-  // A day can start a stay if its night is in season and bookable; it can end
-  // one if it's after the arrival and the night before it is in season.
-  const canArrive = (d: string) => (!today || d >= today) && (!latest || d <= latest) && inSeason(d)
-  const canDepart = (d: string) => d > arrive && inSeason(addDays(d, -1)) && addDays(d, -1).slice(0, 4) === arrive.slice(0, 4)
+  // A day can start a stay if it's bookable; it can end one if it's after the arrival.
+  const canArrive = (d: string) => (!today || d >= today) && (!latest || d <= latest)
+  const canDepart = (d: string) => d > arrive
   const enabled = (d: string) => (pickingDepart ? canDepart(d) || canArrive(d) : canArrive(d))
 
   const pick = (d: string) => {

@@ -8,10 +8,7 @@ export const site = {
   name: 'Northern Oasis Camping',
   hosts: 'Joy and Brian L.',
   tagline: 'Quiet forest campsites 7 miles from Marquette',
-  season: 'April to November',
-  // Months the camp is open, 1 = January. Guests can stay through the last day of closeMonth.
-  seasonOpenMonth: 4,
-  seasonCloseMonth: 11,
+  season: 'Open year round',
   pricePerSiteNight: 28,
   siteCount: 5,
   checkIn: '1:00 PM to 10:00 PM',
