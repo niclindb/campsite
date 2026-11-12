@@ -90,7 +90,7 @@ const Info = () => {
             </div>
           </div>
 
-          <aside className="info-ask">
+          <div className="info-ask">
             <h2>{infoPage.askTitle}</h2>
             <p>{infoPage.askText}</p>
             <ul className="ask-methods">
@@ -108,7 +108,7 @@ const Info = () => {
               </li>
             </ul>
             <p className="contact-sign">— {site.hosts}</p>
-          </aside>
+          </div>
         </div>
       </section>
     </>

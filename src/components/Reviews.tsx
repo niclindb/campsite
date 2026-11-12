@@ -23,7 +23,7 @@ const Reviews = () => {
             </figure>
           ))}
         </div>
-        <aside className="reviews-summary">
+        <div className="reviews-summary">
           <p className="reviews-percent">{recommendPercent}%</p>
           <p className="reviews-percent-label">of campers recommend us on Hipcamp</p>
           <ul className="reviews-badges">
@@ -34,7 +34,7 @@ const Reviews = () => {
           <a className="arrow-link reviews-link" href={site.hipcampUrl} target="_blank" rel="noopener">
             Read {site.rating.reviewsLabel} reviews on Hipcamp <ArrowIcon />
           </a>
-        </aside>
+        </div>
       </div>
     </section>
   )

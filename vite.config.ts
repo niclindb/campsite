@@ -5,6 +5,7 @@ import { readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { join } from 'node:path'
 import type {} from 'vite-react-ssg'
+import { contactInfo } from './src/content/contact-info'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -22,6 +23,7 @@ export default defineConfig({
       await rm(join(dir, '404'), { recursive: true })
       await stripImagePreloads(dir)
       await addContentSecurityPolicy(dir)
+      await writeSitemap(dir)
     },
   },
 })
@@ -64,4 +66,20 @@ async function addContentSecurityPolicy(dir: string) {
     const tag = `<meta http-equiv="Content-Security-Policy" content="${policy}">`
     await writeFile(file, html.replace(/<meta charset="UTF-8"\s*\/?>/i, (m) => `${m}\n    ${tag}`))
   }
+}
+
+// sitemap.xml and its line in robots.txt, once the website's address is set
+// (websiteUrl in src/content/contact-info.ts). /book/confirmed is left out:
+// it only means something after a booking.
+async function writeSitemap(dir: string) {
+  const base = contactInfo.websiteUrl.replace(/\/$/, '')
+  if (!base) return
+  const pages = ['/', '/book', '/info', '/terms', '/privacy']
+  const urls = pages.map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`).join('\n')
+  await writeFile(
+    join(dir, 'sitemap.xml'),
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+  )
+  const robots = await readFile(join(dir, 'robots.txt'), 'utf8')
+  await writeFile(join(dir, 'robots.txt'), `${robots.trimEnd()}\nSitemap: ${base}/sitemap.xml\n`)
 }

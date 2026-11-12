@@ -391,7 +391,7 @@ const BookingForm = () => {
         </fieldset>
       </div>
 
-      <aside className="bk-side" aria-live="polite">
+      <div className="bk-side" aria-live="polite">
         <h2>{bookPage.summaryTitle}</h2>
         {quote.ok ? (
           <>
@@ -512,7 +512,7 @@ const BookingForm = () => {
         <a className="arrow-link bk-hipcamp" href={site.hipcampUrl} target="_blank" rel="noopener">
           {bookPage.hipcampLabel} <ArrowIcon />
         </a>
-      </aside>
+      </div>
     </form>
   )
 }

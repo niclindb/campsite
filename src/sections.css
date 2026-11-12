@@ -840,6 +840,9 @@ section[id] {
 
 .copyright a {
   font-weight: 600;
+  /* Taller tap area on phones without changing the line */
+  display: inline-block;
+  padding: 0.4rem 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

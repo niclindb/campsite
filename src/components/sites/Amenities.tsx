@@ -18,7 +18,7 @@ const Amenities = () => (
         ))}
       </ul>
     </div>
-    <aside className="plan-for" aria-labelledby="plan-for-title">
+    <section className="plan-for" aria-labelledby="plan-for-title">
       <h3 id="plan-for-title">Plan ahead</h3>
       <p className="plan-for-intro">This is rustic camping. Here's what to know before you pack.</p>
       <ul className="amenity-list">
@@ -32,7 +32,7 @@ const Amenities = () => (
           </li>
         ))}
       </ul>
-    </aside>
+    </section>
   </div>
 )
 

@@ -33,6 +33,7 @@ export const site = {
   // Short version; the full policy is on the Terms page (src/content/legal.ts).
   cancellation: 'Full refund up to 48 hours before arrival',
   // Contact details live in contact-info.ts.
+  url: contactInfo.websiteUrl.replace(/\/$/, ''),
   hipcampUrl: contactInfo.hipcampUrl,
   rating: {
     recommendPercent: 97,

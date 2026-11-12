@@ -143,7 +143,7 @@ const LegalPage = ({ title, intro, lead, eyebrow, summary, sections, image, imag
         <article className="legal-body">
           <p className="legal-lead">{lead}</p>
           {sections.map((s, i) => <Section key={s.id} s={s} n={i + 1} />)}
-          <a className="legal-top" href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>Back to top</a>
+          <button type="button" className="legal-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Back to top</button>
         </article>
       </div>
     </div>
