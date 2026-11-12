@@ -25,9 +25,12 @@ export const site = {
     reviewsLabel: '150+',
     badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
   },
-  // Contact details are still to be decided. Leave blank to hide them.
-  contactEmail: '',
-  contactPhone: '',
+  // Contact details shown in the Contact section (leave blank to show a placeholder).
+  contactEmail: 'lindberg30@yahoo.com',
+  contactPhone: '(906) 235-8177',
+  // Formspree form that delivers Contact form messages by email. Public by design
+  // (it sits in the form's address); VITE_FORMSPREE_ID overrides it if set.
+  formspreeId: 'xppdwdoy',
 }
 
 // The Contact us section at the bottom of the home page.
@@ -42,6 +45,15 @@ export const contact = {
   hipcampLabel: 'Message us on Hipcamp',
   formTitle: 'Send us a message',
   noFormNote: 'Our message form is coming soon. Until then, Hipcamp is the quickest way to reach us.',
+  // The contact form (shown once VITE_FORMSPREE_ID is set).
+  formIntro: 'Tell us a little about your trip and we\u2019ll write back by email.',
+  emailSubject: 'New message from the Northern Oasis website',
+  sendLabel: 'Send message',
+  sendingLabel: 'Sending\u2026',
+  successTitle: 'Message sent. Thank you!',
+  successText: 'Joy and Brian usually reply within a day. Keep an eye on your inbox (and your spam folder, just in case).',
+  sendAnotherLabel: 'Send another message',
+  errorText: 'Sorry, your message didn\u2019t go through. Please check your connection and try again, or reach us on Hipcamp.',
 }
 
 // The About section on the home page, written in the hosts' voice.

@@ -98,7 +98,7 @@ const Info = () => {
               </li>
               <li>
                 <Icon name="phone" size={18} />
-                {site.contactPhone ? <a href={`tel:${site.contactPhone}`}>{site.contactPhone}</a> : <Pending text={contact.phonePlaceholder} />}
+                {site.contactPhone ? <a href={`tel:${site.contactPhone.replace(/[^\d+]/g, '')}`}>{site.contactPhone}</a> : <Pending text={contact.phonePlaceholder} />}
               </li>
               <li>
                 <Icon name="chat" size={18} />

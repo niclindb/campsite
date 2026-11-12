@@ -654,9 +654,19 @@ section[id] {
   gap: 1rem;
 }
 
-.contact-form label {
+.contact-form-intro {
+  margin: 0;
+  color: #5a5248;
+  font-size: 0.95rem;
+}
+
+.contact-field {
   display: grid;
   gap: 0.3rem;
+  align-content: start;
+}
+
+.contact-field label {
   font-weight: 600;
   color: var(--primary-color);
 }
@@ -694,12 +704,115 @@ section[id] {
   color: var(--secondary-color);
 }
 
-.honeypot {
-  display: none;
+.contact-form input[aria-invalid='true'],
+.contact-form textarea[aria-invalid='true'] {
+  border-color: #be3400;
+  background: #fff6f1;
 }
 
-.form-note {
+.contact-form input[aria-invalid='true']:focus,
+.contact-form textarea[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 3px rgba(190, 52, 0, 0.15);
+}
+
+.contact-field-error {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #a82e00;
+  font-size: 0.88rem;
   font-weight: 600;
+}
+
+.contact-field-error svg {
+  flex: none;
+}
+
+.contact-form-error {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: #fff1ea;
+  border: 1px dashed #be3400;
+  color: #7a2200;
+}
+
+.contact-form-error svg {
+  flex: none;
+  margin-top: 0.1rem;
+  color: #be3400;
+}
+
+.contact-form-error p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.contact-form-error .arrow-link {
+  color: #be3400;
+  margin-top: 0.35rem;
+}
+
+.contact-form-card .hero-btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+  transform: none;
+}
+
+/* Spam trap: kept in the page (so bots fill it) but off screen */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-success {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+}
+
+.contact-success-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(1, 80, 69, 0.1);
+  color: var(--accent-color);
+}
+
+.contact-success h3 {
+  margin: 0.4rem 0 0;
+  outline: none;
+}
+
+.contact-success p {
+  margin: 0;
+  color: #5a5248;
+}
+
+.contact-again {
+  margin-top: 0.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: #be3400;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.contact-again:hover,
+.contact-again:focus-visible {
+  text-decoration-thickness: 2px;
 }
 
 @media (max-width: 900px) {
