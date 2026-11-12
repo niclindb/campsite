@@ -219,7 +219,7 @@ export const termsPage = {
         {
           list: [
             site.quietHours
-              ? `Quiet hours are ${site.quietHours}. Please keep voices, music and generators down so everyone can enjoy the woods.`
+              ? `Quiet hours: ${site.quietHours}. Please keep voices, music and generators down so everyone can enjoy the woods.`
               : 'Please keep voices, music and generators down during quiet hours so everyone can enjoy the woods.',
             'Fires only in the fire pits provided. Never leave a fire unattended, and put it out completely with water before bed or leaving. Follow any burn ban in effect.',
             'Please buy firewood from us or locally rather than bringing it from far away, to keep tree pests out of the forest.',

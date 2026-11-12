@@ -19,7 +19,7 @@ export const site = {
   checkOut: 'Before 12:00 PM',
   // e.g. '10:00 PM to 8:00 AM'. Blank shows a "to come" placeholder on the
   // Info and Terms pages until the hosts decide.
-  quietHours: '',
+  quietHours: 'Midnight to 8:00 AM',
   minNights: 1,
   bookingWindow: 'Up to 15 months ahead',
   bookingWindowMonths: 15,
@@ -301,7 +301,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       { q: 'How many people can stay on a site?', a: `Up to ${site.maxGuestsPerSite} guests per site. Book another site for a bigger group.` },
       { q: 'Can I bring my dog?', a: 'Yes, dogs are welcome off leash. Please pick up after them so everyone can enjoy the land.' },
-      { q: 'Are there quiet hours?', a: site.quietHours ? `Yes, ${site.quietHours}.` : 'Quiet hours to come.', pending: !site.quietHours },
+      { q: 'Are there quiet hours?', a: site.quietHours ? `Yes: ${site.quietHours}. Please keep it down so everyone can sleep.` : 'Quiet hours to come.', pending: !site.quietHours },
       { q: 'Will I hear anything?', a: 'It is a quiet forest, but there is a shooting range nearby and you may hear gunfire during the day.' },
     ],
   },
