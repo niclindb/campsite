@@ -1,4 +1,5 @@
 import type { IconName } from '../components/Icon'
+import { contactInfo } from './contact-info'
 
 // All of the site's facts, prices and text live here, so they can be
 // updated in one place without touching the page components.
@@ -20,8 +21,8 @@ export const site = {
   bookingWindowMonths: 15,
   maxGuestsPerSite: 3,
   cancellation: 'Moderate',
-  hipcampUrl:
-    'https://www.hipcamp.com/en-US/land/michigan-northern-oasis-camping-nelh0koe',
+  // Contact details live in contact-info.ts.
+  hipcampUrl: contactInfo.hipcampUrl,
   rating: {
     recommendPercent: 97,
     ratings: '200+',
@@ -30,12 +31,9 @@ export const site = {
     reviewsLabel: '150+',
     badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
   },
-  // Contact details shown in the Contact section (leave blank to show a placeholder).
-  contactEmail: 'lindberg30@yahoo.com',
-  contactPhone: '(906) 235-8177',
-  // Formspree form that delivers Contact form messages by email. Public by design
-  // (it sits in the form's address); VITE_FORMSPREE_ID overrides it if set.
-  formspreeId: 'xppdwdoy',
+  contactEmail: contactInfo.email,
+  contactPhone: contactInfo.phone,
+  formspreeId: contactInfo.contactFormId,
 }
 
 // The Contact us section at the bottom of the home page.
@@ -140,10 +138,9 @@ export const addOns: AddOn[] = [
 
 // The booking page (/book). Guests send a booking request from the site;
 // the hosts check the calendar, confirm by email and send payment details.
-// Requests arrive by email through Formspree (form id below; public by
-// design, it sits in the form's address). VITE_BOOKING_FORMSPREE_ID overrides it.
+// Requests arrive by email through Formspree (contactInfo.bookingFormId).
 export const bookPage = {
-  formspreeId: 'xppdwdoy',
+  formspreeId: contactInfo.bookingFormId,
   eyebrow: 'Book your stay',
   title: 'Book direct with us',
   intro: 'Pick your nights, how many sites you need and any extras. We\u2019ll confirm by email, usually within a day.',
