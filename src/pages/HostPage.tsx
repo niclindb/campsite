@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Head } from 'vite-react-ssg'
+import { Link } from 'react-router-dom'
+import logo from '../assets/images/logo.webp?w=320&imagetools'
 import { addDays, formatDay, nightsBetween, pickedLabel } from '../content/booking'
 import { site } from '../content/site'
 import '../host.css'
@@ -123,8 +125,10 @@ const HostPage = () => {
       </Head>
       <header className="host-top">
         <div className="host-wrap host-top-row">
-          <div>
-            <p className="host-eyebrow">{site.name}</p>
+          <div className="host-brand">
+            <Link to="/" className="host-logo">
+              <img src={logo} alt={`${site.name}, home`} width="96" height="66" />
+            </Link>
             <h1>Host dashboard</h1>
           </div>
           {state === 'ready' && (

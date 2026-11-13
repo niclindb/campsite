@@ -193,3 +193,11 @@
   .host-wide-only { display: none; }
   .host-narrow-only { display: inline; }
 }
+
+/* Logo in the dashboard header, linking to the home page */
+.host-brand { display: flex; align-items: center; gap: 0.9rem; min-width: 0; }
+.host-logo { display: block; flex: none; border-radius: 8px; }
+.host-logo img { display: block; width: 96px; height: auto; transition: transform 0.2s ease; }
+.host-logo:hover img { transform: scale(1.04); }
+.host-logo:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (max-width: 520px) { .host-logo img { width: 76px; } .host-top h1 { font-size: 1.25rem; } }
