@@ -855,6 +855,12 @@ section[id] {
   padding: 0.4rem 0;
 }
 
+/* On phones the credit gets its own line, so the footer fits the screen */
+@media (max-width: 600px) {
+  .copyright .credit-sep { display: none; }
+  .copyright .credit { display: block; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .footer-grid nav a,
   .copyright a {
