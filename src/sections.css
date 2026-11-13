@@ -243,6 +243,16 @@ section[id] {
   scrollbar-width: none;
 }
 
+.pola-strip.more-left,
+.pola-strip.more-right {
+  --fade-l: 0px;
+  --fade-r: 0px;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+}
+.pola-strip.more-left { --fade-l: 4rem; }
+.pola-strip.more-right { --fade-r: 4rem; }
+
 .pola-card.mini {
   flex: 0 0 92px;
   height: 104px;

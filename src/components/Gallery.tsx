@@ -26,6 +26,9 @@ const Gallery = () => {
   const [open, setOpen] = useState<number | null>(null)
   const strip = useRef<HTMLDivElement>(null)
   const touchX = useRef<number | null>(null)
+  // Which ends of the thumbnail strip have more photos hidden past them,
+  // so those ends fade out as a hint that the strip scrolls.
+  const [more, setMore] = useState({ left: false, right: false })
   const n = photos.length
 
   useEffect(() => {
@@ -39,6 +42,20 @@ const Gallery = () => {
     if (!el || !s) return
     s.scrollTo({ left: el.offsetLeft - (s.clientWidth - el.offsetWidth) / 2, behavior: 'smooth' })
   }, [cur])
+
+  useEffect(() => {
+    const s = strip.current
+    if (!s) return
+    const check = () =>
+      setMore({ left: s.scrollLeft > 4, right: s.scrollLeft + s.clientWidth < s.scrollWidth - 4 })
+    check()
+    s.addEventListener('scroll', check, { passive: true })
+    window.addEventListener('resize', check)
+    return () => {
+      s.removeEventListener('scroll', check)
+      window.removeEventListener('resize', check)
+    }
+  }, [n])
 
   if (n === 0) return null
   const go = (d: number) => setCur((cur + d + n) % n)
@@ -72,7 +89,7 @@ const Gallery = () => {
         </div>
 
         {n > 1 && (
-          <div className="pola-strip" ref={strip}>
+          <div className={`pola-strip${more.left ? ' more-left' : ''}${more.right ? ' more-right' : ''}`} ref={strip}>
             {photos.map((ph, i) => (
               <button
                 key={ph.name}
