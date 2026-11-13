@@ -34,6 +34,7 @@ type Data = {
   month: string
   siteCount: number
   limits: Record<string, number>
+  alerts: { kind: 'overbooked' | 'gear' | 'unconfirmed'; text: string; night?: string; bookingId?: string }[]
   bookings: Booking[]
   nights: { night: string; sitesUsed: number; hookupsUsed: number }[]
   items: { night: string; item: string; used: number }[]
@@ -220,6 +221,7 @@ const Dashboard = ({
 
   return (
     <>
+      <Alerts alerts={data.alerts} setMonth={setMonth} />
       <section className="host-tiles" aria-label="At a glance">
         <Tile label="Tonight" value={`${staying.reduce((s, b) => s + b.sites, 0)} of ${data.siteCount}`} detail="sites taken" />
         <Tile
@@ -236,8 +238,10 @@ const Dashboard = ({
         <Tile label={`Views, last ${days} days`} value={totalViews.toLocaleString('en-US')} detail={plural(totalVisits, 'visit')} />
       </section>
 
+      <ThisWeek bookings={bookings} today={today} />
       <Calendar data={data} setMonth={setMonth} reload={reload} />
       <Bookings bookings={bookings} today={today} reload={reload} />
+      <Revenue bookings={bookings} today={today} />
       <Views data={data} days={days} setDays={setDays} />
     </>
   )
@@ -297,7 +301,7 @@ const Calendar = ({ data, setMonth, reload }: { data: Data; setMonth: (m: string
               <span className="host-day-sites">{n.sitesUsed}/{siteCount}</span>
               <span className="host-day-bar" aria-hidden="true"><span style={{ width: `${(used / siteCount) * 100}%` }} /></span>
               {gear && <span className="host-day-dot" aria-hidden="true" />}
-              {blockedOn(n.night) && <span className="host-day-block" aria-hidden="true">Blocked</span>}
+              {blockedOn(n.night) && <span className="host-day-block" aria-hidden="true"><span className="host-wide-only">Blocked</span><span className="host-narrow-only">Blk</span></span>}
             </button>
           )
         })}
@@ -454,6 +458,187 @@ const BlockForm = ({
   )
 }
 
+// Problems that need you: shown above everything else, only when there are any.
+const Alerts = ({ alerts, setMonth }: { alerts: Data['alerts']; setMonth: (m: string) => void }) =>
+  alerts.length ? (
+    <section className="host-alerts" role="alert" aria-labelledby="host-alerts-title">
+      <h2 id="host-alerts-title">Needs your attention</h2>
+      <ul>
+        {alerts.map((a, i) => (
+          <li key={i}>
+            {a.night ? (
+              <>
+                <strong>{formatDay(a.night)}{a.night.slice(0, 4) !== new Date().toISOString().slice(0, 4) ? `, ${a.night.slice(0, 4)}` : ''}:</strong> {a.text}.{' '}
+                <button type="button" className="host-link" onClick={() => setMonth(a.night!.slice(0, 7))}>Show in calendar</button>
+              </>
+            ) : (
+              <><strong>Payment not confirmed:</strong> {a.text}</>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p className="host-alerts-note">To fix an overbooked night, contact one of the guests, then refund them below if needed.</p>
+    </section>
+  ) : null
+
+// Who's arriving and leaving over the next 7 days, with what to set out.
+const ThisWeek = ({ bookings, today }: { bookings: Booking[]; today: string }) => {
+  const live = bookings.filter((b) => b.status !== 'cancelled')
+  const days = Array.from({ length: 7 }, (_, i) => addDays(today, i))
+    .map((day) => ({ day, arriving: live.filter((b) => b.arrive === day), leaving: live.filter((b) => b.depart === day) }))
+    .filter((d) => d.arriving.length || d.leaving.length)
+  return (
+    <section className="host-card" aria-labelledby="host-week-title">
+      <h2 id="host-week-title">This week</h2>
+      {days.length === 0 ? (
+        <p className="host-muted">Nobody arriving or leaving in the next 7 days.</p>
+      ) : (
+        <ol className="host-week">
+          {days.map(({ day, arriving, leaving }) => (
+            <li key={day}>
+              <h3>{day === today ? 'Today' : day === addDays(today, 1) ? 'Tomorrow' : formatDay(day)}</h3>
+              {arriving.map((b) => (
+                <div key={b.id} className="host-week-item">
+                  <p>
+                    <span className="host-pill arrive">Arriving</span> <strong>{b.name}</strong>, {plural(b.sites, 'site')}, {plural(b.guests, 'guest')},{' '}
+                    {plural(nightsBetween(b.arrive, b.depart), 'night')}
+                    {b.status === 'held' && <span className="host-pill held">Paying now</span>}
+                  </p>
+                  {b.extras.length > 0 && (
+                    <p><span className="host-label">Set out</span> {b.extras.map((x) => pickedLabel(x.name, x.qty ?? 1)).join(', ')}</p>
+                  )}
+                  {b.note && <p className="host-booking-note">“{b.note}”</p>}
+                  {b.phone && <p><a href={`tel:${b.phone.replace(/[^\d+]/g, '')}`}>{b.phone}</a></p>}
+                </div>
+              ))}
+              {leaving.length > 0 && (
+                <p className="host-week-leaving"><span className="host-pill">Leaving</span> {leaving.map((b) => b.name).join(', ')}</p>
+              )}
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  )
+}
+
+// Money taken each month (by the day the guest paid), refunds, and the sales
+// tax on what was kept. Tax on a partial refund is counted in proportion.
+const monthOf = (iso: string) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: site.timeZone, year: 'numeric', month: '2-digit' }).format(new Date(iso)).slice(0, 7)
+
+const Revenue = ({ bookings, today }: { bookings: Booking[]; today: string }) => {
+  const rows = useMemo(() => {
+    const months = new Map<string, { count: number; paid: number; refunded: number; tax: number }>()
+    for (const b of bookings) {
+      if (!b.paid_at) continue
+      const m = monthOf(b.paid_at)
+      const r = months.get(m) ?? { count: 0, paid: 0, refunded: 0, tax: 0 }
+      const kept = b.total_cents ? Math.max(0, b.total_cents - b.refunded_cents) / b.total_cents : 0
+      r.count += 1
+      r.paid += b.total_cents
+      r.refunded += b.refunded_cents
+      r.tax += Math.round(b.tax_cents * kept)
+      months.set(m, r)
+    }
+    return [...months.entries()].sort((a, b) => b[0].localeCompare(a[0]))
+  }, [bookings])
+  const year = today.slice(0, 4)
+  const total = rows
+    .filter(([m]) => m.startsWith(year))
+    .reduce((t, [, r]) => ({ count: t.count + r.count, paid: t.paid + r.paid, refunded: t.refunded + r.refunded, tax: t.tax + r.tax }), {
+      count: 0,
+      paid: 0,
+      refunded: 0,
+      tax: 0,
+    })
+  return (
+    <section className="host-card" aria-labelledby="host-revenue-title">
+      <h2 id="host-revenue-title">Money and sales tax</h2>
+      <p className="host-muted host-note">
+        By the month guests paid, from bookings on this website. Refunds count in the month the booking was paid. Sales tax is the tax on what you kept. Check Stripe for the exact figures to file.
+      </p>
+      <div className="host-table-scroll">
+        <table className="host-table">
+          <thead>
+            <tr><th scope="col">Month</th><th scope="col">Bookings</th><th scope="col">Paid</th><th scope="col">Refunded</th><th scope="col">Kept</th><th scope="col">Sales tax</th></tr>
+          </thead>
+          <tbody>
+            {rows.length ? (
+              rows.map(([m, r]) => (
+                <tr key={m}>
+                  <th scope="row">{monthLabel(m)}</th>
+                  <td>{r.count}</td>
+                  <td>{money(r.paid)}</td>
+                  <td>{r.refunded ? `−${money(r.refunded)}` : '$0'}</td>
+                  <td>{money(r.paid - r.refunded)}</td>
+                  <td>{money(r.tax)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan={6} className="host-muted">No paid bookings yet.</td></tr>
+            )}
+          </tbody>
+          {total.count > 0 && (
+            <tfoot>
+              <tr>
+                <th scope="row">{year} so far</th>
+                <td>{total.count}</td>
+                <td>{money(total.paid)}</td>
+                <td>{total.refunded ? `−${money(total.refunded)}` : '$0'}</td>
+                <td>{money(total.paid - total.refunded)}</td>
+                <td>{money(total.tax)}</td>
+              </tr>
+            </tfoot>
+          )}
+        </table>
+      </div>
+    </section>
+  )
+}
+
+// Every booking as a CSV file that opens in Excel, Numbers or Google Sheets.
+const downloadCsv = (bookings: Booking[]) => {
+  // A leading = + - @ would run as a formula in a spreadsheet, so it's quoted out.
+  const cell = (v: unknown) => {
+    let s = v == null ? '' : String(v)
+    if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const dollars = (c: number) => (c / 100).toFixed(2)
+  const header = ['Status', 'Name', 'Email', 'Phone', 'Arrive', 'Depart', 'Nights', 'Sites', 'Guests', 'Add-ons', 'Total', 'Sales tax', 'Refunded', 'Note', 'Booked', 'Paid', 'Booking id']
+  const lines = bookings.map((b) =>
+    [
+      statusLabel[b.status],
+      b.name,
+      b.email,
+      b.phone,
+      b.arrive,
+      b.depart,
+      nightsBetween(b.arrive, b.depart),
+      b.sites,
+      b.guests,
+      b.extras.map((x) => pickedLabel(x.name, x.qty ?? 1)).join('; '),
+      dollars(b.total_cents),
+      dollars(b.tax_cents),
+      dollars(b.refunded_cents),
+      b.note,
+      b.created_at,
+      b.paid_at,
+      b.id,
+    ].map(cell).join(','),
+  )
+  const blob = new Blob(['\ufeff' + [header.join(','), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `northern-oasis-bookings-${new Date().toISOString().slice(0, 10)}.csv`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 const statusLabel: Record<Booking['status'], string> = {
   confirmed: 'Paid',
   held: 'Paying now',
@@ -463,17 +648,38 @@ const statusLabel: Record<Booking['status'], string> = {
 
 const Bookings = ({ bookings, today, reload }: { bookings: Booking[]; today: string; reload: () => Promise<void> }) => {
   const [tab, setTab] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming')
+  const [query, setQuery] = useState('')
   const lists = {
     upcoming: bookings.filter((b) => b.status !== 'cancelled' && b.depart >= today),
     past: bookings.filter((b) => b.status !== 'cancelled' && b.depart < today).reverse(),
     cancelled: bookings.filter((b) => b.status === 'cancelled').reverse(),
   }
-  const shown = lists[tab]
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  const digits = query.replace(/\D/g, '')
+  const matches = (b: Booking) => {
+    const text = [b.name, b.email, b.phone ?? '', b.note ?? '', b.id, ...b.extras.map((x) => x.name)].join(' ').toLowerCase()
+    return words.every((w) => text.includes(w)) || (digits.length >= 4 && (b.phone ?? '').replace(/\D/g, '').includes(digits))
+  }
+  const searching = words.length > 0
+  const shown = searching ? [...bookings].reverse().filter(matches) : lists[tab]
   return (
     <section className="host-card" aria-labelledby="host-bookings-title">
       <div className="host-section-head">
         <h2 id="host-bookings-title">Bookings</h2>
-        <div className="host-tabs" role="tablist">
+        <button type="button" className="host-btn ghost" onClick={() => downloadCsv(bookings)} disabled={!bookings.length}>
+          Download spreadsheet
+        </button>
+      </div>
+      <div className="host-bookings-tools">
+        <input
+          type="search"
+          className="host-search"
+          placeholder="Search by name, email, phone or note"
+          aria-label="Search bookings"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <div className="host-tabs" role="tablist" hidden={searching}>
           {(['upcoming', 'past', 'cancelled'] as const).map((t) => (
             <button key={t} type="button" role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>
               {t[0].toUpperCase() + t.slice(1)} <span>{lists[t].length}</span>
@@ -481,8 +687,11 @@ const Bookings = ({ bookings, today, reload }: { bookings: Booking[]; today: str
           ))}
         </div>
       </div>
+      {searching && <p className="host-muted host-note">{plural(shown.length, 'booking')} found, newest first.</p>}
       {shown.length === 0 ? (
-        <p className="host-muted">No {tab} bookings booked on the website yet. Hipcamp bookings aren’t listed here.</p>
+        <p className="host-muted">
+          {searching ? 'No bookings match that search.' : `No ${tab} bookings booked on the website yet. Hipcamp bookings aren’t listed here.`}
+        </p>
       ) : (
         <ul className="host-bookings">
           {shown.map((b) => <BookingCard key={b.id} b={b} reload={reload} />)}

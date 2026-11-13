@@ -159,3 +159,37 @@
   .host-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .host-fields label:nth-child(3) { grid-column: 1 / -1; }
 }
+
+/* Needs your attention */
+.host-alerts { background: #fff4f0; border: 1.5px solid var(--rust); border-radius: 16px; padding: 1rem 1.25rem; }
+.host-alerts h2 { color: var(--rust); font-size: 1.15rem; margin-bottom: 0.5rem; }
+.host-alerts ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
+.host-alerts-note { margin: 0.6rem 0 0; font-size: 0.88rem; color: var(--muted); }
+.host-link { background: none; border: none; padding: 0; color: var(--rust); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+/* This week */
+.host-week { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.9rem; }
+.host-week > li { display: grid; gap: 0.4rem; padding-top: 0.9rem; border-top: 1px dashed var(--line); }
+.host-week > li:first-child { padding-top: 0; border-top: none; }
+.host-week h3 { margin: 0; }
+.host-week-item { margin: 0; display: grid; gap: 0.2rem; overflow-wrap: anywhere; }
+.host-week-item p { margin: 0; }
+.host-week-item .host-pill:first-child { margin-left: 0; }
+
+/* Bookings search */
+.host-bookings-tools { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: space-between; margin-top: 0.9rem; }
+.host-search { flex: 1 1 16rem; min-width: 0; height: 44px; padding: 0 0.8rem; border-radius: 10px; border: 1.5px solid rgba(2, 13, 34, 0.25); font: inherit; background: #fff; color: var(--ink); }
+.host-section-head .host-btn.ghost, .host-bookings-tools .host-btn.ghost { border-color: rgba(2, 13, 34, 0.35); }
+
+/* Money table */
+.host-table-scroll { overflow-x: auto; }
+.host-table-scroll .host-table { min-width: 34rem; }
+.host-table tfoot th, .host-table tfoot td { font-weight: 700; border-bottom: none; border-top: 2px solid var(--ink); }
+
+.host-week-leaving { margin: 0; }
+.host-week-leaving .host-pill { margin-left: 0; }
+.host-narrow-only { display: none; }
+@media (max-width: 520px) {
+  .host-wide-only { display: none; }
+  .host-narrow-only { display: inline; }
+}

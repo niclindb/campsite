@@ -90,3 +90,14 @@ await rec(100, true)
 st = (await db.query('select status, refunded_cents from bookings where id = $1', [rb])).rows[0]
 ok(st.status === 'cancelled' && st.refunded_cents === 100, 'full refund cancels booking')
 if (process.exitCode) console.log('\nSome dashboard checks failed.')
+
+// Host dashboard alerts: nights where bookings alone go past capacity (same SQL as api/_lib/host-alerts.ts)
+await db.query(`insert into bookings (status, arrive, depart, sites, guests, total_cents, name, email)
+  values ('confirmed', '2028-01-10', '2028-01-12', 4, 2, 100, 'a', 'a@x.com'), ('confirmed', '2028-01-11', '2028-01-12', 2, 2, 100, 'b', 'b@x.com')`)
+const ob = await db.query(`select d::date::text as night, sum(b.sites)::int as sites, sum(b.hookups)::int as hookups
+     from generate_series($1::date, $2::date, interval '1 day') as d
+     join bookings b on b.arrive <= d::date and b.depart > d::date
+      and (b.status = 'confirmed' or (b.status = 'held' and b.hold_expires_at > now()))
+    group by d having sum(b.sites) > $3 or sum(b.hookups) > $4 order by d`, ['2028-01-01', '2028-02-01', 5, 2])
+ok(ob.rows.length === 1 && ob.rows[0].night === '2028-01-11' && ob.rows[0].sites === 6, 'overbooked night found')
+if (process.exitCode) console.log('\nSome alert checks failed.')
