@@ -54,3 +54,50 @@ ok(!String(await rent('2027-09-02','2027-09-03',[{name:'Canoe',price:20,qty:1},{
 const iu = await db.query(`select item, used from item_usage('2027-09-02','2027-09-03') where item='Canoe'`)
 ok(iu.rows[0]?.used === 3, 'item_usage counts canoes')
 if (process.exitCode) console.log('\nSome rental checks failed.')
+
+// Page views (record_page_view)
+await db.query(`select record_page_view('2027-01-01', '/', 'google.com')`)
+await db.query(`select record_page_view('2027-01-01', '/', null)`)
+await db.query(`select record_page_view('2027-01-01', '/book', null)`)
+await db.query(`select record_page_view('2027-01-01', '/book', 'direct')`)
+const pv = await db.query(`select path, views, visits from page_views where day = '2027-01-01' order by path`)
+ok(pv.rows[0]?.views === 2 && pv.rows[0]?.visits === 1 && pv.rows[1]?.views === 2 && pv.rows[1]?.visits === 1, 'page views and visits counted')
+const vs = await db.query(`select source, visits from visit_sources where day = '2027-01-01' order by source`)
+ok(vs.rows.length === 2 && vs.rows.every((r) => r.visits === 1), 'visit sources counted')
+if (process.exitCode) console.log('\nSome page view checks failed.')
+
+// Host dashboard: blocking a run of nights (same SQL as api/host-block.ts)
+const block = (from, end, sites, note) => db.query(
+  `insert into blocked_nights (night, sites, note)
+   select d::date, $3, $4 from generate_series($1::date, $2::date - 1, interval '1 day') as d
+   on conflict (night) do update set sites = excluded.sites, note = excluded.note
+   returning night`, [from, end, sites, note])
+ok((await block('2027-10-01', '2027-10-04', 5, 'Family')).rows.length === 3, 'block 3 nights')
+ok((await block('2027-10-03', '2027-10-05', 2, null)).rows.length === 2, 'reblock overlapping nights')
+ok(String(await hold('2027-10-02', '2027-10-03', 1)).includes('sold_out'), 'blocked nights are full')
+ok(!String(await hold('2027-10-03', '2027-10-04', 3)).startsWith('ERR'), 'partly blocked night has room')
+const un = await db.query(`delete from blocked_nights where night >= $1 and night < $2 returning night`, ['2027-10-01', '2027-10-03'])
+ok(un.rows.length === 2 && !String(await hold('2027-10-02', '2027-10-03', 1)).startsWith('ERR'), 'unblock frees nights')
+// Refund bookkeeping (same SQL as api/_lib/refund.ts)
+const rb = await hold('2027-11-01', '2027-11-02', 1)
+await db.query(`select * from confirm_booking($1,'cs_rb')`, [rb])
+const rec = (cents, full) => db.query(`update bookings set refunded_cents = greatest(refunded_cents, $2),
+  status = case when $3 and status = 'confirmed' then 'cancelled' else status end where id = $1`, [rb, cents, full])
+await rec(50, false)
+let st = (await db.query('select status, refunded_cents from bookings where id = $1', [rb])).rows[0]
+ok(st.status === 'confirmed' && st.refunded_cents === 50, 'partial refund keeps booking')
+await rec(100, true)
+st = (await db.query('select status, refunded_cents from bookings where id = $1', [rb])).rows[0]
+ok(st.status === 'cancelled' && st.refunded_cents === 100, 'full refund cancels booking')
+if (process.exitCode) console.log('\nSome dashboard checks failed.')
+
+// Host dashboard alerts: nights where bookings alone go past capacity (same SQL as api/_lib/host-alerts.ts)
+await db.query(`insert into bookings (status, arrive, depart, sites, guests, total_cents, name, email)
+  values ('confirmed', '2028-01-10', '2028-01-12', 4, 2, 100, 'a', 'a@x.com'), ('confirmed', '2028-01-11', '2028-01-12', 2, 2, 100, 'b', 'b@x.com')`)
+const ob = await db.query(`select d::date::text as night, sum(b.sites)::int as sites, sum(b.hookups)::int as hookups
+     from generate_series($1::date, $2::date, interval '1 day') as d
+     join bookings b on b.arrive <= d::date and b.depart > d::date
+      and (b.status = 'confirmed' or (b.status = 'held' and b.hold_expires_at > now()))
+    group by d having sum(b.sites) > $3 or sum(b.hookups) > $4 order by d`, ['2028-01-01', '2028-02-01', 5, 2])
+ok(ob.rows.length === 1 && ob.rows[0].night === '2028-01-11' && ob.rows[0].sites === 6, 'overbooked night found')
+if (process.exitCode) console.log('\nSome alert checks failed.')

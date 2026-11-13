@@ -1,0 +1,195 @@
+/* Host dashboard (/host): private, plain and phone-friendly. */
+
+.host {
+  --ink: #020d22;
+  --rust: #be3400;
+  --paper: #fdf8f3;
+  --line: rgba(2, 13, 34, 0.12);
+  --muted: rgba(2, 13, 34, 0.62);
+  min-height: 100vh; background: var(--paper); color: var(--ink);
+  font: 400 1rem/1.5 'Cabin', system-ui, sans-serif;
+}
+.host *, .host *::before, .host *::after { box-sizing: border-box; }
+.host h1, .host h2, .host h3 { font-family: 'League Spartan', sans-serif; margin: 0; line-height: 1.15; }
+.host h2 { font-size: 1.3rem; }
+.host h3 { font-size: 1.05rem; margin-bottom: 0.6rem; }
+.host a { color: var(--rust); font-weight: 600; }
+
+.host-wrap { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+.host-top { background: var(--ink); color: var(--paper); padding: 1.1rem 0; }
+.host-top h1 { font-size: 1.5rem; }
+.host-top-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.host-top-actions { display: flex; gap: 0.5rem; }
+.host-eyebrow { margin: 0 0 0.15rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
+.host-main { display: grid; gap: 1.25rem; padding-top: 1.25rem; padding-bottom: 3rem; }
+
+.host-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 1.25rem; min-width: 0; }
+.host-muted { color: var(--muted); }
+.host-note { margin: 0.4rem 0 1rem; font-size: 0.9rem; }
+.host-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.host-error { color: var(--rust); font-weight: 600; margin: 0; }
+
+.host-btn {
+  min-height: 44px; padding: 0 1.1rem; border-radius: 999px; border: none; cursor: pointer;
+  background: var(--rust); color: #fff; font: 700 0.95rem 'Cabin', sans-serif;
+}
+.host-btn:disabled { opacity: 0.5; cursor: default; }
+.host-btn.ghost { background: transparent; color: inherit; border: 1.5px solid currentColor; }
+.host-btn.small { min-height: 40px; min-width: 40px; padding: 0 0.8rem; font-size: 1.2rem; line-height: 1; }
+.host-btn:focus-visible, .host button:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+
+.host-signin { max-width: 380px; display: grid; gap: 0.6rem; }
+.host-signin input { height: 48px; padding: 0 0.8rem; border-radius: 10px; border: 1.5px solid rgba(2, 13, 34, 0.25); font: inherit; }
+
+/* At a glance */
+.host-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.75rem; }
+.host-tile { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 0.9rem 1rem; display: grid; gap: 0.15rem; min-width: 0; }
+.host-tile strong { font: 700 1.5rem 'League Spartan', sans-serif; }
+.host-tile .host-muted { font-size: 0.85rem; overflow-wrap: anywhere; }
+
+.host-section-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.host-month-nav { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; }
+.host-month-nav span { min-width: 9.5rem; text-align: center; }
+
+/* Calendar */
+.host-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.host-cal-dow { font-size: 0.72rem; font-weight: 700; text-align: center; color: var(--muted); padding-bottom: 2px; }
+.host-day {
+  position: relative; display: grid; gap: 2px; align-content: start; min-height: 64px; padding: 6px;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.host-day.past { opacity: 0.55; }
+.host-day.some { background: #fbeee8; }
+.host-day.full { background: var(--rust); color: #fff; border-color: var(--rust); }
+.host-day.today { box-shadow: inset 0 0 0 2px var(--ink); }
+.host-day.picked { outline: 3px solid var(--ink); outline-offset: 1px; }
+.host-day-num { font-weight: 700; font-size: 0.85rem; }
+.host-day-sites { font-size: 0.8rem; }
+.host-day-bar { height: 4px; border-radius: 2px; background: rgba(2, 13, 34, 0.1); overflow: hidden; }
+.host-day-bar span { display: block; height: 100%; background: var(--rust); border-radius: 2px; }
+.host-day.full .host-day-bar span { background: #fff; }
+.host-day-dot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); }
+.host-day.full .host-day-dot { background: #fff; }
+.host-day-block { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.host-night { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+.host-facts { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin: 0 0 0.6rem; }
+.host-facts div { display: grid; }
+.host-facts dt { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.host-facts dd { margin: 0; font-weight: 600; }
+.host-mini-list { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; }
+
+.host-pill { display: inline-block; margin-left: 0.4rem; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; background: rgba(2, 13, 34, 0.08); }
+.host-pill.confirmed { background: #e3f1e6; color: #1d5b2c; }
+.host-pill.held, .host-pill.arrive { background: #fdf0d6; color: #7a4b00; }
+.host-pill.cancelled { background: #f2e3e0; color: #8a2a12; }
+
+/* Tabs and period toggles */
+.host-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(2, 13, 34, 0.06); }
+.host-tabs button { min-height: 36px; padding: 0 0.85rem; border: none; border-radius: 999px; background: transparent; cursor: pointer; font: 600 0.9rem 'Cabin', sans-serif; color: inherit; }
+.host-tabs button.on { background: #fff; box-shadow: 0 1px 3px rgba(2, 13, 34, 0.15); }
+.host-tabs button span { color: var(--muted); margin-left: 0.2rem; }
+
+/* Bookings */
+.host-bookings { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.host-booking { border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem 1rem; display: grid; gap: 0.45rem; min-width: 0; }
+.host-booking p { margin: 0; }
+.host-booking-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.host-booking-head strong { font-size: 1.05rem; overflow-wrap: anywhere; }
+.host-booking-dates { font-weight: 600; }
+.host-booking-extras, .host-booking-note { font-size: 0.92rem; overflow-wrap: anywhere; }
+.host-booking-note { font-style: italic; }
+.host-booking-contact { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; overflow-wrap: anywhere; }
+.host-booking-meta { font-size: 0.82rem; }
+
+/* Page views chart: one series, bars anchored to the baseline */
+.host-chart-wrap { display: grid; gap: 0.35rem; }
+.host-chart-readout { margin: 0; font-weight: 600; min-height: 1.5em; }
+.host-chart { display: flex; align-items: flex-end; gap: 2px; height: 160px; border-bottom: 1px solid var(--line); }
+.host-bar { flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; padding: 0; border: none; background: transparent; cursor: pointer; }
+.host-bar span { display: block; width: 100%; min-height: 0; background: var(--ink); border-radius: 4px 4px 0 0; opacity: 0.85; }
+.host-bar.on span, .host-bar:hover span { background: var(--rust); opacity: 1; }
+.host-chart-axis { display: flex; justify-content: space-between; font-size: 0.8rem; }
+
+.host-views-tables { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.host-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.host-table caption { text-align: left; font: 700 1rem 'League Spartan', sans-serif; margin-bottom: 0.4rem; }
+.host-table th, .host-table td { padding: 0.45rem 0.25rem; border-bottom: 1px solid var(--line); text-align: right; }
+.host-table th:first-child { text-align: left; font-weight: 600; overflow-wrap: anywhere; }
+.host-table thead th { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .host-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .host-tiles .host-tile:last-child { grid-column: 1 / -1; }
+  .host-bookings, .host-views-tables { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .host-card { padding: 1rem; }
+  .host-day { min-height: 52px; padding: 4px; border-radius: 8px; }
+  .host-day-sites { font-size: 0.72rem; }
+  .host-day-dot { top: 5px; right: 5px; width: 6px; height: 6px; }
+  .host-month-nav span { min-width: 8rem; }
+}
+
+/* Refund and block panels */
+.host-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.75rem; }
+.host-actions .host-btn.ghost { border-color: rgba(2, 13, 34, 0.35); }
+.host-panel { margin-top: 0.75rem; padding: 0.9rem 1rem; border-radius: 12px; background: var(--paper); border: 1px solid var(--line); display: grid; gap: 0.6rem; }
+.host-panel h3 { margin: 0; }
+.host-panel .host-actions { margin-top: 0; }
+.host-panel-note { margin: 0; font-size: 0.88rem; }
+.host-choices { border: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; min-width: 0; }
+.host-choices legend { padding: 0; margin-bottom: 0.4rem; }
+.host-choices label { display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer; }
+.host-choices input[type='radio'] { width: 20px; height: 20px; margin: 0.15rem 0 0; accent-color: var(--rust); flex: none; }
+.host-choices label span { display: grid; }
+.host-choices small { color: var(--muted); font-size: 0.82rem; }
+.host-amount, .host-fields input, .host-fields select {
+  height: 44px; width: 100%; padding: 0 0.7rem; border-radius: 10px; border: 1.5px solid rgba(2, 13, 34, 0.25);
+  background: #fff; color: var(--ink); font: inherit; min-width: 0; -webkit-appearance: none; appearance: none;
+}
+.host-fields input[type='date'] { padding: 0 0.5rem; }
+.host-fields select { background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23020d22' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 0.8rem center; padding-right: 2rem; }
+.host-amount { max-width: 12rem; margin-left: 1.8rem; }
+.host-confirm { margin: 0; }
+.host-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.host-fields label { display: grid; gap: 0.25rem; min-width: 0; }
+.host-wide { grid-column: 1 / -1; }
+@media (max-width: 520px) {
+  .host-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .host-fields label:nth-child(3) { grid-column: 1 / -1; }
+}
+
+/* Needs your attention */
+.host-alerts { background: #fff4f0; border: 1.5px solid var(--rust); border-radius: 16px; padding: 1rem 1.25rem; }
+.host-alerts h2 { color: var(--rust); font-size: 1.15rem; margin-bottom: 0.5rem; }
+.host-alerts ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
+.host-alerts-note { margin: 0.6rem 0 0; font-size: 0.88rem; color: var(--muted); }
+.host-link { background: none; border: none; padding: 0; color: var(--rust); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+/* This week */
+.host-week { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.9rem; }
+.host-week > li { display: grid; gap: 0.4rem; padding-top: 0.9rem; border-top: 1px dashed var(--line); }
+.host-week > li:first-child { padding-top: 0; border-top: none; }
+.host-week h3 { margin: 0; }
+.host-week-item { margin: 0; display: grid; gap: 0.2rem; overflow-wrap: anywhere; }
+.host-week-item p { margin: 0; }
+.host-week-item .host-pill:first-child { margin-left: 0; }
+
+/* Bookings search */
+.host-bookings-tools { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: space-between; margin-top: 0.9rem; }
+.host-search { flex: 1 1 16rem; min-width: 0; height: 44px; padding: 0 0.8rem; border-radius: 10px; border: 1.5px solid rgba(2, 13, 34, 0.25); font: inherit; background: #fff; color: var(--ink); }
+.host-section-head .host-btn.ghost, .host-bookings-tools .host-btn.ghost { border-color: rgba(2, 13, 34, 0.35); }
+
+/* Money table */
+.host-table-scroll { overflow-x: auto; }
+.host-table-scroll .host-table { min-width: 34rem; }
+.host-table tfoot th, .host-table tfoot td { font-weight: 700; border-bottom: none; border-top: 2px solid var(--ink); }
+
+.host-week-leaving { margin: 0; }
+.host-week-leaving .host-pill { margin-left: 0; }
+.host-narrow-only { display: none; }
+@media (max-width: 520px) {
+  .host-wide-only { display: none; }
+  .host-narrow-only { display: inline; }
+}

@@ -7,6 +7,7 @@ import InfoPage from './pages/InfoPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import NotFoundPage from './pages/NotFoundPage'
+import HostPage from './pages/HostPage'
 
 export const routes: RouteRecord[] = [
   {
@@ -24,4 +25,6 @@ export const routes: RouteRecord[] = [
       { path: '*', element: <NotFoundPage /> },
     ],
   },
+  // The hosts' private dashboard. Not linked from the site; needs the password.
+  { path: '/host', element: <HostPage /> },
 ]

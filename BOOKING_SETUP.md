@@ -44,6 +44,7 @@ Add these in **Vercel → northern_oasis → Settings → Environment Variables*
 | `BOOKING_DIRECTIONS` | The exact arrival directions emailed to guests (kept private, never shown on the site) |
 | `VITE_INSTANT_BOOKING` | `on`, to switch the page to instant booking |
 | `SITE_URL` | The site's address, e.g. `https://northernoasis.com` (optional; otherwise taken from each request) |
+| `HOST_PASSWORD` | The password for the private host dashboard at `/host`, at least 12 characters. Changing it signs everyone out. |
 
 The repository is public, so none of these go in the code.
 
@@ -53,6 +54,24 @@ The repository is public, so none of these go in the code.
 2. Check that you land on the "You're booked" page, both emails arrive, and the booking shows as `confirmed` in Neon.
 3. Start another booking and press back on the Stripe page. The held sites should be released (status `expired`).
 4. Refund the first booking in full from Stripe (**Payments → the payment → Refund**). The booking should turn `cancelled` and its nights free up. A partial refund leaves the booking as it is.
+
+## Host dashboard
+
+`/host` shows bookings, how many sites (and which rental gear) are taken each night, and page views. It isn't linked anywhere on the site, search engines are told not to list it, and it needs `HOST_PASSWORD`. Five wrong tries locks a visitor out for 15 minutes. Signing in lasts 14 days on that device.
+
+From the dashboard you can also:
+
+- **Refund** a paid booking: the full amount left, half, or a specific amount. It goes through Stripe straight away and asks you to confirm first. A full refund cancels the booking and frees its nights; a partial one keeps the booking. Stripe's `charge.refunded` webhook event keeps the refunded amount in step for refunds made in Stripe too.
+- **Block nights**: tap a night in the calendar, then block some or all sites for one night or a run of nights (with a private note), or unblock them. Blocked sites count as taken, so guests can't book them. Bookings already made aren't touched.
+
+It also shows:
+
+- **Needs your attention** at the top, only when something's wrong: upcoming nights booked past 5 sites, the hookups or the rental gear on hand, and payments Stripe took in the last 2 weeks whose booking didn't confirm.
+- **This week**: who arrives and leaves over the next 7 days, with the add-ons to set out, their note and phone.
+- **Money and sales tax** by the month guests paid: paid, refunded, kept, and the sales tax on what was kept. Use Stripe for the exact figures to file.
+- **Search** bookings by name, email, phone or note, and **Download spreadsheet** for every booking as a CSV file.
+
+Page views are counted by the site itself (api/view.ts) into the `page_views` and `visit_sources` tables: a count per page per day, with no cookies and nothing about the visitor stored. Only the live site counts, and not while you're signed in to the dashboard.
 
 ## Going live
 

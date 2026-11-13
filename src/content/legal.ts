@@ -71,7 +71,7 @@ export const privacyPage = {
   summary: [
     { icon: 'check', label: 'What we collect', value: 'Only what we need', detail: 'Your name, contact details and stay, to take your booking and answer you.' },
     { icon: 'shield', label: 'Your card', value: 'Stays with Stripe', detail: 'You pay on Stripe’s secure page. We never see your full card number.' },
-    { icon: 'alert', label: 'Selling or ads', value: 'Never', detail: 'No selling, no marketing emails, no ad trackers or analytics cookies.' },
+    { icon: 'alert', label: 'Selling or ads', value: 'Never', detail: 'No selling, no marketing emails, no ad trackers or analytics cookies. We only count page views.' },
     { icon: 'mail', label: 'Your choices', value: 'Just ask us', detail: 'We’ll show, correct or delete your information unless tax law needs it kept.' },
   ] as LegalHighlight[],
   sections: [
@@ -90,6 +90,7 @@ export const privacyPage = {
         },
         'When you use our contact form or email us: your name, email address, the dates you mention and your message.',
         'When you visit the site: like most websites, our hosting provider automatically logs basic technical details such as your IP address, browser type and the pages you visit. We don’t use advertising trackers, analytics cookies or social media pixels.',
+        'To see how many people visit, the site keeps its own simple count of page views: which page was opened, on which day, and the name of the website you came from (for example, google.com). It uses no cookies, and nothing that identifies you is saved with the count. To block abuse, the site briefly notes your IP address and clears it within a day.',
       ],
     },
     {
