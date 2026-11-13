@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Head } from 'vite-react-ssg'
+import { Link } from 'react-router-dom'
+import logo from '../assets/images/logo.webp?w=320&imagetools'
 import { addDays, formatDay, nightsBetween, pickedLabel } from '../content/booking'
 import { site } from '../content/site'
 import '../host.css'
@@ -34,7 +36,7 @@ type Data = {
   month: string
   siteCount: number
   limits: Record<string, number>
-  alerts: { kind: 'overbooked' | 'gear' | 'unconfirmed'; text: string; night?: string; bookingId?: string }[]
+  alerts: { kind: 'overbooked' | 'gear' | 'unconfirmed'; text: string; night?: string; bookingId?: string; sessionId?: string }[]
   bookings: Booking[]
   nights: { night: string; sitesUsed: number; hookupsUsed: number }[]
   items: { night: string; item: string; used: number }[]
@@ -123,8 +125,10 @@ const HostPage = () => {
       </Head>
       <header className="host-top">
         <div className="host-wrap host-top-row">
-          <div>
-            <p className="host-eyebrow">{site.name}</p>
+          <div className="host-brand">
+            <Link to="/" className="host-logo">
+              <img src={logo} alt={`${site.name}, home`} width="96" height="66" />
+            </Link>
             <h1>Host dashboard</h1>
           </div>
           {state === 'ready' && (
@@ -221,7 +225,7 @@ const Dashboard = ({
 
   return (
     <>
-      <Alerts alerts={data.alerts} setMonth={setMonth} />
+      <Alerts alerts={data.alerts} setMonth={setMonth} reload={reload} />
       <section className="host-tiles" aria-label="At a glance">
         <Tile label="Tonight" value={`${staying.reduce((s, b) => s + b.sites, 0)} of ${data.siteCount}`} detail="sites taken" />
         <Tile
@@ -459,7 +463,7 @@ const BlockForm = ({
 }
 
 // Problems that need you: shown above everything else, only when there are any.
-const Alerts = ({ alerts, setMonth }: { alerts: Data['alerts']; setMonth: (m: string) => void }) =>
+const Alerts = ({ alerts, setMonth, reload }: { alerts: Data['alerts']; setMonth: (m: string) => void; reload: () => Promise<void> }) =>
   alerts.length ? (
     <section className="host-alerts" role="alert" aria-labelledby="host-alerts-title">
       <h2 id="host-alerts-title">Needs your attention</h2>
@@ -472,7 +476,10 @@ const Alerts = ({ alerts, setMonth }: { alerts: Data['alerts']; setMonth: (m: st
                 <button type="button" className="host-link" onClick={() => setMonth(a.night!.slice(0, 7))}>Show in calendar</button>
               </>
             ) : (
-              <><strong>Payment not confirmed:</strong> {a.text}</>
+              <>
+                <strong>Payment not confirmed:</strong> {a.text}{' '}
+                {a.sessionId && <HandledButton sessionId={a.sessionId} reload={reload} />}
+              </>
             )}
           </li>
         ))}
@@ -480,6 +487,25 @@ const Alerts = ({ alerts, setMonth }: { alerts: Data['alerts']; setMonth: (m: st
       <p className="host-alerts-note">To fix an overbooked night, contact one of the guests, then refund them below if needed.</p>
     </section>
   ) : null
+
+// Clears a payment alert once you've dealt with it (say, called the guest).
+const HandledButton = ({ sessionId, reload }: { sessionId: string; reload: () => Promise<void> }) => {
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const click = async () => {
+    setBusy(true)
+    const message = await hostPost('/api/host-handled', { sessionId })
+    setBusy(false)
+    if (message) return setError(message)
+    await reload()
+  }
+  return (
+    <>
+      <button type="button" className="host-link" disabled={busy} onClick={click}>{busy ? 'Saving…' : 'Mark as handled'}</button>
+      {error && <span className="host-error"> {error}</span>}
+    </>
+  )
+}
 
 // Who's arriving and leaving over the next 7 days, with what to set out.
 const ThisWeek = ({ bookings, today }: { bookings: Booking[]; today: string }) => {
