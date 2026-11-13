@@ -75,8 +75,8 @@ export const contact = {
 export const about = {
   heading: 'Our home in the maple woods',
   paragraphs: [
-    'Stay on our quiet property near woods, river and trails. Our home is on the property with shared driveway but privacy, peace and quiet is to be had! Adventure awaits!',
-    'We built our home here in 2019 and are continually making improvements to the land. We tap our trees for maple syrup in the spring-you will drive by our "sugar shack" and raise chickens in our very nice coop -no roosters to awaken you!',
+    'Stay on our quiet property near woods, river and trails. Our home is on the property with a shared driveway, but there\u2019s still plenty of privacy, peace and quiet. Adventure awaits!',
+    'We built our home here in 2019 and are continually making improvements to the land. We tap our trees for maple syrup in the spring (you\u2019ll drive by our "sugar shack" on the way in) and raise chickens in our very nice coop. No roosters to wake you!',
     'Come and enjoy some peace and quiet at our Northern Oasis!',
   ],
   highlights: [
@@ -131,7 +131,7 @@ export const amenities: Amenity[] = [
 export const planFor: Amenity[] = [
   { name: 'No drinking water', detail: 'Bring your own. Well water by hose near the coop for pets and bikes.', icon: 'water' },
   { name: 'No showers', detail: 'Nearby lakes are under a mile away for a swim.', icon: 'shower' },
-  { name: 'No hookups', detail: '30 amp electric can be added on for $25.', icon: 'plug' },
+  { name: 'Electric is extra', detail: 'No hookups by default. 30 amp electric can be added for $25.', icon: 'plug' },
 ]
 
 // Extras a guest can add to a stay. Prices are one-time fees for the stay.
@@ -197,7 +197,6 @@ export const bookPage = {
   successTitle: 'Request sent. Thank you!',
   successText: 'Joy and Brian will check the calendar and email you to confirm, usually within a day. Exact directions come with your confirmation.',
   anotherLabel: 'Start another request',
-  hipcampLabel: 'Prefer Hipcamp? Book there',
   emailSubject: 'Booking request',
   stepsTitle: 'How booking works',
   steps: [

@@ -3,7 +3,6 @@ import { addOns, bookPage, site, type AddOn } from '../../content/site'
 import { legal, termsCheckbox } from '../../content/legal'
 import { addMonths, formatDay, hookupsIn, maxFor, pickedAddOns, pickedLabel, quoteStay, todayIso, type Stay } from '../../content/booking'
 import Icon from '../Icon'
-import ArrowIcon from '../ArrowIcon'
 import { instantBooking } from './instant'
 import DateRangePicker from './DateRangePicker'
 
@@ -509,9 +508,6 @@ const BookingForm = () => {
           </div>
         )}
         <p className="bk-handoff">{instantBooking ? bookPage.instant.payNote : bookPage.payNote}</p>
-        <a className="arrow-link bk-hipcamp" href={site.hipcampUrl} target="_blank" rel="noopener">
-          {bookPage.hipcampLabel} <ArrowIcon />
-        </a>
       </div>
     </form>
   )
