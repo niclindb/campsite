@@ -10,7 +10,7 @@ const Footer = () => {
           <img src={logo} alt={site.name} width="160" loading="lazy" />
         </Link>
         <div>
-          <p>Forest campsites between Marquette and Negaunee, Michigan · ${site.pricePerSiteNight} per site per night</p>
+          <p>Forest campsites between Marquette and Negaunee, Michigan</p>
         </div>
         <nav aria-label="Footer">
           <Link to="/book">Book</Link>
