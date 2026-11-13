@@ -14,6 +14,8 @@ export const limits = {
   // Host dashboard sign-in, per visitor and across everyone together.
   hostLogin: { max: 5, windowSeconds: 15 * 60 },
   hostLoginAll: { max: 30, windowSeconds: 60 * 60 },
+  hostRefund: { max: 20, windowSeconds: 60 * 60 },
+  hostBlock: { max: 120, windowSeconds: 60 * 60 },
 } as const
 
 // Vercel sets x-real-ip to the visitor's address; x-forwarded-for is the fallback.

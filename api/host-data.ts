@@ -30,7 +30,7 @@ export const GET = (request: Request) =>
       // Unpaid holds that ran out are left out.
       db().query(
         `select id::text, status, arrive::text, depart::text, sites, guests, hookups, extras,
-                total_cents, tax_cents, name, email, phone, note,
+                total_cents, tax_cents, refunded_cents, name, email, phone, note,
                 created_at, paid_at, hold_expires_at
            from bookings
           where status in ('confirmed', 'cancelled')

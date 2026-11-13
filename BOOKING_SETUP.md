@@ -59,6 +59,11 @@ The repository is public, so none of these go in the code.
 
 `/host` shows bookings, how many sites (and which rental gear) are taken each night, and page views. It isn't linked anywhere on the site, search engines are told not to list it, and it needs `HOST_PASSWORD`. Five wrong tries locks a visitor out for 15 minutes. Signing in lasts 14 days on that device.
 
+From the dashboard you can also:
+
+- **Refund** a paid booking: the full amount left, half, or a specific amount. It goes through Stripe straight away and asks you to confirm first. A full refund cancels the booking and frees its nights; a partial one keeps the booking. Stripe's `charge.refunded` webhook event keeps the refunded amount in step for refunds made in Stripe too.
+- **Block nights**: tap a night in the calendar, then block some or all sites for one night or a run of nights (with a private note), or unblock them. Blocked sites count as taken, so guests can't book them. Bookings already made aren't touched.
+
 Page views are counted by the site itself (api/view.ts) into the `page_views` and `visit_sources` tables: a count per page per day, with no cookies and nothing about the visitor stored. Only the live site counts, and not while you're signed in to the dashboard.
 
 ## Going live

@@ -19,6 +19,7 @@ type Booking = {
   extras: { name: string; price: number; qty?: number }[]
   total_cents: number
   tax_cents: number
+  refunded_cents: number
   name: string
   email: string
   phone: string | null
@@ -66,6 +67,21 @@ const shiftMonth = (month: string, by: number) => {
 }
 const stamp = (iso: string) =>
   new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: site.timeZone })
+// Sends a change to one of the host API functions. Returns an error message, or null when it worked.
+const hostPost = async (url: string, body: unknown) => {
+  try {
+    const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+    if (res.ok) return null
+    return ((await res.json().catch(() => ({}))) as { message?: string }).message || 'That didn’t work. Please try again.'
+  } catch {
+    return 'That didn’t work. Check your connection and try again.'
+  }
+}
+const toCents = (dollars: string) => {
+  const n = Number(dollars.replace(/[$,\s]/g, ''))
+  return Number.isFinite(n) ? Math.round(n * 100) : NaN
+}
+
 const staysOn = (b: Booking, night: string) => b.status !== 'cancelled' && b.arrive <= night && b.depart > night
 
 const HostPage = () => {
@@ -128,7 +144,7 @@ const HostPage = () => {
           </div>
         )}
         {state === 'ready' && data && (
-          <Dashboard data={data} days={days} setDays={setDays} setMonth={setMonth} />
+          <Dashboard data={data} days={days} setDays={setDays} setMonth={setMonth} reload={() => load(month, days)} />
         )}
       </main>
     </div>
@@ -184,11 +200,13 @@ const Dashboard = ({
   days,
   setDays,
   setMonth,
+  reload,
 }: {
   data: Data
   days: number
   setDays: (d: number) => void
   setMonth: (m: string) => void
+  reload: () => Promise<void>
 }) => {
   const { today, bookings } = data
   const live = bookings.filter((b) => b.status !== 'cancelled')
@@ -218,8 +236,8 @@ const Dashboard = ({
         <Tile label={`Views, last ${days} days`} value={totalViews.toLocaleString('en-US')} detail={plural(totalVisits, 'visit')} />
       </section>
 
-      <Calendar data={data} setMonth={setMonth} />
-      <Bookings bookings={bookings} today={today} />
+      <Calendar data={data} setMonth={setMonth} reload={reload} />
+      <Bookings bookings={bookings} today={today} reload={reload} />
       <Views data={data} days={days} setDays={setDays} />
     </>
   )
@@ -233,7 +251,7 @@ const Tile = ({ label, value, detail }: { label: string; value: string; detail: 
   </div>
 )
 
-const Calendar = ({ data, setMonth }: { data: Data; setMonth: (m: string) => void }) => {
+const Calendar = ({ data, setMonth, reload }: { data: Data; setMonth: (m: string) => void; reload: () => Promise<void> }) => {
   const { month, today, siteCount, limits } = data
   const [picked, setPicked] = useState<string | null>(null)
   useEffect(() => setPicked(null), [month])
@@ -256,7 +274,7 @@ const Calendar = ({ data, setMonth }: { data: Data; setMonth: (m: string) => voi
           <button type="button" className="host-btn ghost small" onClick={() => setMonth(shiftMonth(month, 1))} aria-label="Next month">›</button>
         </div>
       </div>
-      <p className="host-muted host-note">Sites booked out of {siteCount} each night, counting paid bookings, guests paying right now and nights you blocked. A dot means rental gear or a hookup is out. Tap a night for details.</p>
+      <p className="host-muted host-note">Sites booked out of {siteCount} each night, counting paid bookings, guests paying right now and nights you blocked. A dot means rental gear or a hookup is out. Tap a night for details or to block it.</p>
       <div className="host-cal">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
           <span key={d} className="host-cal-dow" aria-hidden="true">{d}</span>
@@ -273,13 +291,13 @@ const Calendar = ({ data, setMonth }: { data: Data; setMonth: (m: string) => voi
               className={cls.filter(Boolean).join(' ')}
               onClick={() => setPicked(n.night)}
               aria-pressed={n.night === selected}
-              aria-label={`${formatDay(n.night)}: ${used} of ${siteCount} sites taken${gear ? ', gear out' : ''}`}
+              aria-label={`${formatDay(n.night)}: ${used} of ${siteCount} sites taken${gear ? ', gear out' : ''}${blockedOn(n.night) ? ', blocked' : ''}`}
             >
               <span className="host-day-num">{Number(n.night.slice(8))}</span>
               <span className="host-day-sites">{n.sitesUsed}/{siteCount}</span>
               <span className="host-day-bar" aria-hidden="true"><span style={{ width: `${(used / siteCount) * 100}%` }} /></span>
               {gear && <span className="host-day-dot" aria-hidden="true" />}
-              {blockedOn(n.night) && <span className="host-day-block" aria-hidden="true">B</span>}
+              {blockedOn(n.night) && <span className="host-day-block" aria-hidden="true">Blocked</span>}
             </button>
           )
         })}
@@ -297,6 +315,7 @@ const Calendar = ({ data, setMonth }: { data: Data; setMonth: (m: string) => voi
           bookings={data.bookings}
         />
       )}
+      {selected && <BlockForm key={selected} night={selected} siteCount={siteCount} blocked={blockedOn(selected)} reload={reload} />}
     </section>
   )
 }
@@ -351,6 +370,90 @@ const NightDetail = ({
   )
 }
 
+// Block or unblock sites on one night or a run of nights.
+const BlockForm = ({
+  night,
+  siteCount,
+  blocked,
+  reload,
+}: {
+  night: string
+  siteCount: number
+  blocked?: Data['blocked'][number]
+  reload: () => Promise<void>
+}) => {
+  const [open, setOpen] = useState(false)
+  const [from, setFrom] = useState(night)
+  const [through, setThrough] = useState(night)
+  const [sites, setSites] = useState(blocked?.sites ?? siteCount)
+  const [note, setNote] = useState(blocked?.note ?? '')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const send = async (action: 'block' | 'unblock', range = { from, through }) => {
+    if (range.through < range.from) return setMessage('The last night must be on or after the first night.')
+    setBusy(true)
+    setMessage('')
+    const error = await hostPost('/api/host-block', { action, ...range, sites, note })
+    setBusy(false)
+    if (error) return setMessage(error)
+    setOpen(false)
+    await reload()
+  }
+
+  if (!open) {
+    return (
+      <div className="host-actions">
+        <button type="button" className="host-btn ghost" onClick={() => setOpen(true)}>{blocked ? 'Change block' : 'Block nights'}</button>
+        {blocked && (
+          <button type="button" className="host-btn ghost" disabled={busy} onClick={() => send('unblock', { from: night, through: night })}>
+            {busy ? 'Unblocking…' : 'Unblock this night'}
+          </button>
+        )}
+        {message && <p className="host-error" role="alert">{message}</p>}
+      </div>
+    )
+  }
+
+  const count = Math.max(0, nightsBetween(from, through) + 1)
+  return (
+    <form className="host-panel" onSubmit={(e) => { e.preventDefault(); send('block') }}>
+      <h3>Block nights</h3>
+      <p className="host-muted host-panel-note">Blocked sites count as taken, so guests can’t book them. Use it for Hipcamp bookings, family visits or closures. It doesn’t affect anyone already booked.</p>
+      <div className="host-fields">
+        <label>
+          <span className="host-label">First night</span>
+          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} required />
+        </label>
+        <label>
+          <span className="host-label">Last night</span>
+          <input type="date" value={through} min={from} onChange={(e) => setThrough(e.target.value)} required />
+        </label>
+        <label>
+          <span className="host-label">Sites to block</span>
+          <select value={sites} onChange={(e) => setSites(Number(e.target.value))}>
+            {Array.from({ length: siteCount }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>{n === siteCount ? `All ${n}` : n}</option>
+            ))}
+          </select>
+        </label>
+        <label className="host-wide">
+          <span className="host-label">Note (only you see it)</span>
+          <input type="text" value={note} maxLength={200} placeholder="e.g. Hipcamp booking, family weekend" onChange={(e) => setNote(e.target.value)} />
+        </label>
+      </div>
+      {message && <p className="host-error" role="alert">{message}</p>}
+      <div className="host-actions">
+        <button type="submit" className="host-btn" disabled={busy || count < 1}>
+          {busy ? 'Saving…' : `Block ${sites === siteCount ? 'all sites' : plural(sites, 'site')}, ${plural(count, 'night')}`}
+        </button>
+        <button type="button" className="host-btn ghost" disabled={busy || count < 1} onClick={() => send('unblock')}>Unblock these nights</button>
+        <button type="button" className="host-btn ghost" onClick={() => setOpen(false)}>Close</button>
+      </div>
+    </form>
+  )
+}
+
 const statusLabel: Record<Booking['status'], string> = {
   confirmed: 'Paid',
   held: 'Paying now',
@@ -358,7 +461,7 @@ const statusLabel: Record<Booking['status'], string> = {
   expired: 'Expired',
 }
 
-const Bookings = ({ bookings, today }: { bookings: Booking[]; today: string }) => {
+const Bookings = ({ bookings, today, reload }: { bookings: Booking[]; today: string; reload: () => Promise<void> }) => {
   const [tab, setTab] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming')
   const lists = {
     upcoming: bookings.filter((b) => b.status !== 'cancelled' && b.depart >= today),
@@ -382,14 +485,14 @@ const Bookings = ({ bookings, today }: { bookings: Booking[]; today: string }) =
         <p className="host-muted">No {tab} bookings booked on the website yet. Hipcamp bookings aren’t listed here.</p>
       ) : (
         <ul className="host-bookings">
-          {shown.map((b) => <BookingCard key={b.id} b={b} />)}
+          {shown.map((b) => <BookingCard key={b.id} b={b} reload={reload} />)}
         </ul>
       )}
     </section>
   )
 }
 
-const BookingCard = ({ b }: { b: Booking }) => {
+const BookingCard = ({ b, reload }: { b: Booking; reload: () => Promise<void> }) => {
   const nights = nightsBetween(b.arrive, b.depart)
   return (
     <li className="host-booking">
@@ -405,6 +508,7 @@ const BookingCard = ({ b }: { b: Booking }) => {
         <div><dt>Guests</dt><dd>{b.guests}</dd></div>
         <div><dt>Total</dt><dd>{money(b.total_cents)}</dd></div>
         <div><dt>Tax</dt><dd>{money(b.tax_cents)}</dd></div>
+        {b.refunded_cents > 0 && <div><dt>Refunded</dt><dd>{money(b.refunded_cents)}</dd></div>}
       </dl>
       <p className="host-booking-extras">
         <span className="host-label">Add-ons</span>{' '}
@@ -419,6 +523,7 @@ const BookingCard = ({ b }: { b: Booking }) => {
         Booked {stamp(b.created_at)}
         {b.paid_at && `, paid ${stamp(b.paid_at)}`}
       </p>
+      {b.status === 'confirmed' && b.total_cents - b.refunded_cents > 0 && <RefundPanel b={b} reload={reload} />}
     </li>
   )
 }
@@ -509,6 +614,108 @@ const Views = ({ data, days, setDays }: { data: Data; days: number; setDays: (d:
         </table>
       </div>
     </section>
+  )
+}
+
+// Refund all of what's left, half the booking, or a set amount, through Stripe.
+const RefundPanel = ({ b, reload }: { b: Booking; reload: () => Promise<void> }) => {
+  const left = b.total_cents - b.refunded_cents
+  const half = Math.min(Math.floor(b.total_cents / 2), left)
+  const [open, setOpen] = useState(false)
+  const [choice, setChoice] = useState<'full' | 'half' | 'amount'>('full')
+  const [amount, setAmount] = useState('')
+  const [confirming, setConfirming] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+  // One id per refund attempt, so pressing the button twice can't refund twice.
+  const [requestId, setRequestId] = useState('')
+
+  const cents = choice === 'full' ? left : choice === 'half' ? half : toCents(amount)
+  const valid = Number.isInteger(cents) && cents >= 1 && cents <= left
+  const reset = () => {
+    setOpen(false)
+    setConfirming(false)
+    setMessage('')
+    setAmount('')
+    setChoice('full')
+  }
+
+  const refund = async () => {
+    setBusy(true)
+    setMessage('')
+    const error = await hostPost('/api/host-refund', { bookingId: b.id, amountCents: cents, requestId })
+    setBusy(false)
+    if (error) {
+      setConfirming(false)
+      return setMessage(error)
+    }
+    reset()
+    await reload()
+  }
+
+  if (!open) {
+    return (
+      <div className="host-actions">
+        <button type="button" className="host-btn ghost" onClick={() => { setOpen(true); setRequestId(crypto.randomUUID()) }}>Refund</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="host-panel">
+      {!confirming ? (
+        <>
+          <fieldset className="host-choices">
+            <legend className="host-label">Refund</legend>
+            <label>
+              <input type="radio" name={`refund-${b.id}`} checked={choice === 'full'} onChange={() => setChoice('full')} />
+              <span>Full refund <strong>{money(left)}</strong><small>Cancels the booking and frees its nights</small></span>
+            </label>
+            {half > 0 && half < left && (
+              <label>
+                <input type="radio" name={`refund-${b.id}`} checked={choice === 'half'} onChange={() => setChoice('half')} />
+                <span>Refund half <strong>{money(half)}</strong><small>Booking stays, nights stay taken</small></span>
+              </label>
+            )}
+            <label>
+              <input type="radio" name={`refund-${b.id}`} checked={choice === 'amount'} onChange={() => setChoice('amount')} />
+              <span>Specific amount<small>Up to {money(left)}. Less than that keeps the booking.</small></span>
+            </label>
+            {choice === 'amount' && (
+              <input
+                className="host-amount"
+                type="text"
+                inputMode="decimal"
+                placeholder="$0.00"
+                aria-label="Amount to refund in dollars"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                autoFocus
+              />
+            )}
+          </fieldset>
+          {choice === 'amount' && amount && !valid && <p className="host-error">Enter an amount between $0.01 and {money(left)}.</p>}
+          {message && <p className="host-error" role="alert">{message}</p>}
+          <div className="host-actions">
+            <button type="button" className="host-btn" disabled={!valid} onClick={() => setConfirming(true)}>
+              {valid ? `Refund ${money(cents)}` : 'Refund'}
+            </button>
+            <button type="button" className="host-btn ghost" onClick={reset}>Cancel</button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="host-confirm">
+            Refund <strong>{money(cents)}</strong> to {b.name}’s card?{' '}
+            {cents >= left ? 'This cancels the booking and frees its nights.' : 'The booking stays in place.'} This can’t be undone.
+          </p>
+          <div className="host-actions">
+            <button type="button" className="host-btn" disabled={busy} onClick={refund}>{busy ? 'Refunding…' : `Yes, refund ${money(cents)}`}</button>
+            <button type="button" className="host-btn ghost" disabled={busy} onClick={() => setConfirming(false)}>Back</button>
+          </div>
+        </>
+      )}
+    </div>
   )
 }
 

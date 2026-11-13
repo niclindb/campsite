@@ -7,6 +7,7 @@
 import type Stripe from 'stripe'
 import { db, env, handle, json, stripe } from './_lib/server.js'
 import { confirmPaid } from './_lib/confirm.js'
+import { recordRefund } from './_lib/refund.js'
 
 export const POST = (request: Request) =>
   handle(async () => {
@@ -48,16 +49,17 @@ export const POST = (request: Request) =>
     return json({ received: true })
   })
 
-// Stripe sets `refunded` only once the whole charge is refunded, so a partial
-// refund (say, for one night) keeps the booking. The booking id rides on the
-// payment's metadata, set when the payment page was made.
+// Records how much of the payment has been refunded. Stripe sets `refunded`
+// only once the whole charge is refunded, so a partial refund (say, half)
+// keeps the booking, while a full refund cancels it and frees its nights.
+// The booking id rides on the payment's metadata, set when the payment page was made.
 const cancelRefunded = async (charge: Stripe.Charge) => {
-  if (!charge.refunded || !charge.payment_intent) return
+  if (!charge.payment_intent) return
   const intent =
     typeof charge.payment_intent === 'string'
       ? await stripe().paymentIntents.retrieve(charge.payment_intent)
       : charge.payment_intent
   const bookingId = intent.metadata?.booking_id
   if (!bookingId || !/^[0-9a-f-]{36}$/.test(bookingId)) return
-  await db().query("update bookings set status = 'cancelled' where id = $1 and status = 'confirmed'", [bookingId])
+  await recordRefund(bookingId, charge.amount_refunded, charge.refunded)
 }
