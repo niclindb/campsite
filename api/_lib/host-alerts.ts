@@ -6,7 +6,7 @@ import { addMonths } from '../../src/content/booking.js'
 import type Stripe from 'stripe'
 import { db, stripe } from './server.js'
 
-export type Alert = { kind: 'overbooked' | 'gear' | 'unconfirmed'; text: string; night?: string; bookingId?: string }
+export type Alert = { kind: 'overbooked' | 'gear' | 'unconfirmed'; text: string; night?: string; bookingId?: string; sessionId?: string }
 
 // Upcoming nights where bookings alone (not blocks) take more sites, hookups
 // or rental gear than the camp has.
@@ -48,10 +48,11 @@ export const overbooked = async (today: string, limits: Record<string, number>):
   ]
 }
 
-// Payments from the last two weeks that Stripe took but whose booking never
-// turned to paid here (the confirmation failed). Payments refunded in full,
-// and bookings deleted by hand (old tests), are left out. Skipped if Stripe
-// can't be reached.
+// Payments from the last two weeks that Stripe took but that have no paid
+// booking here: either the confirmation failed (booking stuck unpaid), or the
+// booking is missing altogether. Payments refunded in full, and ones the hosts
+// marked as handled (saved on the Stripe payment page), are left out.
+// Skipped if Stripe can't be reached.
 export const unconfirmed = async (): Promise<Alert[]> => {
   try {
     const since = Math.floor(Date.now() / 1000) - 14 * 24 * 60 * 60
@@ -66,7 +67,11 @@ export const unconfirmed = async (): Promise<Alert[]> => {
       return !!charge && typeof charge !== 'string' && charge.refunded
     }
     const paid = sessions.data.filter(
-      (x) => x.payment_status === 'paid' && !refunded(x) && /^[0-9a-f-]{36}$/.test(x.metadata?.booking_id ?? ''),
+      (x) =>
+        x.payment_status === 'paid' &&
+        !refunded(x) &&
+        !x.metadata?.host_handled &&
+        /^[0-9a-f-]{36}$/.test(x.metadata?.booking_id ?? ''),
     )
     if (!paid.length) return []
     const ids = paid.map((x) => x.metadata!.booking_id)
@@ -74,14 +79,19 @@ export const unconfirmed = async (): Promise<Alert[]> => {
       { id: string; status: string }[]
     const status = new Map(rows.map((r) => [r.id, r.status]))
     return paid
-      .filter((x) => ['held', 'expired'].includes(status.get(x.metadata!.booking_id) ?? ''))
-      .map(
-        (x): Alert => ({
+      .filter((x) => !['confirmed', 'cancelled'].includes(status.get(x.metadata!.booking_id) ?? ''))
+      .map((x): Alert => {
+        const guest = `${x.customer_details?.name || 'A guest'} (${x.customer_details?.email || 'no email'})`
+        const amount = `$${((x.amount_total ?? 0) / 100).toFixed(2)}`
+        return {
           kind: 'unconfirmed',
           bookingId: x.metadata!.booking_id,
-          text: `${x.customer_details?.name || 'A guest'} (${x.customer_details?.email || 'no email'}) paid $${((x.amount_total ?? 0) / 100).toFixed(2)}, but the booking didn’t confirm, so they got no confirmation email. If db/schema.sql changed, run it in Neon, then resend the event in Stripe (Developers → Webhooks).`,
-        }),
-      )
+          sessionId: x.id,
+          text: status.has(x.metadata!.booking_id)
+            ? `${guest} paid ${amount}, but the booking didn’t confirm, so they got no confirmation email. If db/schema.sql changed, run it in Neon, then resend the event in Stripe (Developers → Webhooks).`
+            : `${guest} paid ${amount}, but there’s no booking for this payment. Contact the guest, then refund them in Stripe or set up their stay by hand.`,
+        }
+      })
   } catch (e) {
     console.error('Unconfirmed payment check skipped:', e instanceof Error ? e.message : e)
     return []
