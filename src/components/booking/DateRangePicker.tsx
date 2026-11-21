@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bookPage, site } from '../../content/site'
 import { addDays, addMonths, formatDay, nightsBetween } from '../../content/booking'
 import Icon from '../Icon'
@@ -45,6 +45,8 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange, error }: Pro
   const [chooseYear, setChooseYear] = useState(0)
   const wrap = useRef<HTMLDivElement>(null)
   const pickingDepart = !!arrive && !depart
+  // The day that should get keyboard focus once it's on screen.
+  const [focusDay, setFocusDay] = useState('')
 
   // Close on a tap outside or Escape.
   useEffect(() => {
@@ -64,9 +66,41 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange, error }: Pro
   }, [open])
 
   const toggle = () => {
-    if (!open) setView(startMonth(arrive, today))
+    if (!open) {
+      setView(startMonth(arrive, today))
+      // Keyboard and screen reader users land on a day, not back on the field.
+      setFocusDay(arrive || today || '')
+    }
     setChoosing(false)
     setOpen(!open)
+  }
+
+  // Move focus to focusDay (or the nearest bookable day after it) once rendered.
+  useEffect(() => {
+    if (!open || choosing || !focusDay) return
+    const days = [...(wrap.current?.querySelectorAll<HTMLButtonElement>('.bk-cal-day') ?? [])]
+    const target = days.find((b) => b.dataset.day === focusDay && !b.disabled) ?? days.find((b) => !b.disabled && (b.dataset.day ?? '') >= focusDay)
+    target?.focus()
+    setFocusDay('')
+  }, [open, choosing, focusDay, view])
+
+  // Arrow keys move a day or a week; Page Up/Down move a month.
+  const onDayKey = (e: ReactKeyboardEvent, d: string) => {
+    const step: Record<string, () => string> = {
+      ArrowLeft: () => addDays(d, -1),
+      ArrowRight: () => addDays(d, 1),
+      ArrowUp: () => addDays(d, -7),
+      ArrowDown: () => addDays(d, 7),
+      PageUp: () => addMonths(d, -1),
+      PageDown: () => addMonths(d, 1),
+    }
+    if (!step[e.key]) return
+    e.preventDefault()
+    const next = step[e.key]()
+    if ((today && next < today) || (latest && next > latest)) return
+    const first = firstOfMonth(next)
+    if (view && (first < view || first > addMonths(view, 1))) setView(first < view ? first : addMonths(first, -1))
+    setFocusDay(next)
   }
 
   // A day can start a stay if it's bookable; it can end one if it's after the
@@ -177,7 +211,7 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange, error }: Pro
                       {monthTitle(first)} <span aria-hidden="true">&#9662;</span>
                     </button>
                   </h3>
-                  <div className="bk-cal-grid" role="grid">
+                  <div className="bk-cal-grid" role="group" aria-label={monthTitle(first)}>
                     {WEEKDAYS.map((w, k) => (
                       <span key={k} className="bk-cal-wd" aria-hidden="true">{w}</span>
                     ))}
@@ -197,6 +231,8 @@ const DateRangePicker = ({ arrive, depart, today, latest, onChange, error }: Pro
                           disabled={!enabled(d)}
                           aria-pressed={isStart || isEnd}
                           aria-label={longDay(d)}
+                          data-day={d}
+                          onKeyDown={(e) => onDayKey(e, d)}
                           onClick={() => pick(d)}
                         >
                           {Number(d.slice(8))}

@@ -3,7 +3,7 @@
 
 .info-banner { position: relative; overflow: hidden; color: #fdf8f3; padding: 5rem 0 7.5rem; background: var(--accent-color); }
 .info-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
-.info-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(1, 50, 43, 0.94), rgba(1, 80, 69, 0.35)); }
+.info-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(1, 50, 43, 0.94), rgba(1, 50, 43, 0.6)); }
 .info-banner .container { position: relative; z-index: 2; }
 .info-banner h1 { margin: 0 0 0.5rem; font-size: 2.8rem; color: #fdf8f3; }
 .info-banner p:last-child { margin: 0; font-size: 1.15rem; }
@@ -21,6 +21,8 @@
 
 .info-faq { background: #fdf8f3; padding: 3.5rem 0 4.5rem; }
 .info-grid { display: grid; grid-template-columns: 1fr 320px; gap: 2.5rem; align-items: start; }
+/* Lets the tab row scroll inside its column instead of widening the page at 320px. */
+.info-grid > * { min-width: 0; }
 
 .info-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.4rem; }
 .info-tabs button {
@@ -67,6 +69,8 @@ details[open] .faq-toggle::after { transform: translate(-50%, -50%) rotate(0deg)
 }
 @media (max-width: 640px) {
   .info-banner { padding: 3.5rem 0 6.5rem; }
+  /* Text runs full width on phones, so the light right side of the photo needs the same shade. */
+  .info-banner::before { background: rgba(1, 50, 43, 0.86); }
   .info-banner h1 { font-size: 2.1rem; }
   .info-glance { padding: 1.4rem 1.25rem; }
   .info-glance ul { gap: 1rem; }
