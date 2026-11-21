@@ -439,7 +439,7 @@
   }
 }
 
-/* About: story beside a layered photo, highlight cards below a divider */
+/* About: story and signature beside a scrapbook collage of three seasons */
 .about {
   padding: 5rem 0;
   background: #fdf8f3;
@@ -451,40 +451,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
-}
-
-/* The photo sits on an offset green block, with a peach outline offset the other way. */
-.about-photo {
-  position: relative;
-  margin: 0 1.5rem 1.5rem 1.5rem;
-
-}
-
-.about-photo::before {
-  content: '';
-  position: absolute;
-  inset: 1.5rem -1.5rem -1.5rem 1.5rem;
-  background: var(--accent-color);
-  border-radius: 16px;
-}
-
-.about-photo::after {
-  content: '';
-  position: absolute;
-  inset: -1rem 1rem 1rem -1rem;
-  border: 2px solid #eabaac;
-  border-radius: 20px;
-  pointer-events: none;
-}
-
-.about-photo img {
-  position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 18px 40px rgba(2, 13, 34, 0.25);
 }
 
 .about-eyebrow {
@@ -509,67 +475,87 @@
   max-width: 560px;
 }
 
+/* Handwritten signature under a thin full-width rule */
 .about-signoff {
   display: flex;
   flex-direction: column;
+  max-width: 560px;
   margin: 1.75rem 0 0;
-  padding-left: 1rem;
-  border-left: 3px solid var(--secondary-color);
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(2, 13, 34, 0.14);
 }
 
 .about-signoff-name {
-  font-family: 'League Spartan', sans-serif;
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--primary-color);
+  font-family: 'Caveat', cursive;
+  font-weight: 600;
+  font-size: 2.3rem;
+  line-height: 1;
+  color: var(--secondary-color);
 }
 
 .about-signoff-role {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-.about-highlights {
-  list-style: none;
-  margin: 3.5rem 0 0;
-  padding: 2.5rem 0 0;
-  border-top: 1px solid rgba(2, 13, 34, 0.12);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-
-.about-highlights li {
-  display: flex;
-  gap: 0.85rem;
-  align-items: flex-start;
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.1rem;
-  box-shadow: 0 8px 24px rgba(2, 13, 34, 0.08);
-}
-
-.about-highlight-icon {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(1, 80, 69, 0.1);
-  color: var(--accent-color);
-}
-
-.about-highlight-title {
-  display: block;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.about-highlight-detail {
-  display: block;
+  margin-top: 0.25rem;
   font-size: 0.92rem;
-  opacity: 0.85;
+  font-weight: 600;
+}
+
+/* Three overlapping, slightly tilted photos with a handwritten note */
+.about-collage {
+  position: relative;
+  aspect-ratio: 1 / 1.05;
+}
+
+.about-collage img {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 4px solid #fff;
+  outline: 1px solid rgba(2, 13, 34, 0.12);
+  box-shadow: 0 20px 40px rgba(2, 13, 34, 0.25);
+}
+
+.about-collage-main {
+  left: 0;
+  top: 4%;
+  width: 64%;
+  aspect-ratio: 4 / 5;
+  transform: rotate(-3deg);
+  z-index: 1;
+}
+
+.about-collage-fall {
+  right: 0;
+  top: 0;
+  width: 48%;
+  aspect-ratio: 1;
+  transform: rotate(4deg);
+  z-index: 2;
+}
+
+.about-collage-winter {
+  right: 0;
+  bottom: 0;
+  width: 48%;
+  aspect-ratio: 4 / 3;
+  transform: rotate(-1.5deg);
+  z-index: 3;
+}
+
+.about-collage-note {
+  position: absolute;
+  z-index: 4;
+  left: 6%;
+  bottom: 6%;
+  padding: 0.1rem 0.9rem;
+  border-radius: 10px;
+  background: #fdf8f3;
+  border: 1px solid rgba(2, 13, 34, 0.12);
+  box-shadow: 0 8px 20px rgba(2, 13, 34, 0.15);
+  transform: rotate(-6deg);
+  font-family: 'Caveat', cursive;
+  font-weight: 600;
+  font-size: 2rem;
+  color: var(--secondary-color);
 }
 
 @media (max-width: 900px) {
@@ -579,17 +565,13 @@
 
   .about-grid {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 3rem;
   }
 
-  .about-photo img {
-    aspect-ratio: 4 / 3;
-  }
-
-  .about-highlights {
-    grid-template-columns: 1fr 1fr;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
+  .about-collage {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
   }
 }
 
@@ -602,19 +584,19 @@
     font-size: 1.02rem;
   }
 
-  .about-photo {
-    margin: 0.75rem 1rem 1rem 0.75rem;
+  .about-collage-note {
+    font-size: 1.6rem;
   }
+}
 
-  .about-photo::before {
-    inset: 1rem -1rem -1rem 1rem;
-  }
-
-  .about-photo::after {
-    inset: -0.75rem 0.75rem 0.75rem -0.75rem;
-  }
-
-  .about-highlights {
-    grid-template-columns: 1fr;
-  }
+/* Round icon used by the Info and Book pages */
+.about-highlight-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(1, 80, 69, 0.1);
+  color: var(--accent-color);
 }

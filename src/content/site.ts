@@ -79,6 +79,8 @@ export const about = {
     'We built our home here in 2019 and are continually making improvements to the land. We tap our trees for maple syrup in the spring (you\u2019ll drive by our "sugar shack" on the way in) and raise chickens in our very nice coop. No roosters to wake you!',
     'Come and enjoy some peace and quiet at our Northern Oasis!',
   ],
+  // Handwritten note on the photo collage.
+  collageNote: 'Open all year',
   highlights: [
     { title: 'Quiet and shady', detail: '7 miles from Marquette, 8 from Lake Superior', icon: 'tree' },
     { title: 'Pets welcome', detail: 'Dogs can roam off leash', icon: 'paw' },
