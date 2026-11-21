@@ -21,8 +21,13 @@ const Contact = () => {
   return (
     <section id="contact" className="contact" aria-labelledby="contact-title">
       <img className="contact-bg" src={contactImage} srcSet={contactSrcSet} sizes="100vw" alt="" loading="lazy" />
-      <div className="container contact-grid">
-        <div>
+      <div className="container contact-postcard">
+        <div className="contact-stamp" aria-hidden="true">
+          <Icon name="tent" size={26} />
+          <span>{contact.stampLine1}<br />{contact.stampLine2}</span>
+        </div>
+        <div className="contact-grid">
+        <div className="contact-info">
           <p className="contact-eyebrow">{contact.eyebrow}</p>
           <h2 id="contact-title">{contact.heading}</h2>
           <p className="contact-lead">{contact.lead}</p>
@@ -60,6 +65,7 @@ const Contact = () => {
           ) : (
             <ContactForm formId={formId} />
           )}
+        </div>
         </div>
       </div>
     </section>

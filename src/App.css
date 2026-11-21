@@ -112,7 +112,8 @@
 .nav-list .book-now-btn:hover,
 .nav-list .book-now-btn[aria-current='page'] {
   background-color: transparent;
-  color: var(--secondary-color);
+  /* Rust text on navy is too faint (3.4:1); peach reads at 11:1. */
+  color: #f2c6b8;
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(190, 52, 0, 0.3);
 }
@@ -610,6 +611,26 @@
   }
 }
 
+  .about-highlights {
+    grid-template-columns: 1fr;
+  }
+}
+/* Skip link: hidden until a keyboard user tabs to it */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 2000;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  background: #fdf8f3;
+  color: var(--primary-color);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.skip-link:focus { top: 1rem; outline: 3px solid var(--secondary-color); outline-offset: 2px; }
+main:focus { outline: none; }
 /* Round icon used by the Info and Book pages */
 .about-highlight-icon {
   flex: none;
