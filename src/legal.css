@@ -6,7 +6,7 @@
 /* Photo banner */
 .legal-banner { position: relative; overflow: hidden; color: #fdf8f3; padding: 4.5rem 0 7.5rem; background: var(--accent-color); }
 .legal-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 55%; }
-.legal-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(1, 50, 43, 0.95), rgba(1, 80, 69, 0.4)); }
+.legal-banner::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(1, 50, 43, 0.95), rgba(1, 50, 43, 0.6)); }
 .legal-banner .container { position: relative; z-index: 2; }
 .legal-banner h1 { margin: 0 0 0.5rem; font-size: 2.8rem; color: #fdf8f3; }
 .legal-banner p { margin: 0; font-size: 1.15rem; max-width: 640px; }
@@ -117,6 +117,8 @@
 
 @media (max-width: 640px) {
   .legal-banner { padding: 3rem 0 6.5rem; }
+  /* Text runs full width on phones, so shade the light side of the photo too. */
+  .legal-banner::before { background: rgba(1, 50, 43, 0.86); }
   .legal-banner h1 { font-size: 2.1rem; }
   .legal-banner p { font-size: 1.02rem; }
   .legal-short { padding: 1.3rem 1.1rem; }
