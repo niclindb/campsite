@@ -57,6 +57,9 @@ export const site = {
 // The email and phone come from site.contactEmail / site.contactPhone; while
 // those are blank, a dashed placeholder with the text below is shown instead.
 export const contact = {
+  // The round "postcard stamp" in the corner of the contact card (decorative).
+  stampLine1: 'Northern',
+  stampLine2: 'Oasis',
   eyebrow: 'Get in touch',
   heading: 'Contact us',
   lead: 'Questions about dates, rigs or add-ons? Joy and Brian live right here on the land and usually reply within a day.',
