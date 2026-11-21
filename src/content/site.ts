@@ -42,6 +42,11 @@ export const site = {
     // Shown on the site; round it down so it stays true as reviews grow.
     reviewsLabel: '150+',
     badges: ['Star Hosts', 'Best in Michigan finalist, 2024'],
+    // The award columns in the "What campers say" section on the home page.
+    awards: [
+      { title: 'Star Hosts', detail: 'on Hipcamp' },
+      { title: 'Best in Michigan', detail: 'finalist, 2024' },
+    ],
   },
   contactEmail: contactInfo.email,
   contactPhone: contactInfo.phone,
@@ -242,6 +247,13 @@ export const thingsToDo: Activity[] = [
   { name: 'Lake Superior', detail: 'Sandy beaches and big-lake sunsets along the shore.', distance: '8 mi', icon: 'wave' },
   { name: 'Pictured Rocks', detail: 'Painted cliffs, waterfalls and boat tours on the National Lakeshore.', distance: '53 mi', icon: 'cliff' },
 ]
+
+// The "What campers say" section on the home page (quotes are in `reviews` below).
+export const reviewsSection = {
+  eyebrow: 'From our guests',
+  heading: 'What campers say',
+  recommendLabel: 'of campers recommend us',
+}
 
 export const reviews = [
   { quote: 'Quiet and secluded but minutes to everything.', name: 'Brent C.' },

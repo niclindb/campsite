@@ -347,96 +347,212 @@ section[id] {
   .lightbox-nav { top: auto; bottom: 1rem; transform: none; }
 }
 
-/* Reviews */
+/* Reviews: tall-maples photo under a dark overlay, stats row, glass quote cards */
 
-.reviews-layout {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 3rem;
-  align-items: start;
+.reviews {
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 0;
+  background: var(--primary-color);
+  color: #fdf8f3;
+  text-align: center;
 }
 
-.reviews-quotes h2 {
-  margin-bottom: 0.25rem;
+.reviews-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.review {
-  margin: 1rem 0 0;
-  padding: 1.4rem 1.6rem;
-  background: rgba(253, 248, 243, 0.07);
-  border-left: 4px solid #eabaac;
-  border-radius: 4px 12px 12px 4px;
+.reviews::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(rgba(2, 13, 34, 0.86), rgba(2, 13, 34, 0.93));
 }
 
-.review blockquote {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
+.reviews-inner {
+  position: relative;
+  z-index: 2;
 }
 
-.review figcaption {
-  color: #eabaac;
-  font-size: 0.9rem;
-}
-
-.reviews-summary {
-  background: #fdf8f3;
-  color: var(--primary-color);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-}
-
-.reviews-percent {
-  font-family: 'League Spartan', sans-serif;
-  font-size: 5rem;
+.reviews-eyebrow {
+  margin: 0 0 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
   font-weight: 700;
-  line-height: 1;
-  margin: 0;
-  color: var(--secondary-color);
+  color: #f2c6b8;
 }
 
-.reviews-percent-label {
-  margin: 0.25rem 0 1.25rem;
+.reviews h2 {
+  font-size: 2.2rem;
+  color: #eabaac;
+  margin: 0 0 2rem;
 }
 
-.reviews-badges {
+.reviews-stats {
   list-style: none;
-  margin: 0 0 1.25rem;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 860px;
+  margin: 0 auto 2.75rem;
+}
+
+.reviews-stat {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0 1rem;
 }
 
-.reviews-badges li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.reviews-stat + .reviews-stat {
+  border-left: 1px solid rgba(242, 198, 184, 0.35);
+}
+
+.reviews-stat-big {
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 700;
+  font-size: 3.6rem;
+  line-height: 1;
+  padding-top: 6px;
+  color: #fff;
+}
+
+.reviews-stat-icon {
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--secondary-color);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.reviews-stat-icon svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.reviews-stat-title {
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  margin-top: 0.35rem;
+  color: #fff;
+}
+
+.reviews-stat-sub {
+  color: #f2c6b8;
   font-weight: 600;
 }
 
-.reviews-badges svg {
-  color: var(--secondary-color);
-  flex-shrink: 0;
+.reviews-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
-.reviews-link {
-  color: var(--secondary-color);
-  font-size: 1.05rem;
+.review-card {
+  margin: 0;
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  border-radius: 16px;
+  background: rgba(253, 248, 243, 0.11);
+  border: 1px solid rgba(253, 248, 243, 0.24);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.review-card blockquote {
+  margin: 0;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 600;
+  font-size: 1.45rem;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.review-card figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.review-rule {
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: #e0551f;
+  margin-bottom: 0.9rem;
+}
+
+.review-name {
+  font-family: 'Caveat', cursive;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #f2c6b8;
+}
+
+.review-source {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  color: #d8cfc6;
+}
+
+.reviews-more {
+  margin: 2.25rem 0 0;
+}
+
+.reviews-more .arrow-link {
+  color: #f2c6b8;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1000px) {
+  .reviews-cards {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 800px) {
-  .reviews-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .reviews {
+    padding: 3.5rem 0;
   }
 
-  .reviews-summary {
-    order: -1;
+  .reviews-stats {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1.75rem;
   }
 
-  .reviews-percent {
-    font-size: 4rem;
+  .reviews-stat:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .reviews-stat:nth-child(2) {
+    border-left: none;
+  }
+
+  .reviews-stat-title {
+    font-size: 1.15rem;
+  }
+
+  .review-card blockquote {
+    font-size: 1.3rem;
   }
 }
 
