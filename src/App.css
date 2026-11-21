@@ -611,10 +611,6 @@
   }
 }
 
-  .about-highlights {
-    grid-template-columns: 1fr;
-  }
-}
 /* Skip link: hidden until a keyboard user tabs to it */
 .skip-link {
   position: absolute;
