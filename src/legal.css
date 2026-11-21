@@ -12,22 +12,22 @@
 .legal-banner p { margin: 0; font-size: 1.15rem; max-width: 640px; }
 .legal-banner .legal-updated { margin-top: 1rem; font-size: 0.9rem; font-weight: 600; color: #eabaac; }
 
-/* The short version */
+/* The short version: one card, items split by dashed lines */
 .legal-short {
   position: relative; z-index: 3; margin-top: -4.5rem; background: #fff; border-radius: 16px;
-  padding: 1.75rem 2rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.14); border-top: 5px solid #eabaac;
+  padding: 1.75rem 2rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.14);
 }
 .legal-short-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 1rem; margin-bottom: 1.2rem; }
 .legal-short-head h2 { margin: 0; font-size: 1.3rem; color: var(--primary-color); }
 .legal-short-head p { margin: 0; font-size: 0.92rem; color: var(--primary-color); opacity: 0.7; }
-.legal-short ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.legal-short ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
 .legal-short li {
-  display: flex; flex-direction: column; gap: 0.2rem; padding: 1.1rem 1.1rem 1.2rem; border-radius: 12px;
-  background: #fdf8f3; border: 1px solid rgba(1, 80, 69, 0.12); color: var(--primary-color);
+  display: flex; flex-direction: column; gap: 0.2rem; padding: 0.2rem 1.3rem 0.3rem;
+  border-left: 1.5px dashed rgba(2, 13, 34, 0.18); color: var(--primary-color);
 }
+.legal-short li:first-child { border-left: 0; padding-left: 0.2rem; }
 .legal-short-icon {
-  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 0.5rem;
-  background: rgba(1, 80, 69, 0.1); color: var(--accent-color);
+  display: flex; margin-bottom: 0.5rem; color: var(--secondary-color);
 }
 .legal-short-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; }
 .legal-short strong { font-size: 1.12rem; line-height: 1.3; color: var(--accent-color); }
@@ -80,14 +80,16 @@
 .legal-flag { color: var(--secondary-color); }
 .legal-flag .contact-placeholder { opacity: 0.85; }
 
-/* Refund timeline */
-.legal-refund { list-style: none; margin: 0.2rem 0 1.2rem; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-.legal-refund li { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.9rem 1rem; border-radius: 10px; border-top: 5px solid; background: #fdf8f3; }
-.legal-refund-full { border-color: var(--accent-color) !important; }
-.legal-refund-half { border-color: #e0a084 !important; }
-.legal-refund-none { border-color: var(--secondary-color) !important; }
+/* Refund timeline: one strip, steps split by dashed lines */
+.legal-refund {
+  list-style: none; margin: 0.2rem 0 1.2rem; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr);
+  background: #fdf8f3; border-radius: 12px; border: 1px solid rgba(1, 80, 69, 0.12);
+}
+.legal-refund li { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.9rem 1rem; border-left: 1.5px dashed rgba(2, 13, 34, 0.18); }
+.legal-refund li:first-child { border-left: 0; }
 .legal-refund-amount { font-weight: 700; font-size: 1.1rem; }
 .legal-refund-full .legal-refund-amount { color: var(--accent-color); }
+.legal-refund-half .legal-refund-amount { color: #a2460f; }
 .legal-refund-none .legal-refund-amount { color: var(--secondary-color); }
 .legal-refund-when { font-size: 0.9rem; line-height: 1.4; opacity: 0.8; }
 
@@ -96,7 +98,8 @@
 /* ---------- Tablet and phone ---------- */
 
 @media (max-width: 1000px) {
-  .legal-short ul { grid-template-columns: repeat(2, 1fr); }
+  .legal-short ul { grid-template-columns: repeat(2, 1fr); row-gap: 1.1rem; }
+  .legal-short li:nth-child(3) { border-left: 0; padding-left: 0.2rem; }
 }
 
 @media (max-width: 900px) {
@@ -122,8 +125,12 @@
   .legal-banner h1 { font-size: 2.1rem; }
   .legal-banner p { font-size: 1.02rem; }
   .legal-short { padding: 1.3rem 1.1rem; }
-  .legal-short ul { grid-template-columns: 1fr; gap: 0.6rem; }
-  .legal-short li { display: grid; grid-template-columns: 40px 1fr; column-gap: 0.85rem; row-gap: 0.1rem; padding: 0.9rem; }
+  .legal-short ul { grid-template-columns: 1fr; row-gap: 0; }
+  .legal-short li, .legal-short li:nth-child(3) {
+    display: grid; grid-template-columns: 28px 1fr; column-gap: 0.85rem; row-gap: 0.1rem;
+    padding: 0.9rem 0.2rem; border-left: 0; border-top: 1.5px dashed rgba(2, 13, 34, 0.18);
+  }
+  .legal-short li:first-child { border-top: 0; padding-top: 0.2rem; }
   .legal-short-icon { grid-row: span 3; margin: 0; }
   .legal-short-detail { font-size: 0.88rem; }
   .legal-toc { margin: 0 -1rem 1.25rem; padding: 0.55rem 1rem; }
@@ -131,7 +138,8 @@
   .legal-section h2 { font-size: 1.2rem; }
   .legal-num { width: 30px; height: 30px; font-size: 0.8rem; }
   .legal-refund { grid-template-columns: 1fr; }
-  .legal-refund li { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 1rem; border-top: none; border-left: 5px solid; }
+  .legal-refund li { flex-direction: row; justify-content: space-between; align-items: baseline; gap: 1rem; border-left: 0; border-top: 1.5px dashed rgba(2, 13, 34, 0.18); }
+  .legal-refund li:first-child { border-top: 0; }
   .legal-refund-amount { white-space: nowrap; }
   .legal-refund-when { text-align: right; }
 }

@@ -19,10 +19,12 @@ const Hero = () => {
               <Link to="/book" className="hero-btn primary">Check availability</Link>
               <a href="#sites" className="hero-btn secondary">See the sites</a>
             </div>
-            <p className="hero-rating">
-              <span className="hero-rating-star" aria-hidden="true">★</span>{' '}
-              <strong>{site.rating.recommendPercent}% recommend</strong> · {site.rating.ratings} Hipcamp ratings
-            </p>
+            {/* "Verified" line: Hipcamp host award, links down to the reviews */}
+            <a className="hero-verified" href="#reviews">
+              <span className="hero-verified-stars" aria-hidden="true">★★★★★</span>
+              <strong>{site.rating.badges[0]} on Hipcamp</strong>
+              <span className="hero-verified-sub">{site.rating.ratings} camper ratings · Read the reviews</span>
+            </a>
           </div>
         </div>
       </section>

@@ -13,25 +13,23 @@ const NotFoundPage = () => (
     <section className="not-found">
       <img className="not-found-bg" src={bgImage} srcSet={bgSrcSet} sizes="100vw" alt="" />
       <div className="container">
-        <div className="not-found-card">
-          <svg className="not-found-icon" viewBox="0 0 64 64" aria-hidden="true">
-            <path d="M8 52 32 12l24 40" />
-            <path d="M32 12v40M24 52l8-14 8 14" />
-            <path d="M4 52h56" />
-          </svg>
-          <p className="not-found-eyebrow">{copy.eyebrow}</p>
+        <div className="not-found-content">
+          <p className="not-found-code" aria-hidden="true">404</p>
           <h1>{copy.title}</h1>
           <p className="not-found-text">{copy.text}</p>
           <div className="not-found-buttons">
             <Link to="/" className="hero-btn primary">{copy.homeLabel}</Link>
-            <Link to="/book" className="hero-btn not-found-btn-outline">{copy.bookLabel}</Link>
+            <Link to="/book" className="hero-btn secondary">{copy.bookLabel}</Link>
           </div>
-          <div className="not-found-more">
-            <span>{copy.moreTitle}</span>
-            {copy.moreLinks.map((l) => (
-              <Link key={l.to} className="arrow-link" to={l.to}>{l.label} <ArrowIcon /></Link>
-            ))}
-          </div>
+          {/* The other links sit on a short dashed trail, like Things to do */}
+          <nav className="not-found-trail" aria-label={copy.moreTitle}>
+            <p className="not-found-here">{copy.hereLabel}</p>
+            <ul>
+              {copy.moreLinks.map((l) => (
+                <li key={l.to}><Link className="arrow-link" to={l.to}>{l.label} <ArrowIcon /></Link></li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </div>
     </section>

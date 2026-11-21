@@ -87,6 +87,8 @@ export const about = {
     'We built our home here in 2019 and are continually making improvements to the land. We tap our trees for maple syrup in the spring (you\u2019ll drive by our "sugar shack" on the way in) and raise chickens in our very nice coop. No roosters to wake you!',
     'Come and enjoy some peace and quiet at our Northern Oasis!',
   ],
+  // Handwritten note on the photo collage.
+  collageNote: 'Open all year',
   highlights: [
     { title: 'Quiet and shady', detail: '7 miles from Marquette, 8 from Lake Superior', icon: 'tree' },
     { title: 'Pets welcome', detail: 'Dogs can roam off leash', icon: 'paw' },
@@ -103,14 +105,6 @@ export const location = {
   thingsToDoHeading: 'Things to do nearby',
 }
 
-export const siteDetails = [
-  'Dispersed RV and tent sites on 10 acres of mature maple forest',
-  'No numbered sites: pick your own spot, open or more private and wooded',
-  'Vehicles under 20 ft: travel trailers, pop-ups, class B, campervans, cars, truck campers and rooftop tents',
-  'Pull-in, flat, loose gravel; slideouts fit',
-  '1 vehicle per site (more parking near the house if arranged); 2WD accessible',
-]
-
 // Where guests camp: one open dispersed area with no designated sites.
 // Photos live in src/assets/sites, listed by file name in display order.
 // Set `temporaryPhotos` to true to tag the photos as stand-ins.
@@ -119,7 +113,14 @@ export const campArea = {
   summary: 'There are no numbered sites. Pick your own spot in the maples, from open clearings to a couple of more private wooded corners.',
   photos: ['area-1.webp', 'area-2.webp', 'area-3.webp', 'area-4.webp', 'area-5.webp'],
   temporaryPhotos: false,
-  tags: ['RV or tent', 'Pick your own spot', `$${site.pricePerSiteNight} per site per night`],
+  // Short "good to know" points shown in the card over the photo.
+  facts: [
+    '10 acres of mature maples',
+    'No numbered sites; pick your spot',
+    'Rigs under 20 ft; slideouts fit',
+    'Flat, pull-in gravel',
+    '1 vehicle per site; 2WD is fine',
+  ],
 }
 
 export type Amenity = { name: string; detail: string; icon: IconName }
@@ -298,7 +299,7 @@ export const faqGroups: FaqGroup[] = [
     items: [
       { q: 'What time is check-in and check-out?', a: `Check in ${site.checkIn}; we meet you on arrival. Check out ${site.checkOut.replace("Before", "before")}. Early or late check-in may be possible, just ask.` },
       { q: 'Where exactly are you?', a: 'Between Marquette and Negaunee, about 4 miles off US 41. We send exact directions once your booking is confirmed.' },
-      { q: 'How big a rig fits?', a: 'Vehicles under 20 ft. Sites are pull-in, flat and gravel, and slideouts fit. One vehicle per site unless arranged ahead.' },
+      { q: 'How big a rig fits?', a: 'Vehicles under 20 ft: travel trailers, pop-ups, class B, campervans, cars, truck campers and rooftop tents. Sites are pull-in, flat and gravel, and slideouts fit. One vehicle per site unless arranged ahead.' },
       { q: 'What is the cancellation policy?', a: `${site.cancellation}. The full policy is on our Terms & Booking Policy page, linked at the bottom of every page.` },
     ],
   },
@@ -355,12 +356,12 @@ export const galleryCaptions: Record<string, string> = {
 
 // The "page not found" page, shown for any web address that doesn't exist.
 export const notFoundPage = {
-  eyebrow: 'Error 404',
   title: 'This trail doesn’t go anywhere',
   text: 'Looks like you wandered off the map. The page you were looking for has moved or never existed. Let’s get you back to camp.',
   homeLabel: 'Back to camp',
   bookLabel: 'Check availability',
-  moreTitle: 'Or head to',
+  moreTitle: 'Other places to go',
+  hereLabel: 'You are here (somewhere)',
   moreLinks: [
     { label: 'Guest info & FAQ', to: '/info' },
     { label: 'Photo gallery', to: '/#gallery' },

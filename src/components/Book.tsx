@@ -1,21 +1,19 @@
 import { bookPage, site } from '../content/site'
-import type { IconName } from './Icon'
-import Icon from './Icon'
 import BookingForm from './booking/BookingForm'
 import { instantBooking } from './booking/instant'
 import bannerImage from '../assets/images/lake.webp'
 
-const facts: { icon: IconName; label: string; value: string }[] = [
-  { icon: 'calendar', label: 'Season', value: site.season },
-  { icon: 'clock', label: 'Check-in', value: site.checkIn },
-  { icon: 'clock', label: 'Check-out', value: site.checkOut },
-  { icon: 'users', label: 'Guests per site', value: `Up to ${site.maxGuestsPerSite}` },
-  { icon: 'tag', label: 'Book', value: `${site.bookingWindow}, stays up to ${site.maxNights} nights` },
-  { icon: 'shield', label: 'Cancellation', value: site.cancellation },
+const facts: { label: string; value: string }[] = [
+  { label: 'Season', value: site.season },
+  { label: 'Check-in', value: site.checkIn },
+  { label: 'Check-out', value: site.checkOut },
+  { label: 'Guests per site', value: `Up to ${site.maxGuestsPerSite}` },
+  { label: 'Book', value: `${site.bookingWindow}, stays up to ${site.maxNights} nights` },
+  { label: 'Cancellation', value: site.cancellation },
 ]
 
-// The booking page: photo banner, the booking request form in a raised
-// card, then how booking works and the house basics.
+// The booking page: photo banner, the booking form in a raised card, then
+// how booking works (three step cards) and the house basics on a taped note.
 const Book = () => {
   const copy = instantBooking ? { ...bookPage, ...bookPage.instant } : bookPage
   return (
@@ -37,7 +35,7 @@ const Book = () => {
 
     <section className="bk-below">
       <div className="container bk-below-grid">
-        <div>
+        <div className="bk-how">
           <h2>{bookPage.stepsTitle}</h2>
           <ol className="bk-steps">
             {copy.steps.map((s) => (
@@ -48,16 +46,13 @@ const Book = () => {
             ))}
           </ol>
         </div>
-        <div>
+        <div className="bk-before">
           <h2>{bookPage.beforeTitle}</h2>
           <ul className="bk-facts">
             {facts.map((f) => (
               <li key={f.label}>
-                <span className="about-highlight-icon"><Icon name={f.icon} size={18} /></span>
-                <span>
-                  <span className="glance-label">{f.label}</span>
-                  <span className="glance-value">{f.value}</span>
-                </span>
+                <span className="glance-label">{f.label}</span>
+                <span className="glance-value">{f.value}</span>
               </li>
             ))}
           </ul>
