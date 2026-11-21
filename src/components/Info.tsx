@@ -4,6 +4,7 @@ import bannerImage from '../assets/images/info.webp'
 import bannerSrcSet from '../assets/images/info.webp?w=800;1600&format=webp&quality=72&as=srcset&imagetools'
 import Icon from './Icon'
 import ArrowIcon from './ArrowIcon'
+import fogPhoto from '../assets/gallery/16-fog.webp?w=900&format=webp&quality=70&imagetools'
 
 // Answers and facts marked `pending` in site.ts show a dashed "to come" placeholder.
 const Pending = ({ text }: { text: string }) => <span className="contact-placeholder">{text}</span>
@@ -37,19 +38,8 @@ const Info = () => {
   const [tab, setTab] = useState(faqGroups[0].id)
   const group = faqGroups.find((g) => g.id === tab) ?? faqGroups[0]
 
-  return (
-    <>
-      <section className="info-banner">
-        <img src={bannerImage} srcSet={bannerSrcSet} sizes="100vw" alt="" />
-        <div className="container">
-          <p className="contact-eyebrow">{infoPage.eyebrow}</p>
-          <h1>{infoPage.title}</h1>
-          <p>{infoPage.intro}</p>
-        </div>
-      </section>
-
-      <div className="container">
-        <div className="info-glance">
+  const glanceCard = (
+    <div className="info-glance">
           <h2>{infoPage.glanceTitle}</h2>
           <ul>
             {infoGlance.map((g) => (
@@ -63,7 +53,20 @@ const Info = () => {
             ))}
           </ul>
         </div>
-      </div>
+  )
+
+  return (
+    <>
+      <section className="info-banner">
+        <img src={bannerImage} srcSet={bannerSrcSet} sizes="100vw" alt="" />
+        <div className="container">
+          <p className="contact-eyebrow">{infoPage.eyebrow}</p>
+          <h1>{infoPage.title}</h1>
+          <p>{infoPage.intro}</p>
+        </div>
+      </section>
+
+      <div className="container">{glanceCard}</div>
 
       <section id="info" className="info-faq" aria-label="Frequently asked questions">
         <div className="container info-grid">
@@ -91,6 +94,7 @@ const Info = () => {
           </div>
 
           <div className="info-ask">
+            <img className="info-ask-bg" src={fogPhoto} alt="" />
             <h2>{infoPage.askTitle}</h2>
             <p>{infoPage.askText}</p>
             <ul className="ask-methods">

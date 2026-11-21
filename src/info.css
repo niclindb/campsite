@@ -1,5 +1,5 @@
 /* Guest info & FAQ page: photo banner, raised "At a glance" card,
-   topic tabs over the questions, and a navy contact card alongside */
+   topic tabs over the questions, and a dark glass contact card alongside */
 
 .info-banner { position: relative; overflow: hidden; color: #fdf8f3; padding: 5rem 0 7.5rem; background: var(--accent-color); }
 .info-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
@@ -10,11 +10,14 @@
 
 .info-glance {
   position: relative; z-index: 3; margin-top: -4.5rem; background: #fff; border-radius: 16px;
-  padding: 1.75rem 2rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.14); border-top: 5px solid #eabaac;
+  padding: 1.75rem 2rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.14);
 }
 .info-glance h2 { margin: 0 0 1.1rem; font-size: 1.3rem; color: var(--primary-color); }
 .info-glance ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem 1.5rem; }
 .info-glance li { display: flex; gap: 0.8rem; align-items: center; color: var(--primary-color); }
+
+/* Thin navy outline icons, like the home page "On site" list */
+.info-glance .about-highlight-icon { background: transparent; border: 1.5px solid var(--primary-color); color: var(--primary-color); }
 
 .glance-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; }
 .glance-value { font-weight: 600; }
@@ -34,13 +37,15 @@
 .info-tabs button.active { background: var(--secondary-color); border-color: var(--secondary-color); color: #fdf8f3; box-shadow: 0 8px 18px rgba(190, 52, 0, 0.25); }
 
 .info-acc { display: grid; gap: 0.7rem; }
-.info-acc details { background: #fff; border-radius: 12px; padding: 1.05rem 1.3rem; box-shadow: 0 6px 18px rgba(2, 13, 34, 0.06); border-left: 4px solid transparent; transition: border-color 0.2s ease; }
-.info-acc details[open] { border-left-color: var(--secondary-color); }
+.info-acc details { background: #fff; border-radius: 12px; padding: 1.05rem 1.3rem; box-shadow: 0 6px 18px rgba(2, 13, 34, 0.06); }
 .info-acc summary {
   list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
   cursor: pointer; font-family: 'League Spartan', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--primary-color);
 }
 .info-acc summary::-webkit-details-marker { display: none; }
+.info-acc summary { transition: color 0.2s ease; border-radius: 6px; }
+.info-acc summary:focus-visible { outline: 2px solid var(--secondary-color); outline-offset: 4px; }
+.info-acc details[open] summary { color: var(--secondary-color); }
 .info-acc details p { margin: 0.8rem 0 0.1rem; line-height: 1.7; max-width: 680px; }
 
 /* A rust plus that turns into a minus */
@@ -51,19 +56,28 @@
 }
 .faq-toggle::after { transform: translate(-50%, -50%) rotate(90deg); }
 details[open] .faq-toggle::after { transform: translate(-50%, -50%) rotate(0deg); }
+details[open] .faq-toggle { background: var(--secondary-color); }
+details[open] .faq-toggle::before, details[open] .faq-toggle::after { background: #fff; }
 
-.info-ask { position: sticky; top: 100px; background: var(--primary-color); color: #fdf8f3; border-radius: 16px; padding: 1.75rem; box-shadow: 0 18px 40px rgba(2, 13, 34, 0.25); border-top: 5px solid #eabaac; }
-.info-ask h2 { margin: 0 0 0.4rem; color: #eabaac; font-size: 1.35rem; }
+.info-ask {
+  position: sticky; top: 100px; overflow: hidden; isolation: isolate; background: #0b1a2c; color: #fdf8f3;
+  border-radius: 16px; padding: 1.75rem; border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 18px 40px rgba(2, 13, 34, 0.25);
+}
+/* Dark glass over the fog photo, like the home page "Plan ahead" card */
+.info-ask-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.info-ask::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(4, 14, 30, 0.72); backdrop-filter: blur(2px); }
+.info-ask h2 { margin: 0 0 0.4rem; color: #fdf8f3; font-size: 1.35rem; }
 .info-ask > p { margin: 0 0 1.1rem; line-height: 1.6; font-size: 0.95rem; }
 .ask-methods { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
 .ask-methods li { display: flex; align-items: center; gap: 0.6rem; }
+.ask-methods svg { color: #eabaac; }
 .ask-methods a { color: #eabaac; font-weight: 600; }
 .info-ask .contact-sign { margin: 1.1rem 0 0; font-size: 1.45rem; }
 
 @media (max-width: 900px) {
   .info-glance ul { grid-template-columns: repeat(2, 1fr); }
   .info-grid { grid-template-columns: 1fr; }
-  .info-ask { position: static; }
+  .info-ask { position: relative; top: auto; }
 }
 @media (max-width: 640px) {
   .info-banner { padding: 3.5rem 0 6.5rem; }
@@ -75,3 +89,4 @@ details[open] .faq-toggle::after { transform: translate(-50%, -50%) rotate(0deg)
   .info-tabs button { flex: none; font-size: 0.9rem; padding: 0.55rem 1rem; }
   .info-acc summary { font-size: 1rem; }
 }
+
