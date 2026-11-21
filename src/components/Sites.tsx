@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { siteDetails } from '../content/site'
+import { site } from '../content/site'
 import { area } from '../content/sites'
 import Amenities from './sites/Amenities'
 import SitePhoto from './sites/SitePhoto'
+import Icon from './Icon'
 
 // "Where you'll camp": one wide photo of the camping area with a card over
-// its corner, and a strip of smaller photos overlapping its bottom edge.
+// its corner (price, summary and short good-to-know points), and a strip
+// of smaller photos overlapping its bottom edge.
 // Tapping a small photo shows it in the big frame.
 const Sites = () => {
   const [cur, setCur] = useState(0)
@@ -22,10 +24,11 @@ const Sites = () => {
           </div>
           <div className="a3-card">
             <h3>{area.name}</h3>
-            <ul className="site-tags">
-              {area.tags.map((t) => <li key={t}>{t}</li>)}
-            </ul>
+            <p className="site-price"><strong>${site.pricePerSiteNight}</strong> per site, per night</p>
             <p className="site-details">{area.summary}</p>
+            <ul className="card-facts" aria-label="Good to know">
+              {area.facts.map((f) => <li key={f}><Icon name="tick" size={18} />{f}</li>)}
+            </ul>
             <Link to="/book" className="hero-btn primary">Book a spot</Link>
           </div>
         </div>
@@ -41,13 +44,6 @@ const Sites = () => {
               <SitePhoto src={photo.thumb} alt="" temporary={area.temporaryPhotos} />
             </button>
           ))}
-        </div>
-
-        <div className="sites-good-to-know">
-          <h3>Good to know</h3>
-          <ul className="check-list two-col">
-            {siteDetails.map((d) => <li key={d}>{d}</li>)}
-          </ul>
         </div>
 
         <Amenities />
