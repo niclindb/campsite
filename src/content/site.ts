@@ -345,7 +345,8 @@ export const notFoundPage = {
   text: 'Looks like you wandered off the map. The page you were looking for has moved or never existed. Let’s get you back to camp.',
   homeLabel: 'Back to camp',
   bookLabel: 'Check availability',
-  moreTitle: 'Or head to',
+  moreTitle: 'Other places to go',
+  hereLabel: 'You are here (somewhere)',
   moreLinks: [
     { label: 'Guest info & FAQ', to: '/info' },
     { label: 'Photo gallery', to: '/#gallery' },
